@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 from flask_restful import Resource, Api, reqparse
-from TokenGenerator import UserToken
-
+from Crypto.TokenGenerator import UserToken
+from Crypto.PublicTokenGenerator import TokenService
 app = Flask(__name__)
 api = Api(app)
 # will throw all of the errors at the end
@@ -71,12 +71,22 @@ class ButtonExample(Resource):
         self.db["credits"] = read_vals["credits"]
 
 class TokenCreation(Resource):
+    #maybe should be a post to test the client
     def get(self):
-        token_generator=UserToken()
-        token = token_generator.create_token()
-        print(type(token))
-        print(token)
-        return jsonify({"token":token})
+        ts=TokenService()
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument("user_id", type=str)
+        parser.add_argument("user_type", type=int)
+        parser.add_argument("credits", type=int)
+        parser.add_argument("hash",type=str)
+        returned_args = parser.parse_args()
+        msg_validty=ts.verify_msg(returned_args)
+        # token_generator=UserToken()
+        # token = token_generator.create_token()
+        # print(type(token))
+        # print(token)
+        resp = {'valid':msg_validty}
+        return jsonify(resp)
 
 
 

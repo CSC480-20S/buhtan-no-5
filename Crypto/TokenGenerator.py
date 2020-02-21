@@ -7,7 +7,7 @@ class UserToken():
         self.user_id='kazookid'
         self.secrek_key=47969418713
         self.user_type= 2
-        self.credits_avail=0
+        self.credits_avail=20
         self.user_token = None
 
 
