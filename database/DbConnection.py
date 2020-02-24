@@ -1,39 +1,56 @@
 from pymongo import MongoClient
 import os
-#This should be used to connect to the database remotely
-#username and password should be called externally
-class Connection():
-    def connector(self):
-        client = MongoClient(os.getenv('MongoURL'))  # Usr and pwd Needs to be externally called as well as auth
-        db = client["StudyStore"]
-        return db
+# This should be used to connect to the database remotely
+# username and password should be called externally
 
-# Examples of functions that can be performed on the database:
-    def postdb(self,tb, info):
-        connect = self.connector()
-        locate = connect[tb]
+
+def connector():
+    client = MongoClient(os.getenv('MongoURL))
+    db = client["StudyStore"]
+    return db
+
+
+def delete(tb, info):
+    connect = connector()[tb]
+    connect.delete_many(info)
+
+
+def edit(tb, curr, new_data):
+    connect = connector()[tb]
+    connect.update_many(curr, new_data)
+
+
+def get(tb, info):
+    connect = connector()
+    locate = connect[tb]
+    check = locate.find(info)
+    return check
+
+
+def post(tb, info):
+    connect = connector()
+    locate = connect[tb]
+    if isinstance(info, list):
+        locate.insert_many(info)
+    else:
         locate.insert_one(info)
 
 
-    def editdb(self, tb, curr, new_data):
-        connect = self.connector()[tb]
-        connect.update_one(curr, new_data)
-
-
-    def delete(self, tb, info):
-        connect = self.connector()[tb]
-        connect.delete_one(info)
+def filtered(tb, info):
+    filler = get(tb, info)
+    search = filler.sort(info, 1)
+    return search
 
 
 if __name__ == '__main__':
-    Connection().connector()
-    post = {"id": 0, "Name": "Nahyro", "credits": 234, "Researcher": True}
-    UPost = {"user_id": 0, "Name": "Nahyro", "credits": 234, "Researcher": True}
-    APost = {"id": 0, "Name": "Nahyro", "email": "nmolina@oswego.edu", "auth_token": 92, "type": "Researcher"}
-    SPost = {"study_id": 0, "Author": "Nahyro", "Author_id": 234, "price_in_credits": 23}
+    connector()
+    poster = {"id": 0, "Name": "Hey", "credits": 234, "Researcher": True}
+    edits = {"$set": {"Name": "Canyon 123"}}
+    find = {"Name": "Canyon 123"}
+    delete = {"Name": {"$regex": "^H"}}
 
-    Connection().postdb("Users", post)
-    Connection().postdb("Upload", UPost)
-    Connection().postdb("Account", APost)
-    Connection().postdb("Studies", SPost)
+    post("Users", poster)
+    edit("Users", poster, edits)
+    time = get("Users", find)
+
 
