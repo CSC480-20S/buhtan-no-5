@@ -3,8 +3,6 @@ import hashlib as hl
 from nacl import secret, utils
 from dotenv import load_dotenv
 import os
-from pathlib import Path
-from os.path import join, dirname
 import base64
 
 
@@ -19,10 +17,8 @@ class TokenService():
         load_dotenv(dotenv_path=location)
         secret_key = os.getenv('SECRET')
         if secret_key is None:
-            print("whyyhhyhhy")
             server_key = self.create_keys(location)
             return server_key
-        print("winning")
         return  base64.decodebytes(secret_key.encode('ascii'))
 
     def decode_base64(self, client_resp):

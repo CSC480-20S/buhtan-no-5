@@ -1,11 +1,17 @@
 from pymongo import MongoClient
 import os
+from dotenv import load_dotenv
+
+
 # This should be used to connect to the database remotely
 # username and password should be called externally
 
 
 def connector():
-    client = MongoClient(os.getenv('MongoURL))
+    env_path = os.path.abspath(os.path.dirname(__file__))
+    location = os.path.join(env_path, '.env')
+    load_dotenv(dotenv_path=location)
+    client = MongoClient(os.getenv('MongoURL'))
     db = client["StudyStore"]
     return db
 
@@ -52,5 +58,3 @@ if __name__ == '__main__':
     post("Users", poster)
     edit("Users", poster, edits)
     time = get("Users", find)
-
-

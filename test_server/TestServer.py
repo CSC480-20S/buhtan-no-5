@@ -13,18 +13,17 @@ api = Api(app)
 
 
 class ClientServer(Resource):
+    """
+    This is to represent what a user process or connection will look like.
+    """
     dummy_user = {"user_id": 'kazookid', "user_type":2, "credits": 20}
 
     def __init__(self):
         self.secret_key = self.load_secret_key()
 
     def encrypt_fields(self,nonce):
-        print(type(nonce))
-        print(self.secret_key)
         box=secret.SecretBox(self.secret_key)
         self.dummy_user["user_id"]=box.encrypt((self.dummy_user["user_id"]).encode('utf-8'),nonce)
-        print("userId::")
-        print(self.dummy_user["user_id"])
         self.dummy_user["user_type"]=box.encrypt(self.dummy_user["user_type"].to_bytes(2,byteorder="little"),nonce)
         self.dummy_user["credits"]=box.encrypt(self.dummy_user["credits"].to_bytes(2,byteorder="little"),nonce)
         self.dummy_user['nonce']=nonce
@@ -42,10 +41,8 @@ class ClientServer(Resource):
         #load_dotenv('../Crypto/secrets.env')
         secret_key = os.getenv('SECRET')
         if secret_key is None:
-            print("new keys")
             server_key = self.create_keys(location)
             return server_key
-        print("HOW")
         return base64.decodebytes(secret_key.encode('ascii'))
 
     def generate_nonce(self):
@@ -65,9 +62,7 @@ class ClientServer(Resource):
         dummy_hash = hl.sha256()
         nonce = self.generate_nonce()
         self.encrypt_fields(nonce)
-        print(self.dummy_user)
         dummy_hash.update(binascii.hexlify(self.dummy_user["user_id"] + self.dummy_user["user_type"] + self.dummy_user["credits"]))
-        print(dummy_hash.hexdigest())
         self.dummy_user["hash"] = dummy_hash.hexdigest()
         self.convert_to_base64()
         data = self.dummy_user
