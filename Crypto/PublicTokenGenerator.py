@@ -1,6 +1,7 @@
 import binascii
 import hashlib as hl
 from nacl import secret, utils
+import nacl.exceptions
 from dotenv import load_dotenv
 import os
 import base64
@@ -34,10 +35,16 @@ class TokenService():
         decrypted= dict()
         print(client_resp["user_id"])
         print(client_resp['nonce'])
-        decrypted["user_id"]=box.decrypt(client_resp['user_id']).decode('utf-8')
-        decrypted["user_type"]=(int.from_bytes(box.decrypt(client_resp["user_type"]),byteorder="little"))
-        decrypted["credits"]=(int.from_bytes(box.decrypt(client_resp["credits"]),byteorder="little"))
-        return decrypted
+        try:
+            client_resp['user_id'] = client_resp['user_id']+b'd'
+            decrypted["user_id"]=box.decrypt(client_resp['user_id']).decode('utf-8')
+            decrypted["user_type"]=(int.from_bytes(box.decrypt(client_resp["user_type"]),byteorder="little"))
+            decrypted["credits"]=(int.from_bytes(box.decrypt(client_resp["credits"]),byteorder="little"))
+        except nacl.exceptions.CryptoError:
+            #message wasn't crafted correctly
+            return False
+        else:
+            return decrypted
     # print(box.decrypt())
 
     def verify_msg(self, client_resp):
@@ -51,6 +58,9 @@ class TokenService():
         user_hex_vals = binascii.hexlify(user_id + user_type + credits)
         hashy.update(user_hex_vals)
         decrypt = self.decrypt(client_resp)
+        if decrypt is False:
+            return False,None
+
         if hashy.hexdigest() == user_hash:
             return True,decrypt
         return False,None

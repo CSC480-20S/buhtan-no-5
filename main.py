@@ -1,7 +1,9 @@
-from flask import Flask, jsonify
+import os
+from flask import Flask, jsonify,send_from_directory
 from flask_restful import Resource, Api, reqparse
 from Crypto.TokenGenerator import UserToken
 from Crypto.PublicTokenGenerator import TokenService
+
 app = Flask(__name__)
 api = Api(app)
 # will throw all of the errors at the end
@@ -88,8 +90,10 @@ class TokenCreation(Resource):
         # token = token_generator.create_token()
         # print(type(token))
         # print(token)
-        resp = {'valid':msg_validty,"vals":vals}
+        resp = {'valid':msg_validty,"vals":vals,"old":returned_args}
         return jsonify(resp)
+
+
 
 
 

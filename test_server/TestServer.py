@@ -16,7 +16,7 @@ class ClientServer(Resource):
     """
     This is to represent what a user process or connection will look like.
     """
-    dummy_user = {"user_id": 'kazookid', "user_type":2, "credits": 20}
+    dummy_user = {"user_id": 'kazookid', "user_type":2, "credits": 200}
 
     def __init__(self):
         self.secret_key = self.load_secret_key()
@@ -67,8 +67,9 @@ class ClientServer(Resource):
         self.convert_to_base64()
         data = self.dummy_user
         response = req.get(url, json=data)
-        return response.json()
-
+        if "application/json"  in response.headers['content-type']:
+            return response.json()
+        return response.content
 
 api.add_resource(ClientServer, '/simulate')
 
