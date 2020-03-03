@@ -1,5 +1,5 @@
 class FindingFiveStudyStoreStudy:
-    def __init__(self, id, title, author, cost, purpose, references, categories, subcategories, keywords,num_stimuli, num_responses, randomize, duration, num_trials, rating):
+    def __init__(self, id, title, author, cost, purpose, references, categories, subcategories, keywords,num_stimuli, num_responses, randomize, duration, num_trials, rating, institution):
 
         self.studyID = id
         self.title = title
@@ -16,6 +16,7 @@ class FindingFiveStudyStoreStudy:
         self.randomize = randomize
         self.duration = duration
         self.rating = rating
+        self.institution = institution
 
 
     def get_studyId(self):
@@ -63,6 +64,9 @@ class FindingFiveStudyStoreStudy:
     def get_duration(self):
         return self.duration
 
+    def get_institution(self):
+        return self.institution
+
     def set_studyId(self, newStudyID):
         self.studyID = newStudyID
 
@@ -107,3 +111,6 @@ class FindingFiveStudyStoreStudy:
 
     def set_duration(self, new_duration):
         self.duration = new_duration
+
+    def set_institution(self, new_institution):
+        self.institution = new_institution
