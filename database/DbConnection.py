@@ -5,6 +5,11 @@ from dotenv import load_dotenv
 
 # This should be used to connect to the database remotely
 # username and password should be called externally
+# Variable references:
+# info --Dict object
+# tb -- String Object
+# curr -- Dict Object
+# new_data -- Dict Object
 
 
 def connector():
