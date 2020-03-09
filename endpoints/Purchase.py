@@ -57,10 +57,15 @@ class Purchase(Resource):
         Returns:
             FindingFiveStudyStoreStudy: The associated study in the database.
         """
-    # I assume this call returns a dict().
-        study = DbConnection.get("studies", study_id)
-        return FindingFiveStudyStoreStudy(study["id"], study["title"], study["author"], study["cost"])
+        # I assume this call returns a dict().
+        #study = DbConnection.get("studies", study_id)
+        #return FindingFiveStudyStoreStudy(study["id"], study["title"], study["author"], study["cost"])
 
+        # take: two - pulling from Shawn's code example
+        connect = connector()["Studies"]
+        study = {"Study_id" : study_id}
+        seek = connect.find_one(study)
+        return FindingFiveStudyStoreStudy(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"], seek["References"], seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"], seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"], seek["Institution"], seek["Template"])
 
     def getUser(user_id):
         """Grabs a user given its ID.
@@ -74,9 +79,14 @@ class Purchase(Resource):
                 FindingFiveStudyStoreUser: The associated user in the database.
             """
         # I assume this call returns a dict().
-        user = DbConnection.get("users", user_id)
-        return FindingFiveStudyStoreUser(user["id"], user["num_credits"], user["owned_studies"], user["viewed_studies"])
+        #user = DbConnection.get("users", user_id)
+        #return FindingFiveStudyStoreUser(user["id"], user["num_credits"], user["owned_studies"], user["viewed_studies"])
 
+        #take: two - pulling from Shawn's code example
+        connect = connector()["Users"]
+        user = {"User_id": user_id}
+        seek = connect.find_one(user)
+        return FindingFiveStudyStoreUser(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"])
 
     def updateUser(user):
         """"Updates a user in the database.
@@ -89,9 +99,18 @@ class Purchase(Resource):
         Returns:
             Nothing.
         """
-        userDict = {}
-        userDict["id"] = user.get_userId()
-        userDict["num_credits"] = user.get_numCredits()
-        userDict["owned_studies"] = user.get_ownedStudies()
-        userDict["viewed_studies"] = user.get_viewedStudies()
-        DbConnection.edit("users", userDict["id"], userDict)
+        #userDict = {}
+        #userDict["id"] = user.get_userId()
+        #userDict["num_credits"] = user.get_numCredits()
+        #userDict["owned_studies"] = user.get_ownedStudies()
+        #userDict["viewed_studies"] = user.get_viewedStudies()
+        #DbConnection.edit("users", userDict["id"], userDict)
+
+        # take: two - pulling from Shawn's code example
+        connect = connector()["Users"]
+        userJ = {"User_id": user.get_userId()}
+        connect.update_one(userJ, {"Num Credits": user.get_numCredits()})
+        listerO = {"$set": {"Owned Studies": user.get_ownedStudies()}}
+        connect.update_one(userJ, listerO)
+        listerV = {"$set": {"Viewed Studies": user.get_viewedStudies()}}
+        connect.update_one(userJ, listerV)
