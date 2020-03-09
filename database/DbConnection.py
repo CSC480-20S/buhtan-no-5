@@ -1,6 +1,8 @@
 from pymongo import MongoClient
+import ssl
 import os
 from dotenv import load_dotenv
+
 
 
 # This should be used to connect to the database remotely
@@ -16,7 +18,9 @@ def connector():
     env_path = os.path.abspath(os.path.dirname(__file__))
     location = os.path.join(env_path, '.env')
     load_dotenv(dotenv_path=location)
-    client = MongoClient(os.getenv('MongoURL'))
+    client = MongoClient(
+        "mongodb+srv://Engine:qhcFrP65n8joJvso@cluster0-v76zg.mongodb.net/test?retryWrites=true&w=majority", ssl=True,
+        ssl_cert_reqs=ssl.CERT_NONE)#MongoClient(os.getenv('MongoURL'))
     db = client["StudyStore"]
     return db
 # returns the whole database name "StudyStore"

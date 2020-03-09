@@ -1,7 +1,8 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
 from database import DbConnection
-from studystore import FindingFiveStudyStoreStudy ,FindingFiveStudyStoreUser
+from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
+from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
 
 class Purchase(Resource):
     def get(self):
@@ -45,7 +46,7 @@ class Purchase(Resource):
         # return the cost
         return jsonify({"cost": cost})
 
-    def getStudy(study_id):
+    def getStudy(self,study_id):
 
         """Grabs a study given its ID.
 
@@ -62,12 +63,12 @@ class Purchase(Resource):
         #return FindingFiveStudyStoreStudy(study["id"], study["title"], study["author"], study["cost"])
 
         # take: two - pulling from Shawn's code example
-        connect = connector()["Studies"]
+        connect = DbConnection.connector()["Studies"]
         study = {"Study_id" : study_id}
         seek = connect.find_one(study)
-        return FindingFiveStudyStoreStudy(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"], seek["References"], seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"], seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"], seek["Institution"], seek["Template"])
+        return f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"], seek["References"], seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"], seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"], seek["Institution"], seek["Template"])
 
-    def getUser(user_id):
+    def getUser(self,user_id):
         """Grabs a user given its ID.
 
             Pulls from the database and returns a FindingFiveStudyStoreUser object.
@@ -83,12 +84,13 @@ class Purchase(Resource):
         #return FindingFiveStudyStoreUser(user["id"], user["num_credits"], user["owned_studies"], user["viewed_studies"])
 
         #take: two - pulling from Shawn's code example
-        connect = connector()["Users"]
+        connect = DbConnection.connector()["Users"]
         user = {"User_id": user_id}
         seek = connect.find_one(user)
-        return FindingFiveStudyStoreUser(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"])
+        print(seek)
+        return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"])
 
-    def updateUser(user):
+    def updateUser(self,user):
         """"Updates a user in the database.
 
         Pushes a new version of the user data into the database. Assumes the current ID already exists.
@@ -107,7 +109,7 @@ class Purchase(Resource):
         #DbConnection.edit("users", userDict["id"], userDict)
 
         # take: two - pulling from Shawn's code example
-        connect = connector()["Users"]
+        connect = DbConnection.connector()["Users"]
         userJ = {"User_id": user.get_userId()}
         connect.update_one(userJ, {"Num Credits": user.get_numCredits()})
         listerO = {"$set": {"Owned Studies": user.get_ownedStudies()}}

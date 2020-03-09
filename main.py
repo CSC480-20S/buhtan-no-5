@@ -6,8 +6,7 @@ from crypto.PublicTokenGenerator import TokenService
 from endpoints import transaction_blueprint as tbp
 
 app = Flask(__name__)
-app.register_blueprint(tbp.deliver_bp,'\deliver')
-app.register_blueprint(tbp.purchase_bp,'purchase')
+app.register_blueprint(tbp.trans_bp)
 api = Api(app)
 # will throw all of the errors at the end
 parser = reqparse.RequestParser(bundle_errors=True)

@@ -1,6 +1,13 @@
 from flask import Blueprint
-from endpoints import Deliver
-from endpoints import Purchase
+from flask_restful import Api
+from endpoints.Deliver import Deliver
+from endpoints.Purchase import Purchase
+from database import studies
+trans_bp = Blueprint('transaction',__name__)
+api =Api(trans_bp)
 
-deliver_bp = Blueprint(Deliver,__name__)
-purchase_bp= Blueprint(Purchase,__name__)
+api.add_resource(Deliver,'/deliver')
+api.add_resource(Purchase, '/purchase')
+api.add_resource(studies.EndPointOwnedStudies,'/owned')
+api.add_resource(studies.EndPointViewedStudies,'/previewed')
+

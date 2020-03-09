@@ -2,7 +2,7 @@ from flask import jsonify
 from flask_restful import Resource, reqparse
 from database import DbConnection
 from studystore import FindingFiveStudyStoreStudy ,FindingFiveStudyStoreUser
-import Purchase
+from endpoints.Purchase import Purchase
 
 class Deliver(Resource):
     def get(self):
@@ -28,8 +28,8 @@ class Deliver(Resource):
         if user_id == None or study_id == None:
             return jsonify({"error":"missing parameter"})
         #get the necessary data from the database
-        user = Purchase.getUser(user_id)
-        study = Purchase.getStudy(study_id)
+        user = Purchase.getUser(Purchase,user_id)
+        study = Purchase.getStudy(Purchase,study_id)
         #return the study only if owned
         if study_id in user.get_ownedStudies():
             return study.get_template()
