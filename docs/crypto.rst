@@ -1,13 +1,13 @@
 Crypto Package
 ==============
 
-.. automodule:: Crypto.PublicTokenGenerator
+.. automodule:: crypto.PublicTokenGenerator
 .. autoclass:: TokenService
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: Crypto.TokenGenerator
+.. automodule:: crypto.TokenGenerator
 .. autoclass:: UserToken
     :members:
     :undoc-members:
