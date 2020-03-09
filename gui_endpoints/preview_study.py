@@ -21,7 +21,7 @@ class EndPoint_PreviewStudies(Resource):
             Json containing all info about the study except for the template itself
             """
 
-    def post(self):
+    def get(self):
         built_json = list()
         for study in studies:
             study.set_template("na")
