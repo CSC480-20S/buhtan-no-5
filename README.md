@@ -13,6 +13,10 @@ for any of the encryption and decryption operations.Refer to the image below.
 
 [//]: # (### A valid markdown comment but it appears to be only one line)
 
+## Database
+Will be updated.
+
+
 ## Deployment
 Engine has decided to utilize gunicorn to create workers in order to handle requests. Engine is currently researching if nginx will be utilized due to system permission issues.
 For Unix systems with venv installed.To run the local flask instance execute the below commands.
@@ -30,7 +34,9 @@ nohup python3 launcher py --bind ip_address:port class:app_name & >/dev/null &
 ```
 
 ## Documentation
-This project will use Sphinx to create local documentation to aide others.
+This project will use Sphinx to create local documentation to aide others.There will be a readthedocs in the future.
+* [CheatSheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) is a great resourse to utilize in order to improve the README.
+
 
 ## Built With
 * [FLASK](https://pypi.org/project/Flask/) - Web Framework used
