@@ -5,3 +5,4 @@ __pycache__/
 build/
 docs/_build/
 docs/_templates
+.idea/
