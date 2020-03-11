@@ -14,7 +14,17 @@ for any of the encryption and decryption operations.Refer to the image below.
 [//]: # (### A valid markdown comment but it appears to be only one line)
 
 ## Database
-Database of use is MongoDB Atlas. This is a NoSQL database which is secured by TLS/SSL authentication. Using pymongo Engine and Database will be able to connect using the MongoClient mondule. To connect to the Database copy and paste the commands below and change the "Mongo URL" placeholder with the connection string located in the env file.
+Database of use is MongoDB Atlas. This is a NoSQL database which is secured by TLS/SSL authentication. Using pymongo Engine and Database will be able to connect using the MongoClient mondule. To connect to the Database copy and paste the function below.
+```
+def connector():
+    env_path = os.path.abspath(os.path.dirname(__file__))
+    location = os.path.join(env_path, '.env')
+    load_dotenv(dotenv_path=location)
+    client = MongoClient(os.getenv('MongoURL'))
+    db = client["StudyStore"]
+    return db
+```
+Then change the "Mongo URL" placeholder with the connection string located in the env file.
 
 
 ## Deployment
