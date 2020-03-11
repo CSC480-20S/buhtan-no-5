@@ -14,7 +14,7 @@ for any of the encryption and decryption operations.Refer to the image below.
 [//]: # (### A valid markdown comment but it appears to be only one line)
 
 ## Database
-Will be updated.
+Database of use is MongoDB Atlas. This is a NoSQL database which is secured by TLS/SSL authentication. Using pymongo Engine and Database will be able to connect using the MongoClient mondule. To connect to the Database copy and paste the commands below and change the "Mongo URL" placeholder with the connection string located in the env file.
 
 
 ## Deployment
@@ -49,4 +49,5 @@ This project will use Sphinx to create local documentation to aide others.There 
 * **msglarson** - *Initial Documentation work* 
 * **besoir** - *Created Magic Button*
 * **jbald98** - *UML Wizard*
+* **nahyromolina** - *Dancer*
 * **
