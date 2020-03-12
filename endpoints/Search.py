@@ -38,9 +38,13 @@ class Search(Resource):
         # build search parameters
         params = { "Title":title }
         # query database
+        studyList = getStudies(params)
         # convert output
+        out = {}
+        for i in range(len(studyList)):
+            out[str(i)] = studyList[i].build_dict()
         # return converted output
-        return jsonify({"Results": {"No results":True}})
+        return jsonify(out)
 
 def getStudies(params, maxStudies=-1):
     """Grabs a list of studies given some parameters they need to meet.
