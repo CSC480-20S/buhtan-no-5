@@ -41,3 +41,34 @@ class Search(Resource):
         # convert output
         # return converted output
         return jsonify({"Results": {"No results":True}})
+
+def getStudies(params, maxStudies=-1):
+    """Grabs a list of studies given some parameters they need to meet.
+
+    Pulls from the database and returns a list of FindingFiveStudyStoreStudy objects.
+    Each object will have the fields given in params equal to the values paired with them in params.
+
+    Args:
+        params (dict): Pairs field names with the values they must have.
+        maxStudies (int): If greater than or equal to zero, no more than max studies will be in the output list.
+
+    Returns:
+        list<FindingFiveStudyStoreStudy>: The first "max" studies that have the given params.
+    """
+
+    #if asked for zero studies, just return
+    if (maxStudies == 0):
+        return []
+    #change to the number the Mongo code likes uses for no limit
+    elif (maxStudies < 0):
+        maxStudies == 0
+
+    #acquire studies
+    connect = DbConnection.connector()["Studies"]
+    seek = connect.find(filter=params, projection={"Template":False}, limit=maxStudies)
+
+    #get the number of studies returned - {} gives us all
+    numStudies = seek.collection.count_documents({})
+
+    #not sure if this actually returns a list
+    return seek[0:numStudies]
