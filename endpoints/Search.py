@@ -26,7 +26,7 @@ class Search(Resource):
         parser.add_argument("title", type=str)
         returned_args = parser.parse_args()
         user_id = returned_args.get("user_id", None)
-        study_id = returned_args.get("title", None)
+        title = returned_args.get("title", None)
         # verify the parameters exist
         # will need to change this to allow title=None when other specifying parameters are given
         if user_id == None or title == None:
@@ -36,6 +36,7 @@ class Search(Resource):
         user = Purchase.getUser(user_id)
 
         # build search parameters
+        params = { "Title":title }
         # query database
         # convert output
         # return converted output
