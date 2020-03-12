@@ -1,5 +1,6 @@
 import os
 from flask import Flask, jsonify
+from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse
 from crypto.TokenGenerator import UserToken
 from crypto.PublicTokenGenerator import TokenService
@@ -7,6 +8,7 @@ from endpoints import transaction_blueprint as tbp
 
 app = Flask(__name__)
 app.register_blueprint(tbp.trans_bp)
+CORS(app)
 api = Api(app)
 # will throw all of the errors at the end
 parser = reqparse.RequestParser(bundle_errors=True)
