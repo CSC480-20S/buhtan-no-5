@@ -10,7 +10,11 @@ Welcome to bhutan-no-5's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   Crypto
+   crypto
+   database
+   endpoints
+   studystore
+
 
 
 
