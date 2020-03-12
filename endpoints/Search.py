@@ -70,5 +70,11 @@ def getStudies(params, maxStudies=-1):
     #get the number of studies returned - {} gives us all
     numStudies = seek.collection.count_documents({})
 
+    studyList = []
     #not sure if this actually returns a list
-    return seek[0:numStudies]
+    for study in seek[0:numStudies]:
+        studyList.append(f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"], seek["References"],
+                seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
+                seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
+                seek["Institution"], "Template redacted"))
+    return studyList
