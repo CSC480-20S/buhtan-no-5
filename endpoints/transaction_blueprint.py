@@ -12,4 +12,4 @@ api.add_resource(Purchase, '/purchase')
 api.add_resource(studies.EndPointOwnedStudies,'/owned')
 api.add_resource(studies.EndPointViewedStudies,'/previewed')
 api.add_resource(preview_study.EndPoint_PreviewStudies,'/studyPreview')
-
+api.add_resource(Search, '/search')
