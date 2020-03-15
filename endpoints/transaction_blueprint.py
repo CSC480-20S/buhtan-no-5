@@ -4,6 +4,8 @@ from endpoints.Deliver import Deliver
 from endpoints.Purchase import Purchase
 from database import studies
 from gui_endpoints import preview_study
+from endpoints.Search import Search
+
 trans_bp = Blueprint('transaction',__name__)
 api =Api(trans_bp)
 
