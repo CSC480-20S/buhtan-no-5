@@ -29,9 +29,10 @@ class Deliver(Resource):
         #    return jsonify({"error":"missing parameter"})
         #get the necessary data from the database
         user = Purchase.getUser(Purchase,user_id)
-        study = Purchase.getStudy(Purchase,study_id)
         #return the study only if owned
         if study_id in user.get_ownedStudies():
+            #only acquire study if we own it
+            study = Purchase.getStudy(Purchase, study_id)
             return study.get_template()
         else:
             return jsonify({"error":"user does not own study"})
