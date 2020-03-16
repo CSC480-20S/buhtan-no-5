@@ -112,8 +112,7 @@ class Purchase(Resource):
         # take: two - pulling from Shawn's code example
         connect = DbConnection.connector()["Users"]
         userJ = {"User_id": user.get_userId()}
-        connect.update_one(userJ, {"Num Credits": user.get_numCredits()})
-        listerO = {"$set": {"Owned Studies": user.get_ownedStudies()}}
-        connect.update_one(userJ, listerO)
-        listerV = {"$set": {"Viewed Studies": user.get_viewedStudies()}}
-        connect.update_one(userJ, listerV)
+        changes = {"$set":{"Num Credits": user.get_numCredits(),
+                           "Owned Studies": user.get_ownedStudies(),
+                           "Viewed Studies": user.get_viewedStudies()}}
+        connect.update_one(userJ, changes)
