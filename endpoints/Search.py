@@ -107,8 +107,8 @@ def getStudies(params, maxStudies=-1):
     studyList = []
     #not sure if this actually returns a list
     for study in seek[0:numStudies]:
-        studyList.append(f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"], seek["References"],
-                seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
-                seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
-                seek["Institution"], "Template redacted"))
+        studyList.append(f5study(study["Study_id"], study["Title"], study["Author"], study["CostinCredits"], study["Purpose"], study["References"],
+                study["Categories"], study["Sub_Categories"], study["Keywords"], study["Num_Stimuli"],
+                study["Num_Responses"], study["Randomize"], study["Duration"], study["Num_trials"], study["Rating"],
+                study["Institution"], "Template redacted"))
     return studyList
