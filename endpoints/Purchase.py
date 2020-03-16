@@ -34,7 +34,7 @@ class Purchase(Resource):
         user = self.getUser(user_id)
         #check for ownership first, because credits won't matter if already owned
         if study_id in user.get_ownedStudies():
-            return jsonify({"error": "user already owns study"})
+            return jsonify({"cost": 0})
         study = self.getStudy(study_id)
         cost = study.get_costInCredits()
         # check for sufficient credits and not already owning the study
