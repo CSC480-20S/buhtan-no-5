@@ -33,7 +33,7 @@ class Search(Resource):
             """
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("user_id", type=str)
+        parser.add_argument("user_id", type=str, required=True, help="An active user ID must be provided.")
         parser.add_argument("title", type=str)
         parser.add_argument("keywords", type=str)
         parser.add_argument("keyword_separator", type=str)
@@ -46,9 +46,9 @@ class Search(Resource):
         keyword_separator = returned_args.get("keyword_separator", "|")
         keyword_all = returned_args.get("keyword_all", True)
         limit = returned_args.get("limit", -1)
-        # verify the required parameters exist
-        if user_id == None:
-            return jsonify({"error": "missing user_id parameter"})
+        # verify the required parameters exist - now handled by add_argument
+        #if user_id == None:
+        #    return jsonify({"error": "missing user_id parameter"})
         # get the necessary data from the database
         # this exists for verifying we have an authenticated user
         user = Purchase.getUser(user_id)

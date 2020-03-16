@@ -19,14 +19,14 @@ class Deliver(Resource):
             """
         #obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("user_id", type=str)
-        parser.add_argument("study_id", type=int)
+        parser.add_argument("user_id", type=str, required=True, help="The user ID of the owner is a String.")
+        parser.add_argument("study_id", type=int, required=True, help="The study ID of the owned study is an integer.")
         returned_args = parser.parse_args()
         user_id = returned_args.get("user_id", None)
         study_id = returned_args.get("study_id", None)
-        #verify the parameters exist
-        if user_id == None or study_id == None:
-            return jsonify({"error":"missing parameter"})
+        #verify the parameters exist - now handled by add_argument
+        #if user_id == None or study_id == None:
+        #    return jsonify({"error":"missing parameter"})
         #get the necessary data from the database
         user = Purchase.getUser(Purchase,user_id)
         study = Purchase.getStudy(Purchase,study_id)
