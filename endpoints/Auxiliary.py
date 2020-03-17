@@ -21,3 +21,20 @@ def getStudy(study_id):
                    seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
                    seek["Institution"], seek["Template"])
+
+def getUser(self,user_id):
+    """Grabs a user given its ID.
+
+    Pulls from the database and returns a FindingFiveStudyStoreUser object.
+
+    Args:
+        user_id (String): The ID associated with a user at authentication.
+
+    Returns:
+        FindingFiveStudyStoreUser: The associated user in the database.
+    """
+
+    connect = DbConnection.connector()["Users"]
+    user = {"User_id": user_id}
+    seek = connect.find_one(user)
+    return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"])

@@ -49,27 +49,7 @@ class Purchase(Resource):
 
 
 
-    def getUser(self,user_id):
-        """Grabs a user given its ID.
 
-            Pulls from the database and returns a FindingFiveStudyStoreUser object.
-
-            Args:
-                user_id (String): The ID associated with a user at authentication.
-
-            Returns:
-                FindingFiveStudyStoreUser: The associated user in the database.
-            """
-        # I assume this call returns a dict().
-        #user = DbConnection.get("users", user_id)
-        #return FindingFiveStudyStoreUser(user["id"], user["num_credits"], user["owned_studies"], user["viewed_studies"])
-
-        #take: two - pulling from Shawn's code example
-        connect = DbConnection.connector()["Users"]
-        user = {"User_id": user_id}
-        seek = connect.find_one(user)
-        print(seek)
-        return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"])
 
     def updateUser(self,user):
         """"Updates a user in the database.
