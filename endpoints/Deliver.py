@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse
 from database import DbConnection
 from studystore import FindingFiveStudyStoreStudy ,FindingFiveStudyStoreUser
 from endpoints.Purchase import Purchase
+import Auxiliary
 
 class Deliver(Resource):
     def get(self):
@@ -28,11 +29,11 @@ class Deliver(Resource):
         #if user_id == None or study_id == None:
         #    return jsonify({"error":"missing parameter"})
         #get the necessary data from the database
-        user = Purchase.getUser(Purchase,user_id)
+        user = getUser(Purchase,user_id)
         #return the study only if owned
         if study_id in user.get_ownedStudies():
             #only acquire study if we own it
-            study = Purchase.getStudy(Purchase, study_id)
+            study = getStudy(Purchase, study_id)
             return study.get_template()
         else:
             return jsonify({"error":"user does not own study"})
