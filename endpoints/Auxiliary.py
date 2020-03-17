@@ -94,3 +94,25 @@ def updateUser(user):
                        "Owned Studies": user.get_ownedStudies(),
                        "Viewed Studies": user.get_viewedStudies()}}
     connect.update_one(userJ, changes)
+
+def addOwned(user_id, study_id, cost):
+    """Decreases a user's credits to purchase a study.
+
+    Atomically decreases a user's credits and adds the study to the user's list of owned studies.
+    Does not verify that the referenced study actually exists.
+    If the study is already in the list, a duplicate will not be created.
+
+    Args:
+        user_id (String): The ID of the user purchasing the study.
+        study_id (Integer): The ID of the study being purchased.
+        cost (Integer): The positive number of credits to deduct from the user for the study.
+
+    Returns:
+        Nothing.
+    """
+
+    connect = DbConnection.connector()["Users"]
+    user = {"User_id":user_id}
+    changes = {"$inc":{"Num Credits":0-cost},
+               "$addToSet":{"Owned Studies":study_id}}
+    connect.update_one(user, changes)
