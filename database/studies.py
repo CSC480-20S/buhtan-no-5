@@ -54,21 +54,6 @@ class EndPointViewedStudies(Resource):
         return jsonify(preview)
 
 
-def addOwnedStudiesToDB(user_id, study_id):
-    """" Get the owned list from db then modify it by adding a newly bought study with insert and rePost it back to
-    database with the updated list.
-                    Args:#get the necessary data from the database
-                        user_id (String): The identifier for the user trying to purchase the study.
-                        study_id (int): The identifier for the study the user is trying to download.
-                    Returns:
-                        nothing.
-"""
-    connect = connector()["Users"]
-    user = {"User_id": user_id}
-    ownedStudiesList.insert(0, study_id)
-    lister = {"$set": {"Owned Studies": ownedStudiesList}}
-    connect.update_one(user, lister)
-
 
 # Viewing the owned studies
 class EndPointOwnedStudies(Resource):
