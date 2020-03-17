@@ -4,7 +4,6 @@ import os
 from dotenv import load_dotenv
 
 
-
 # This should be used to connect to the database remotely
 # username and password should be called externally
 # Variable references:
@@ -20,9 +19,11 @@ def connector():
     load_dotenv(dotenv_path=location)
     client = MongoClient(
         "mongodb+srv://Engine:qhcFrP65n8joJvso@cluster0-v76zg.mongodb.net/test?retryWrites=true&w=majority", ssl=True,
-        ssl_cert_reqs=ssl.CERT_NONE)#MongoClient(os.getenv('MongoURL'))
+        ssl_cert_reqs=ssl.CERT_NONE)  # MongoClient(os.getenv('MongoURL'))
     db = client["StudyStore"]
     return db
+
+
 # returns the whole database name "StudyStore"
 
 
@@ -30,7 +31,9 @@ def connector():
 def delete(tb, info):
     connect = connector()[tb]
     connect.delete_many(info)
- # no return 
+
+
+# no return
 
 # Updates a JSON that was already store in the database
 # curr is the JSON in database 
@@ -38,17 +41,21 @@ def delete(tb, info):
 def edit(tb, curr, new_data):
     connect = connector()[tb]
     connect.update_many(curr, new_data)
- # no return
 
-#Gets a JSON in collection tb in database based on info
+
+# no return
+
+# Gets a JSON in collection tb in database based on info
 def get(tb, info):
     connect = connector()
     locate = connect[tb]
     check = locate.find(info)
     return check
+
+
 # return list of dicts based off info
 
-#Post info into the database in the collection tb
+# Post info into the database in the collection tb
 def post(tb, info):
     connect = connector()
     locate = connect[tb]
@@ -62,6 +69,8 @@ def filtered(tb, info):
     filler = get(tb, info)
     search = filler.sort(info, 1)
     return search
+
+
 # returns list of dicts based off info that is sorted
 
 

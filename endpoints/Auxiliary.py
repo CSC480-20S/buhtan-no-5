@@ -2,6 +2,7 @@ from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
 
+
 def getStudy(study_id):
     """Grabs a study given its ID.
 
@@ -22,6 +23,7 @@ def getStudy(study_id):
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
                    seek["Institution"], seek["Template"])
 
+
 def getStudies(params, maxStudies=-1):
     """Grabs a list of studies given some parameters they need to meet.
 
@@ -36,28 +38,31 @@ def getStudies(params, maxStudies=-1):
         list<FindingFiveStudyStoreStudy>: The first "max" studies that have the given params.
     """
 
-    #if asked for zero studies, just return
+    # if asked for zero studies, just return
     if (maxStudies == 0):
         return []
-    #change to the number the Mongo code likes uses for no limit
+    # change to the number the Mongo code likes uses for no limit
     elif (maxStudies < 0):
         maxStudies = 0
 
-    #acquire studies
+    # acquire studies
     connect = DbConnection.connector()["Studies"]
-    seek = connect.find(filter=params, projection={"Template":False}, limit=maxStudies)
+    seek = connect.find(filter=params, projection={"Template": False}, limit=maxStudies)
 
-    #get the number of studies returned - {} gives us all
+    # get the number of studies returned - {} gives us all
     numStudies = seek.collection.count_documents({})
 
     studyList = []
-    #not sure if this actually returns a list
+    # not sure if this actually returns a list
     for study in seek[0:numStudies]:
-        studyList.append(f5study(study["Study_id"], study["Title"], study["Author"], study["CostinCredits"], study["Purpose"], study["References"],
-                study["Categories"], study["Sub_Categories"], study["Keywords"], study["Num_Stimuli"],
-                study["Num_Responses"], study["Randomize"], study["Duration"], study["Num_trials"], study["Rating"],
-                study["Institution"], "Template redacted"))
+        studyList.append(
+            f5study(study["Study_id"], study["Title"], study["Author"], study["CostinCredits"], study["Purpose"],
+                    study["References"],
+                    study["Categories"], study["Sub_Categories"], study["Keywords"], study["Num_Stimuli"],
+                    study["Num_Responses"], study["Randomize"], study["Duration"], study["Num_trials"], study["Rating"],
+                    study["Institution"], "Template redacted"))
     return studyList
+
 
 def getUser(user_id):
     """Grabs a user given its ID.
@@ -76,6 +81,7 @@ def getUser(user_id):
     seek = connect.find_one(user)
     return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"])
 
+
 def updateUser(user):
     """"Updates a user in the database.
 
@@ -90,10 +96,11 @@ def updateUser(user):
 
     connect = DbConnection.connector()["Users"]
     userJ = {"User_id": user.get_userId()}
-    changes = {"$set":{"Num Credits": user.get_numCredits(),
-                       "Owned Studies": user.get_ownedStudies(),
-                       "Viewed Studies": user.get_viewedStudies()}}
+    changes = {"$set": {"Num Credits": user.get_numCredits(),
+                        "Owned Studies": user.get_ownedStudies(),
+                        "Viewed Studies": user.get_viewedStudies()}}
     connect.update_one(userJ, changes)
+
 
 def addOwned(user_id, study_id, cost):
     """Decreases a user's credits to purchase a study.
@@ -112,7 +119,7 @@ def addOwned(user_id, study_id, cost):
     """
 
     connect = DbConnection.connector()["Users"]
-    user = {"User_id":user_id}
-    changes = {"$inc":{"Num Credits":0-cost},
-               "$addToSet":{"Owned Studies":study_id}}
+    user = {"User_id": user_id}
+    changes = {"$inc": {"Num Credits": 0 - cost},
+               "$addToSet": {"Owned Studies": study_id}}
     connect.update_one(user, changes)

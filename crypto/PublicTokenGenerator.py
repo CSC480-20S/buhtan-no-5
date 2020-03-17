@@ -18,7 +18,8 @@ class TokenService():
 
     def load_secret_key(self):
         """Loads the Private key from disk.
-        Reads the private key from the .env file. If the file doesn't exist,creates a new private key.
+        Reads the private key from the .env file. If the file doesn't exist,
+        Creates a new private key.
 
         Args:
             None
@@ -56,14 +57,14 @@ class TokenService():
 
     def decrypt(self, client_resp):
         ''' Decrypt the client's response.
-        Decrypt the client's response dict in order to verify the client has access
-        to the website.
+        Decrypt the client's response dict in order to verify the client
+        Has access to the website.
 
         Args:
             client_resp(dict):The dict from the client's response
 
         Returns:
-            dict: Returns the dictionary of decrypted results otherwise returns false
+            dict: Returns decrypted results otherwise returns False
 
         Raises:
             nacl.exceptions.CryptoError: The box failed to decrypt a field.

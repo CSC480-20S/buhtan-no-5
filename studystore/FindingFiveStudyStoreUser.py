@@ -2,8 +2,8 @@ class FindingFiveStudyStoreUser:
     def __init__(self, userID, numCredits, ownedStudies, viewedStudies):
         self.userID = userID
         self.numCredits = numCredits
-        self.ownedStudies = ownedStudies #list of FFSS studies
-        self.viewedStudies = viewedStudies #list of FFSS studies
+        self.ownedStudies = ownedStudies  # list of FFSS studies
+        self.viewedStudies = viewedStudies  # list of FFSS studies
 
     def get_userId(self):
         return self.userID

@@ -23,10 +23,10 @@ class UpdateServer():
         file_name = str(curr_date) + '.log'
         with open(file_name, 'w+') as f:
             f.write(stderr)
-        sc.enter(86400, 3600)
+        sc.enter(43200, 3600)
 
 
 if __name__ == '__main__':
     scheder = sched.scheduler(time.time, time.sleep)
-    scheder.enter(86400, 3600, UpdateServer.check_github, (scheder,))
+    scheder.enter(43200, 3600, UpdateServer.check_github, (scheder,))
     scheder.run()

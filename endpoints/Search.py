@@ -47,26 +47,26 @@ class Search(Resource):
         keyword_all = returned_args.get("keyword_all", True)
         limit = returned_args.get("limit", -1)
         # verify the required parameters exist - now handled by add_argument
-        #if user_id == None:
+        # if user_id == None:
         #    return jsonify({"error": "missing user_id parameter"})
         # get the necessary data from the database
         # this exists for verifying we have an authenticated user
         user = Auxiliary.getUser(user_id)
-        #should make some check that the user's session is still valid
-        #i.e. last authentication within 30 minutes
+        # should make some check that the user's session is still valid
+        # i.e. last authentication within 30 minutes
 
         # build search parameters
         params = {}
-        if title != None:
+        if title is not None:
             params["Title"] = title
-        if keywords_unsplit != None:
+        if keywords_unsplit is not None:
             keywords = keywords_unsplit.split(keyword_separator)
-            #intersection/and
-            if keyword_all == True:
+            # intersection/and
+            if keyword_all is True:
                 params["Keywords"] = {"$all": keywords}
-            #union/or
+            # union/or
             else:
-                params["Keywords"] = { "$in": keywords}
+                params["Keywords"] = {"$in": keywords}
         # query database
         studyList = Auxiliary.getStudies(params, limit)
         # convert output
@@ -75,4 +75,3 @@ class Search(Resource):
             out[i] = studyList[i].build_dict()
         # return converted output
         return jsonify(out)
-

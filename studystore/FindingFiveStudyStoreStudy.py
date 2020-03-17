@@ -1,6 +1,6 @@
 class FindingFiveStudyStoreStudy:
-    def __init__(self, id, title, author, cost, purpose, references, categories, subcategories, keywords,num_stimuli, num_responses, randomize, duration, num_trials, rating, institution, template):
-
+    def __init__(self, id, title, author, cost, purpose, references, categories, subcategories, keywords, num_stimuli,
+                 num_responses, randomize, duration, num_trials, rating, institution, template):
         self.studyID = id
         self.title = title
         self.author = author
@@ -11,7 +11,7 @@ class FindingFiveStudyStoreStudy:
         self.subcategories = subcategories
         self.keywords = keywords
         self.num_stimuli = num_stimuli
-        self.num_responses= num_responses
+        self.num_responses = num_responses
         self.num_trials = num_trials
         self.randomize = randomize
         self.duration = duration
@@ -113,25 +113,25 @@ class FindingFiveStudyStoreStudy:
         self.categories = new_categories
 
     def set_subcategories(self, new_subcategories):
-        self.subcategories=new_subcategories
+        self.subcategories = new_subcategories
 
     def set_keywords(self, new_keywords):
-        self.keywords=new_keywords
+        self.keywords = new_keywords
 
     def set_num_stimuli(self, new_num_stimuli):
-        self.num_stimuli=new_num_stimuli
+        self.num_stimuli = new_num_stimuli
 
     def set_num_responses(self, new_num_responses):
-        self.num_responses=new_num_responses
+        self.num_responses = new_num_responses
 
     def set_num_trials(self, new_num_trials):
-        self.num_trials=new_num_trials
+        self.num_trials = new_num_trials
 
     def set_randomize(self, new_randomize):
-        self.randomize= new_randomize
+        self.randomize = new_randomize
 
-    def set_rating(self,new_rating):
-        self.rating=new_rating
+    def set_rating(self, new_rating):
+        self.rating = new_rating
 
     def set_duration(self, new_duration):
         self.duration = new_duration
