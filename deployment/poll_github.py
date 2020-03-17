@@ -27,6 +27,6 @@ class UpdateServer():
 
 
 if __name__ == '__main__':
-    scheder = sched.scheduler(time.time(), time.sleep)
+    scheder = sched.scheduler(time.time, time.sleep)
     scheder.enter(86400, 3600, UpdateServer.check_github, (scheder,))
     scheder.run()
