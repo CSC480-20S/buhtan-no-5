@@ -21,11 +21,8 @@ class GetOwned(Resource):
         returned_args = parser.parse_args()
         user_id = returned_args.get("user_id", None)
         # print(returned_args)
-        connect = connector()["Users"]
-        # need to fix this get functions
-        user = {"User_id": user_id}
-        seek = connect.find_one(user)
-        search = seek["Owned Studies"]
+        user = Auxiliary.getUser(user_id)
+        search = user.get_ownedStudies()
         params = {"Study_id": {"$in": search}}
         studyList = Auxiliary.getStudies(params)
         # convert output

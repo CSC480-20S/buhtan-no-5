@@ -154,7 +154,7 @@ def isOwned(user_id, study_id):
         boolean: True if the user owns the study, else false.
     """
 
-    connect = connector()["Users"]
+    connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id,
             "$in": {"Owned Studies": study_id}}
     #if such a user exists, we get the user, else we get None
@@ -173,7 +173,7 @@ def addViewed(user_id, study_id):
         Nothing.
     """
 
-    connect = connector()["Users"]
+    connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id}
     lister = {"$push": {"Viewed Studies": study_id}}
     connect.update_one(user, lister)
