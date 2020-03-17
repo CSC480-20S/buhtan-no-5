@@ -23,13 +23,8 @@ class Deliver(Resource):
         returned_args = parser.parse_args()
         user_id = returned_args.get("user_id", None)
         study_id = returned_args.get("study_id", None)
-        # verify the parameters exist - now handled by add_argument
-        # if user_id == None or study_id == None:
-        #    return jsonify({"error":"missing parameter"})
-        # get the necessary data from the database
-        user = Auxiliary.getUser(user_id)
-        # return the study only if owned
-        if study_id in user.get_ownedStudies():
+        # return the study template only if owned
+        if Auxiliary.isOwned(user_id, study_id):
             # only acquire study if we own it
             study = Auxiliary.getStudy(study_id)
             return study.get_template()
