@@ -3,7 +3,7 @@ from flask_restful import Resource, reqparse
 from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
-import Purchase
+from endpoints import Auxiliary
 
 
 class Search(Resource):
@@ -51,7 +51,7 @@ class Search(Resource):
         #    return jsonify({"error": "missing user_id parameter"})
         # get the necessary data from the database
         # this exists for verifying we have an authenticated user
-        user = Purchase.getUser(user_id)
+        user = getUser(user_id)
         #should make some check that the user's session is still valid
         #i.e. last authentication within 30 minutes
 
