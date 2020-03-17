@@ -23,6 +23,22 @@ def getStudy(study_id):
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
                    seek["Institution"], seek["Template"])
 
+def getTemplate(study_id):
+    """Grabs a study's template given the study's ID.
+
+    Pulls from the database and returns a String object representing the JSON template.
+
+    Args:
+        study_id (int): The ID assigned to a study at upload.
+
+    Returns:
+        String: The associated study's tempkate field from the database.
+    """
+
+    connect = DbConnection.connector()["Studies"]
+    study = {"Study_id": study_id}
+    seek = connect.find_one(study, ["Template"])
+    return seek["Template"]
 
 def getStudies(params, maxStudies=-1):
     """Grabs a list of studies given some parameters they need to meet.
@@ -123,3 +139,41 @@ def addOwned(user_id, study_id, cost):
     changes = {"$inc": {"Num Credits": 0 - cost},
                "$addToSet": {"Owned Studies": study_id}}
     connect.update_one(user, changes)
+
+def isOwned(user_id, study_id):
+    """"Returns the ownership status of the study.
+
+    Returns true only if the indicated user owns the indicated study,
+    otherwise returns false.
+
+    Args:
+        user_id (String): The identifier for the user who may own the study.
+        study_id (int): The identifier for the study the user may own.
+
+    Returns:
+        boolean: True if the user owns the study, else false.
+    """
+
+    connect = DbConnection.connector()["Users"]
+    user = {"User_id": user_id,
+            "$in": {"Owned Studies": study_id}}
+    #if such a user exists, we get the user, else we get None
+    return connect.find_one(user) != None
+
+def addViewed(user_id, study_id):
+    """"Adds a study to a user's list of viewed studies.
+
+    Adds the study to the end of the list, even if viewed before.
+
+    Args:
+        user_id (String): The ID of the user viewing the study.
+        study_id (int): The ID of the study being viewed.
+
+    Returns:
+        Nothing.
+    """
+
+    connect = DbConnection.connector()["Users"]
+    user = {"User_id": user_id}
+    lister = {"$push": {"Viewed Studies": study_id}}
+    connect.update_one(user, lister)

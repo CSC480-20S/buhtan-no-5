@@ -2,6 +2,7 @@ import ssl
 from pymongo import MongoClient
 from flask import Flask, jsonify, send_from_directory
 from flask_restful import Resource, Api, reqparse
+from endpoints import Auxiliary
 
 app = Flask(__name__)
 api = Api(app)
@@ -27,20 +28,7 @@ def processor(idea):
     return info
 
 
-def addViewedStudiesToDB(user_id, study_id):
-    """" Get the previewed list from db then modify it by adding a new previewed study with insert and rePost it back to
-    database with the updated list.
-                    Args:#get the necessary data from the database
-                        user_id (String): The identifier for the user trying to purchase the study.
-                        study_id (int): The identifier for the study the user is trying to download.
-                    Returns:
-                        nothing.
-"""
-    connect = connector()["Users"]
-    user = {"User_id": user_id}
-    viewStudiesList.insert(0, study_id)
-    lister = {"$set": {"Viewed Studies": viewStudiesList}}
-    connect.update_one(user, lister)
+
 
 
 # Viewing the previously viewed studies
@@ -66,21 +54,6 @@ class EndPointViewedStudies(Resource):
         preview = {'Previewed Studies': search[0:4]}
         return jsonify(preview)
 
-
-def addOwnedStudiesToDB(user_id, study_id):
-    """" Get the owned list from db then modify it by adding a newly bought study with insert and rePost it back to
-    database with the updated list.
-                    Args:#get the necessary data from the database
-                        user_id (String): The identifier for the user trying to purchase the study.
-                        study_id (int): The identifier for the study the user is trying to download.
-                    Returns:
-                        nothing.
-"""
-    connect = connector()["Users"]
-    user = {"User_id": user_id}
-    ownedStudiesList.insert(0, study_id)
-    lister = {"$set": {"Owned Studies": ownedStudiesList}}
-    connect.update_one(user, lister)
 
 
 # Viewing the owned studies
@@ -111,22 +84,22 @@ api.add_resource(EndPointViewedStudies, '/previewed')
 api.add_resource(EndPointOwnedStudies, '/Owned')
 
 if __name__ == '__main__':
-    addViewedStudiesToDB(1, 1)
-    addViewedStudiesToDB(1, 2)
-    addViewedStudiesToDB(1, 3)
-    addViewedStudiesToDB(1, 4)
-    addViewedStudiesToDB(1, 5)
-    addViewedStudiesToDB(1, 6)
-    addViewedStudiesToDB(1, 7)
-    addViewedStudiesToDB(1, 8)
-    addViewedStudiesToDB(1, 9)
-    addViewedStudiesToDB(1, 10)
-    addOwnedStudiesToDB(1, "tommy")
-    addOwnedStudiesToDB(1, "johnB")
-    addOwnedStudiesToDB(1, "shaunG")
-    addOwnedStudiesToDB(1, "benG")
-    addOwnedStudiesToDB(1, "AnnaS")
-    addOwnedStudiesToDB(1, "ethanM")
-    addOwnedStudiesToDB(1, "Adrian.")
+    Auxiliary.addViewed("1", 1)
+    Auxiliary.addViewed("1", 2)
+    Auxiliary.addViewed("1", 3)
+    Auxiliary.addViewed("1", 4)
+    Auxiliary.addViewed("1", 5)
+    Auxiliary.addViewed("1", 6)
+    Auxiliary.addViewed("1", 7)
+    Auxiliary.addViewed("1", 8)
+    Auxiliary.addViewed("1", 9)
+    Auxiliary.addViewed("1", 10)
+    Auxiliary.addOwned("1", 0, 0)
+    Auxiliary.addOwned("1", 1, 0)
+    Auxiliary.addOwned("1", 2, 0)
+    Auxiliary.addOwned("1", 3, 0)
+    Auxiliary.addOwned("1", 4, 0)
+    Auxiliary.addOwned("1", 5, 0)
+    Auxiliary.addOwned("1", 6, 0)
     # runs on local hosts
     app.run(host='0.0.0.0', debug=True)
