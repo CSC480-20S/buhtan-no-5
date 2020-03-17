@@ -1,4 +1,4 @@
-# buhtan-no-5
+# buhtan-no-5 ![Python application](https://github.com/CSC480-20S/buhtan-no-5/workflows/Python%20application/badge.svg)
 ## Getting Started
 Team Engine is building the back end with Python >3.5 and Flask-Restful.
 
