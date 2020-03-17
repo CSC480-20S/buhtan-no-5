@@ -22,7 +22,7 @@ def getStudy(study_id):
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
                    seek["Institution"], seek["Template"])
 
-def getUser(self,user_id):
+def getUser(user_id):
     """Grabs a user given its ID.
 
     Pulls from the database and returns a FindingFiveStudyStoreUser object.
