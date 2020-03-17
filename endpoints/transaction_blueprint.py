@@ -5,6 +5,7 @@ from endpoints.Purchase import Purchase
 from database import studies
 from gui_endpoints import preview_study
 from endpoints.Search import Search
+from endpoints.IsOwned import IsOwned
 
 trans_bp = Blueprint('transaction', __name__)
 api = Api(trans_bp)
@@ -15,3 +16,4 @@ api.add_resource(studies.EndPointOwnedStudies, '/owned')
 api.add_resource(studies.EndPointViewedStudies, '/previewed')
 api.add_resource(preview_study.EndPoint_PreviewStudies, '/studyPreview')
 api.add_resource(Search, '/search')
+api.add_resource(IsOwned, '/isOwned')

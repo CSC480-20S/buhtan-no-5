@@ -124,6 +124,26 @@ def addOwned(user_id, study_id, cost):
                "$addToSet": {"Owned Studies": study_id}}
     connect.update_one(user, changes)
 
+def isOwned(user_id, study_id):
+    """"Returns the ownership status of the study.
+
+    Returns true only if the indicated user owns the indicated study,
+    otherwise returns false.
+
+    Args:
+        user_id (String): The identifier for the user who may own the study.
+        study_id (int): The identifier for the study the user may own.
+
+    Returns:
+        boolean: True if the user owns the study, else false.
+    """
+
+    connect = connector()["Users"]
+    user = {"User_id": user_id,
+            "$in": {"Owned Studies": study_id}}
+    #if such a user exists, we get the user, else we get None
+    return connect.find_one(user) != None
+
 def addViewed(user_id, study_id):
     """"Adds a study to a user's list of viewed studies.
 
