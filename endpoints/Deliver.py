@@ -1,9 +1,6 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
-from database import DbConnection
-from studystore import FindingFiveStudyStoreStudy ,FindingFiveStudyStoreUser
-from endpoints.Purchase import Purchase
-import Auxiliary
+from endpoints import Auxiliary
 
 class Deliver(Resource):
     def get(self):
