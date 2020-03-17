@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse
 from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
+import Auxiliary
 
 class Purchase(Resource):
     def get(self):
@@ -31,11 +32,11 @@ class Purchase(Resource):
         #if user_id == None or study_id == None or credits_available == None:
         #    return jsonify({"error": "missing parameter"})
         # get the necessary data from the database
-        user = self.getUser(user_id)
+        user = getUser(user_id)
         #check for ownership first, because credits won't matter if already owned
         if study_id in user.get_ownedStudies():
             return jsonify({"cost": 0})
-        study = self.getStudy(study_id)
+        study = getStudy(study_id)
         cost = study.get_costInCredits()
         # check for sufficient credits and not already owning the study
         if cost > credits_available:
@@ -43,6 +44,6 @@ class Purchase(Resource):
         # update the user data
         user.set_numCredits(credits_available - cost)
         user.set_ownedStudies(user.get_ownedStudies() + [study_id])
-        self.updateUser(user)
+        updateUser(user)
         # return the cost
         return jsonify({"cost": cost})
