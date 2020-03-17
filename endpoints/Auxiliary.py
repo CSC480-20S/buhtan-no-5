@@ -23,6 +23,22 @@ def getStudy(study_id):
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
                    seek["Institution"], seek["Template"])
 
+def getTemplate(study_id):
+    """Grabs a study's template given the study's ID.
+
+    Pulls from the database and returns a String object representing the JSON template.
+
+    Args:
+        study_id (int): The ID assigned to a study at upload.
+
+    Returns:
+        String: The associated study's tempkate field from the database.
+    """
+
+    connect = DbConnection.connector()["Studies"]
+    study = {"Study_id": study_id}
+    seek = connect.find_one(study, ["Template"])
+    return seek["Template"]
 
 def getStudies(params, maxStudies=-1):
     """Grabs a list of studies given some parameters they need to meet.

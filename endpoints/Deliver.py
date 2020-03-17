@@ -25,8 +25,6 @@ class Deliver(Resource):
         study_id = returned_args.get("study_id", None)
         # return the study template only if owned
         if Auxiliary.isOwned(user_id, study_id):
-            # only acquire study if we own it
-            study = Auxiliary.getStudy(study_id)
-            return study.get_template()
+            return Auxiliary.getTemplate(study_id)
         else:
             return jsonify({"error": "user does not own study"})
