@@ -47,27 +47,7 @@ class Purchase(Resource):
         # return the cost
         return jsonify({"cost": cost})
 
-    def getStudy(self,study_id):
 
-        """Grabs a study given its ID.
-
-        Pulls from the database and returns a FindingFiveStudyStoreStudy object.
-
-        Args:
-            study_id (int): The ID assigned to a study at upload.
-
-        Returns:
-            FindingFiveStudyStoreStudy: The associated study in the database.
-        """
-        # I assume this call returns a dict().
-        #study = DbConnection.get("studies", study_id)
-        #return FindingFiveStudyStoreStudy(study["id"], study["title"], study["author"], study["cost"])
-
-        # take: two - pulling from Shawn's code example
-        connect = DbConnection.connector()["Studies"]
-        study = {"Study_id" : study_id}
-        seek = connect.find_one(study)
-        return f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"], seek["References"], seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"], seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"], seek["Institution"], seek["Template"])
 
     def getUser(self,user_id):
         """Grabs a user given its ID.
