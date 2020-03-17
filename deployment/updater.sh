@@ -4,9 +4,8 @@
 git checkout master
 git fetch
 git pull --rebase origin master
-echo kill $(pgrep -u $USER python)
+kill $(pgrep -u $USER python)
 
-cd ../ && nohup python3 launcher.py --bind 129.3.20.26:12100 launcher:app & >/dev/null &
-cd ~/csc480/deployment && nohup python3 poll_github.py &>/dev/null &
-#to-do
-#updating the documentation to reflect the changes from master
+cd ../ && nohup python3 launcher.py --bind 129.3.20.26:12100 launcher:app & >/dev/null 2>1&
+cd ~/csc480/deployment && nohup python3 poll_github.py &>/dev/null 2 >1&
+kill $(pgrep -u $USER updater.sh)
