@@ -17,15 +17,20 @@ class GetOwned(Resource):
         """
 
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("user_id", type=str)
+        parser.add_argument("user_id", type=str, required=True, help="The user ID of the owner is a String.")
         returned_args = parser.parse_args()
         user_id = returned_args.get("user_id", None)
         # print(returned_args)
         connect = connector()["Users"]
         # need to fix this get functions
-        user = {"User_id": 1}
+        user = {"User_id": user_id}
         seek = connect.find_one(user)
         search = seek["Owned Studies"]
-        print("search is: ", search)
-        preview = {'Owned Studies': search}
-        return jsonify(preview)
+        params = {"Study_id": {"$in": search}}
+        studyList = Auxiliary.getStudies(params)
+        # convert output
+        out = {}
+        for i in range(len(studyList)):
+            out[i] = studyList[i].build_dict()
+        # return converted output
+        return jsonify(out)
