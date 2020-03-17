@@ -124,7 +124,7 @@ def addOwned(user_id, study_id, cost):
                "$addToSet": {"Owned Studies": study_id}}
     connect.update_one(user, changes)
 
-def addViewedStudy(user_id, study_id):
+def addViewed(user_id, study_id):
     """"Adds a study to a user's list of viewed studies.
 
     Adds the study to the end of the list, even if viewed before.
