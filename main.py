@@ -97,7 +97,6 @@ class TokenCreation(Resource):
         resp = {'valid':msg_validty,"vals":vals,"old":returned_args}
         return jsonify(resp)
 
-api.add_resource(EndPointTesting, '/search')
 api.add_resource(EndPointDataBase, '/db')
 api.add_resource(ButtonExample, '/button')
 api.add_resource(TokenCreation, '/tokenCreation')
