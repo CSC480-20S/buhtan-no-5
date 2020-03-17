@@ -41,7 +41,7 @@ def getStudies(params, maxStudies=-1):
         return []
     #change to the number the Mongo code likes uses for no limit
     elif (maxStudies < 0):
-        maxStudies == 0
+        maxStudies = 0
 
     #acquire studies
     connect = DbConnection.connector()["Studies"]
