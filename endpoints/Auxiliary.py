@@ -123,3 +123,18 @@ def addOwned(user_id, study_id, cost):
     changes = {"$inc": {"Num Credits": 0 - cost},
                "$addToSet": {"Owned Studies": study_id}}
     connect.update_one(user, changes)
+
+def addViewedStudiesToDB(user_id, study_id):
+    """" Get the previewed list from db then modify it by adding a new previewed study with insert and rePost it back to
+    database with the updated list.
+                    Args:#get the necessary data from the database
+                        user_id (String): The identifier for the user trying to purchase the study.
+                        study_id (int): The identifier for the study the user is trying to download.
+                    Returns:
+                        nothing.
+"""
+    connect = connector()["Users"]
+    user = {"User_id": user_id}
+    viewStudiesList.insert(0, study_id)
+    lister = {"$set": {"Viewed Studies": viewStudiesList}}
+    connect.update_one(user, lister)
