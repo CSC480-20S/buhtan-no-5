@@ -29,16 +29,16 @@ class Purchase(Resource):
         #if user_id == None or study_id == None or credits_available == None:
         #    return jsonify({"error": "missing parameter"})
         # get the necessary data from the database
-        user = getUser(user_id)
+        user = Auxiliary.getUser(user_id)
         #check for ownership first, because credits won't matter if already owned
         if study_id in user.get_ownedStudies():
             return jsonify({"cost": 0})
-        study = getStudy(study_id)
+        study = Auxiliary.getStudy(study_id)
         cost = study.get_costInCredits()
         # check for sufficient credits and not already owning the study
         if cost > credits_available:
             return jsonify({"error": "insufficient credits"})
         # update the user data
-        addOwned(user_id, study_id, cost)
+        Auxiliary.addOwned(user_id, study_id, cost)
         # return the cost
         return jsonify({"cost": cost})

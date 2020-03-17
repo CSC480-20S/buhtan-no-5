@@ -51,7 +51,7 @@ class Search(Resource):
         #    return jsonify({"error": "missing user_id parameter"})
         # get the necessary data from the database
         # this exists for verifying we have an authenticated user
-        user = getUser(user_id)
+        user = Auxiliary.getUser(user_id)
         #should make some check that the user's session is still valid
         #i.e. last authentication within 30 minutes
 
@@ -68,7 +68,7 @@ class Search(Resource):
             else:
                 params["Keywords"] = { "$in": keywords}
         # query database
-        studyList = getStudies(params, limit)
+        studyList = Auxiliary.getStudies(params, limit)
         # convert output
         out = {}
         for i in range(len(studyList)):
