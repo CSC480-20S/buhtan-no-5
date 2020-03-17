@@ -38,3 +38,22 @@ def getUser(self,user_id):
     user = {"User_id": user_id}
     seek = connect.find_one(user)
     return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"])
+
+def updateUser(user):
+    """"Updates a user in the database.
+
+    Pushes a new version of the user data into the database. Assumes the current ID already exists.
+
+    Args:
+        user (FindingFiveStudyStoreUser): The new data to write to the database.
+
+    Returns:
+        Nothing.
+    """
+
+    connect = DbConnection.connector()["Users"]
+    userJ = {"User_id": user.get_userId()}
+    changes = {"$set":{"Num Credits": user.get_numCredits(),
+                       "Owned Studies": user.get_ownedStudies(),
+                       "Viewed Studies": user.get_viewedStudies()}}
+    connect.update_one(userJ, changes)

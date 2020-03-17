@@ -46,33 +46,3 @@ class Purchase(Resource):
         self.updateUser(user)
         # return the cost
         return jsonify({"cost": cost})
-
-
-
-
-
-    def updateUser(self,user):
-        """"Updates a user in the database.
-
-        Pushes a new version of the user data into the database. Assumes the current ID already exists.
-
-        Args:
-            user (FindingFiveStudyStoreUser): The new data to write to the database.
-
-        Returns:
-            Nothing.
-        """
-        #userDict = {}
-        #userDict["id"] = user.get_userId()
-        #userDict["num_credits"] = user.get_numCredits()
-        #userDict["owned_studies"] = user.get_ownedStudies()
-        #userDict["viewed_studies"] = user.get_viewedStudies()
-        #DbConnection.edit("users", userDict["id"], userDict)
-
-        # take: two - pulling from Shawn's code example
-        connect = DbConnection.connector()["Users"]
-        userJ = {"User_id": user.get_userId()}
-        changes = {"$set":{"Num Credits": user.get_numCredits(),
-                           "Owned Studies": user.get_ownedStudies(),
-                           "Viewed Studies": user.get_viewedStudies()}}
-        connect.update_one(userJ, changes)
