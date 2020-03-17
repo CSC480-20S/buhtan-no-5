@@ -72,7 +72,7 @@ class Search(Resource):
         # convert output
         out = {}
         for i in range(len(studyList)):
-            out[str(i)] = studyList[i].build_dict()
+            out[i] = studyList[i].build_dict()
         # return converted output
         return jsonify(out)
 
