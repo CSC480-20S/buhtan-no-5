@@ -39,8 +39,6 @@ class Purchase(Resource):
         if cost > credits_available:
             return jsonify({"error": "insufficient credits"})
         # update the user data
-        user.set_numCredits(credits_available - cost)
-        user.set_ownedStudies(user.get_ownedStudies() + [study_id])
-        updateUser(user)
+        addOwned(user_id, study_id, cost)
         # return the cost
         return jsonify({"cost": cost})
