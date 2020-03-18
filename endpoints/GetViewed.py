@@ -27,7 +27,7 @@ class GetViewed(Resource):
         studyList = Auxiliary.getStudies(params)
         # convert output
         out = {}
-        for i in range(len(studyList)):
-            out[i] = studyList[i].build_dict()
+        for i, study in enumerate(studyList):
+            out[i] = study.build_dict()
         # return converted output
         return jsonify(out)
