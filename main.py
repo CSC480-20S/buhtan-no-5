@@ -4,11 +4,13 @@ from flask_restful import Resource, Api, reqparse
 from crypto.PublicTokenGenerator import TokenService
 from endpoints import transaction_blueprint as tbp
 from crypto import crypto_blueprint as cbp
+from deployment import deployment_blueprint as dbp
 from exceptions import Authentication as auth
 
 app = Flask(__name__)
 app.register_blueprint(tbp.trans_bp)
 app.register_blueprint(cbp.crypto_bp)
+app.register_blueprint(dbp.deployment_bp)
 app.register_error_handler(401, auth.handle_auth)
 CORS(app)
 api = Api(app)
