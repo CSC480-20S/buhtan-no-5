@@ -4,6 +4,7 @@ from endpoints import Auxiliary
 
 
 class Deliver(Resource):
+    @Auxiliary.auth_dec
     def get(self):
         """"Returns the study template.
 

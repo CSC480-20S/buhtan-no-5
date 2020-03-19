@@ -3,9 +3,10 @@ from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse
 from crypto.PublicTokenGenerator import TokenService
 from endpoints import transaction_blueprint as tbp
-
+from exceptions import Authentication as auth
 app = Flask(__name__)
 app.register_blueprint(tbp.trans_bp)
+app.register_error_handler(401,auth.handle_auth)
 CORS(app)
 api = Api(app)
 
@@ -32,4 +33,4 @@ api.add_resource(TokenCreation, '/tokenCreation')
 
 if __name__ == '__main__':
     # runs on localhosts
-    app.run(host='129.3.20.26', port=12100, debug=True)
+    app.run(host='0.0.0.0', port=12100, debug=True)

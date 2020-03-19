@@ -1,3 +1,7 @@
+import functools
+from flask import abort
+from flask_restful import reqparse
+from crypto.GuiToken import Generator
 from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
@@ -23,6 +27,7 @@ def getStudy(study_id):
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
                    seek["Institution"], seek["Template"])
 
+
 def getTemplate(study_id):
     """Grabs a study's template given the study's ID.
 
@@ -39,6 +44,7 @@ def getTemplate(study_id):
     study = {"Study_id": study_id}
     seek = connect.find_one(study, ["Template"])
     return seek["Template"]
+
 
 def getStudies(params, maxStudies=-1):
     """Grabs a list of studies given some parameters they need to meet.
@@ -140,6 +146,7 @@ def addOwned(user_id, study_id, cost):
                "$addToSet": {"Owned Studies": study_id}}
     connect.update_one(user, changes)
 
+
 def isOwned(user_id, study_id):
     """"Returns the ownership status of the study.
 
@@ -157,8 +164,9 @@ def isOwned(user_id, study_id):
     connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id,
             "$in": {"Owned Studies": study_id}}
-    #if such a user exists, we get the user, else we get None
+    # if such a user exists, we get the user, else we get None
     return connect.find_one(user) != None
+
 
 def addViewed(user_id, study_id):
     """"Adds a study to a user's list of viewed studies.
@@ -177,3 +185,21 @@ def addViewed(user_id, study_id):
     user = {"User_id": user_id}
     lister = {"$push": {"Viewed Studies": study_id}}
     connect.update_one(user, lister)
+
+
+def auth_dec(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument("token", type=str, required=True, help="The JWT token")
+        returned_args = parser.parse_args()
+        gen = Generator()
+
+        resp = gen.authenticate_token(returned_args['token'])
+        print(type(resp['err']))
+        if type(resp) is dict:
+            abort(401, description=resp['msg'])
+        value = func(*args, **kwargs)
+        return value
+
+    return wrapper

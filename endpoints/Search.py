@@ -4,9 +4,8 @@ from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
 from endpoints import Auxiliary
-
-
 class Search(Resource):
+    @Auxiliary.auth_dec
     def get(self):
         """"Provides a list of studies from the database.
 

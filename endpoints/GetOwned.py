@@ -4,6 +4,7 @@ from endpoints import Auxiliary
 
 
 class GetOwned(Resource):
+    @Auxiliary.auth_dec
     def get(self):
         """"Returns the list of .studies owned by a user.
 
