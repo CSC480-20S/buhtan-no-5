@@ -194,9 +194,7 @@ def auth_dec(func):
         parser.add_argument("token", type=str, required=True, help="The JWT token")
         returned_args = parser.parse_args()
         gen = Generator()
-
         resp = gen.authenticate_token(returned_args['token'])
-        print(type(resp['err']))
         if type(resp) is dict:
             abort(401, description=resp['msg'])
         value = func(*args, **kwargs)
