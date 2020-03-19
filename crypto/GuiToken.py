@@ -1,6 +1,7 @@
 import jwt
 import crypto.PublicTokenGenerator as pg
 import datetime
+from flask_restful import Resource, reqparse
 
 
 class Generator():
@@ -21,8 +22,8 @@ class Generator():
         try:
             utc = datetime.datetime.utcnow()
 
-            resp = {'iat': (utc + datetime.timedelta(seconds=45)),
-                    'exp': utc,
+            resp = {'iat': utc,
+                    'exp': (utc + datetime.timedelta(minutes=60)),
                     'sub': user_id,
                     }
 
