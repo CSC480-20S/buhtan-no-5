@@ -163,7 +163,7 @@ def isOwned(user_id, study_id):
 
     connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id,
-            "$in": {"Owned Studies": study_id}}
+            "Owned Studies": {"$in": [study_id]}}
     # if such a user exists, we get the user, else we get None
     return connect.find_one(user) != None
 
