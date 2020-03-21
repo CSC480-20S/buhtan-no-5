@@ -71,8 +71,8 @@ def getStudies(params, maxStudies=-1):
     connect = DbConnection.connector()["Studies"]
     seek = connect.find(filter=params, projection={"Template": False}, limit=maxStudies)
 
-    # get the number of studies returned - {} gives us all
-    numStudies = seek.collection.count_documents({})
+    # get the number of studies returned - params maintains the filter
+    numStudies = seek.collection.count_documents(params)
 
     studyList = []
     # not sure if this actually returns a list
@@ -163,7 +163,7 @@ def isOwned(user_id, study_id):
 
     connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id,
-            "$in": {"Owned Studies": study_id}}
+            "Owned Studies": {"$in": [study_id]}}
     # if such a user exists, we get the user, else we get None
     return connect.find_one(user) != None
 
