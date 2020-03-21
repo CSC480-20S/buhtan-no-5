@@ -71,8 +71,8 @@ def getStudies(params, maxStudies=-1):
     connect = DbConnection.connector()["Studies"]
     seek = connect.find(filter=params, projection={"Template": False}, limit=maxStudies)
 
-    # get the number of studies returned - {} gives us all
-    numStudies = seek.collection.count_documents({})
+    # get the number of studies returned - params maintains the filter
+    numStudies = seek.collection.count_documents(params)
 
     studyList = []
     # not sure if this actually returns a list
