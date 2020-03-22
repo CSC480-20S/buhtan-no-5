@@ -74,6 +74,8 @@ def getStudies(params, maxStudies=-1):
     # get the number of studies returned - params maintains the filter
     numStudies = seek.collection.count_documents(params)
 
+    # make sure we don't return
+
     studyList = []
     # not sure if this actually returns a list
     for study in seek[0:numStudies]:
