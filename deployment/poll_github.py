@@ -37,11 +37,11 @@ class UpdateServer():
         try:
             stdout, stderr = process.communicate(timeout=15)  # believe this is blocking
             UpdateServer.create_log(stderr)
-            sc.enter(43200, 60,UpdateServer.check_github,(sc,))
+            sc.enter(3600, 60,UpdateServer.check_github,(sc,))
         except subprocess.TimeoutExpired as e:
             process.kill()
             UpdateServer.create_log("timeout")
-            sc.enter(43200, 60,UpdateServer.check_github,(sc,))
+            sc.enter(3600, 60,UpdateServer.check_github,(sc,))
         
 if __name__ == '__main__':
     scheder = sched.scheduler(time.time, time.sleep)
