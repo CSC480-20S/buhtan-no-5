@@ -4,6 +4,8 @@ from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
 from endpoints import Auxiliary
+
+
 class Search(Resource):
     @Auxiliary.auth_dec
     def get(self):
@@ -19,7 +21,6 @@ class Search(Resource):
             ...in progress.
 
             Args:
-                user_id (String): The identifier for the user trying to search. Will be used for confirming access permission.
                 title (String): The identifier for the study the user is trying to purchase.
                 keywords (String): Contains all the keywords that a study must have.
                 keyword_separator (String): Separates the keywords in the keywords parameter. Defaults to |.
@@ -32,27 +33,17 @@ class Search(Resource):
             """
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("user_id", type=str, required=True, help="An active user ID must be provided.")
         parser.add_argument("title", type=str)
         parser.add_argument("keywords", type=str)
         parser.add_argument("keyword_separator", type=str)
         parser.add_argument("keyword_all", type=bool)
         parser.add_argument("limit", type=int, default=-1)
         returned_args = parser.parse_args()
-        user_id = returned_args.get("user_id", None)
         title = returned_args.get("title", None)
         keywords_unsplit = returned_args.get("keywords", None)
         keyword_separator = returned_args.get("keyword_separator", "|")
         keyword_all = returned_args.get("keyword_all", True)
         limit = returned_args.get("limit", -1)
-        # verify the required parameters exist - now handled by add_argument
-        # if user_id == None:
-        #    return jsonify({"error": "missing user_id parameter"})
-        # get the necessary data from the database
-        # this exists for verifying we have an authenticated user
-        user = Auxiliary.getUser(user_id)
-        # should make some check that the user's session is still valid
-        # i.e. last authentication within 30 minutes
 
         # build search parameters
         params = {}
