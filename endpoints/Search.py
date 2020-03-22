@@ -37,7 +37,7 @@ class Search(Resource):
         parser.add_argument("keywords", type=str)
         parser.add_argument("keyword_separator", type=str)
         parser.add_argument("keyword_all", type=bool)
-        parser.add_argument("limit", type=int)
+        parser.add_argument("limit", type=int, default=-1)
         returned_args = parser.parse_args()
         user_id = returned_args.get("user_id", None)
         title = returned_args.get("title", None)

@@ -6,7 +6,6 @@ from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
 
-
 def getStudy(study_id):
     """Grabs a study given its ID.
 
@@ -74,9 +73,14 @@ def getStudies(params, maxStudies=-1):
     # get the number of studies returned - params maintains the filter
     numStudies = seek.collection.count_documents(params)
 
+    # make sure we don't return more studies than expected
+    numWanted = min(numStudies, maxStudies)
+    if maxStudies == 0:
+        numWanted = numStudies
+
     studyList = []
     # not sure if this actually returns a list
-    for study in seek[0:numStudies]:
+    for study in seek[0:numWanted]:
         studyList.append(
             f5study(study["Study_id"], study["Title"], study["Author"], study["CostinCredits"], study["Purpose"],
                     study["References"],
