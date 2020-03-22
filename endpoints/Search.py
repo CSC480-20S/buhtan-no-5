@@ -35,9 +35,12 @@ class Search(Resource):
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("title", type=str)
         parser.add_argument("keywords", type=str)
-        parser.add_argument("keyword_separator", type=str)
-        parser.add_argument("keyword_all", type=bool)
+        parser.add_argument("keyword_separator", type=str, default="|")
+        parser.add_argument("keyword_all", type=bool, default=True)
         parser.add_argument("limit", type=int, default=-1)
+
+        # the second parameter to each method call is purely for consistency,
+        # they don't actually do anything. They should match the defaults above.
         returned_args = parser.parse_args()
         title = returned_args.get("title", None)
         keywords_unsplit = returned_args.get("keywords", None)
