@@ -226,6 +226,7 @@ def auth_dec(func):
 
     return wrapper
 
+<<<<<<< HEAD
 
 def time_backend(func):
     @functools.wraps(func)
@@ -235,4 +236,10 @@ def time_backend(func):
         end = time.perf_counter()
         return jsonify({"time": end - start})
 
+=======
+def time_backend(func):
+    @functools.wraps(func)
+    def wrapper(*args,**kwargs):
+        return timeit.timeit(func,number=100)
+>>>>>>> a6fdeb4... First Timer
     return wrapper
