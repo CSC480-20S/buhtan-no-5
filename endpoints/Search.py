@@ -8,6 +8,7 @@ from endpoints import Auxiliary
 
 class Search(Resource):
     @Auxiliary.auth_dec
+    #@Auxiliary.time_backend
     def get(self):
         """"Provides a list of studies from the database.
 

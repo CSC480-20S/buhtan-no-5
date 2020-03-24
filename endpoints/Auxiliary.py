@@ -1,4 +1,4 @@
-import functools
+import functools,timeit
 from flask import abort
 from flask_restful import reqparse
 from crypto.GuiToken import Generator
@@ -204,4 +204,10 @@ def auth_dec(func):
         value = func(*args, **kwargs)
         return value
 
+    return wrapper
+
+def time_backend(func):
+    @functools.wraps(func)
+    def wrapper(*args,**kwargs):
+        return timeit.timeit(func,number=100)
     return wrapper
