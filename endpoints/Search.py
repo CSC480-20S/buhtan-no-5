@@ -23,6 +23,11 @@ class Search(Resource):
             If price_max is given, return only studies at that price or lower.
             If price_min is greater than price_max, ignore price_max and negative values of price_min.
             For the purposes of this method, the price of a study may be negative.
+            If duration_min is given, return only studies at that duration or higher.
+            If duration_max is given, return only studies at that duration or lower.
+            If duration_min is greater than duration_max, ignore duration_max.
+            For the purposes of this method, the duration of a study may not be negative,
+            so all negative values of duration_min and duration_max will be ignored.
             ...in progress.
 
             Args:
@@ -33,6 +38,8 @@ class Search(Resource):
                 limit (Integer): The maximum number of studies to return. Defaults to unlimited when missing or negative.
                 price_min (Integer): The minimum price, in credits, that a study may have.
                 price_max (Integer): The maximum price, in credits, that a study may have.
+                duration_min (Integer): The minimum duration, in minutes, that a study may have.
+                duration_max (Integer): The maximum duration, in minutes, that a study may have.
 
 
             Returns:
@@ -47,6 +54,8 @@ class Search(Resource):
         parser.add_argument("limit", type=int, default=-1)
         parser.add_argument("price_min", type=int, default=0)
         parser.add_argument("price_max", type=int, default=-1)
+        parser.add_argument("duration_min", type=int, default=0)
+        parser.add_argument("duration_max", type=int, default=-1)
 
         # the second parameter to each method call is purely for consistency,
         # they don't actually do anything. They should match the defaults above.
@@ -58,6 +67,8 @@ class Search(Resource):
         limit = returned_args.get("limit", -1)
         price_min = returned_args.get("price_min", 0)
         price_max = returned_args.get("price_max", -1)
+        duration_min = returned_args.get("duration_min", 0)
+        duration_max = returned_args.get("duration_max", -1)
 
         # build search parameters
         params = {}
@@ -81,6 +92,18 @@ class Search(Resource):
             # price_max is greater than price_min
             # using implicit $and operation
             params["CostinCredits"] = {"$gte": price_min, "$lte": price_max}
+        if duration_min <= 0 and duration_max < 0:
+            pass
+        elif duration_min > 0 and duration_max < duration_min:
+            params["Duration"] = {"$gte": duration_min}
+        elif duration_min == duration_max:
+            params["Duration"] = duration_min
+        elif duration_min < 0 and duration_max >= 0:
+            params["Duration"] = {"$lte": duration_max}
+        else:
+            # duration_max is greater than duration_min
+            # using implicit $and operation
+            params["Duration"] = {"$gte": duration_min, "$lte": duration_max}
         # query database
         studyList = Auxiliary.getStudies(params, limit)
         # convert output
