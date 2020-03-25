@@ -1,5 +1,5 @@
 from flask import jsonify
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, inputs
 from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
@@ -43,7 +43,7 @@ class Search(Resource):
         parser.add_argument("title", type=str)
         parser.add_argument("keywords", type=str)
         parser.add_argument("keyword_separator", type=str, default="|")
-        parser.add_argument("keyword_all", type=bool, default=True)
+        parser.add_argument("keyword_all", type=inputs.boolean, default=True)
         parser.add_argument("limit", type=int, default=-1)
         parser.add_argument("price_min", type=int, default=0)
         parser.add_argument("price_max", type=int, default=-1)
