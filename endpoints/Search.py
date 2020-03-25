@@ -28,6 +28,13 @@ class Search(Resource):
             If duration_min is greater than duration_max, ignore duration_max.
             For the purposes of this method, the duration of a study may not be negative,
             so all negative values of duration_min and duration_max will be ignored.
+            If rating_min is given, return only studies with that rating or higher.
+            If rating_max is given, return only studies with that rating or lower.
+            If rating_min is greater than or equal to rating_max, ignore rating_max.
+            The valid options for rating_min and rating_max are 0, 1, 2, 3, 4, and 5.
+            If rating_min and/or rating_max are given and include_unrated is false, return only studies with at least one review.
+            If include_unrated is true or omitted, all unrated studies will be considered part of whatever rating range was specified.
+            If none of the three rating parameters are given, the rating data will be ignored.
             ...in progress.
 
             Args:
@@ -40,6 +47,9 @@ class Search(Resource):
                 price_max (Integer): The maximum price, in credits, that a study may have.
                 duration_min (Integer): The minimum duration, in minutes, that a study may have.
                 duration_max (Integer): The maximum duration, in minutes, that a study may have.
+                rating_min (Integer): The minimum rating that a study may have. Must be in the range [0, 5].
+                rating_max (Integer): The maximum rating that a study may have. Must be in the range [0, 5].
+                include_unrated (Boolean): If false, unrated studies will not be returned.
 
 
             Returns:
@@ -56,6 +66,9 @@ class Search(Resource):
         parser.add_argument("price_max", type=int, default=-1)
         parser.add_argument("duration_min", type=int, default=0)
         parser.add_argument("duration_max", type=int, default=-1)
+        parser.add_argument("rating_min", type=int, default=0, options=(0, 1, 2, 3, 4, 5))
+        parser.add_argument("rating_max", type=int, default=5, options=(0, 1, 2, 3, 4, 5))
+        parser.add_argument("include_unrated", type=inputs.boolean, default=True)
 
         # the second parameter to each method call is purely for consistency,
         # they don't actually do anything. They should match the defaults above.
@@ -69,6 +82,9 @@ class Search(Resource):
         price_max = returned_args.get("price_max", -1)
         duration_min = returned_args.get("duration_min", 0)
         duration_max = returned_args.get("duration_max", -1)
+        rating_min = returned_args.get("rating_min", 0)
+        rating_max = returned_args.get("rating_max", 5)
+        include_unrated = returned_args.get("include_unrated", True)
 
         # build search parameters
         params = {}
@@ -104,6 +120,20 @@ class Search(Resource):
             # duration_max is greater than duration_min
             # using implicit $and operation
             params["Duration"] = {"$gte": duration_min, "$lte": duration_max}
+        if include_unrated:
+            pass
+        else:
+            params["Number of Reviews"] = {"$gt": 0}
+        if rating_min == 0 and rating_max == 5:
+            pass
+        elif rating_min >= rating_max or rating_max == 5:
+            params["$expr"] = {"%gte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_min]}]}
+        elif rating_min == 0:
+            params["$expr"] = {"%lte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_max]}]}
+        else:
+            # sub range without a default endpoint
+            params["$expr"] = {"%gte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_min]}],
+                               "%lte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_max]}]}
         # query database
         studyList = Auxiliary.getStudies(params, limit)
         # convert output
