@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from flask_restful import Resource, Api, reqparse
 from studystore import FindingFiveStudyStoreStudy
+from endpoints import Auxiliary
 
 x = FindingFiveStudyStoreStudy.FindingFiveStudyStoreStudy(42, "hell0 world", "John Bald", 50,
                                                           "the purpose of this is to show that we can do fun things",
@@ -22,7 +23,7 @@ z = FindingFiveStudyStoreStudy.FindingFiveStudyStoreStudy(999999, "bop", "Tommy"
 app = Flask(__name__)
 api = Api(app)
 parser = reqparse.RequestParser(bundle_errors=True)
-studies = [w, x, y, z]
+#studies = [w, x, y, z]
 
 
 class EndPoint_PreviewStudies(Resource):
@@ -35,6 +36,8 @@ class EndPoint_PreviewStudies(Resource):
 
     def get(self):
         built_json = list()
+        studies = Auxiliary.getStudies(dict(),4) #list()
+
         for study in studies:
             study.set_template("na")
             built_json.append(study.build_dict())
