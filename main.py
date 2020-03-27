@@ -17,7 +17,7 @@ api = Api(app)
 
 
 class TokenCreation(Resource):
-    # maybe should be a post to test the client
+    # maybe should be a post to test thDK Ie client
     def get(self):
         ts = TokenService()
         parser = reqparse.RequestParser(bundle_errors=True)
