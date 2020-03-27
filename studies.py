@@ -70,7 +70,7 @@ class EndPointOwnedStudies(Resource):
         user = {"User_id": user_id}
         seek = connect.find_one(user)
         search = seek["Owned Studies"]
-        print("search is: ", search)
+        print("owned studies are: ", search)
         preview = {'Owned Studies': search}
         return jsonify(preview)
 
@@ -93,7 +93,7 @@ class EndPointWishList(Resource):
         user = {"User_id": user_id}
         seek = connect.find_one(user)
         search = seek["Wish List"]
-        print("search is: ", search)
+        print("the wish list is: ", search)
         preview = {'Wish List': search}
         return jsonify(preview)
 
