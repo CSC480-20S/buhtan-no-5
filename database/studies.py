@@ -10,6 +10,7 @@ api = Api(app)
 parser = reqparse.RequestParser(bundle_errors=True)
 viewStudiesList = []
 ownedStudiesList = []
+wishList = []
 
 
 def connector():
@@ -28,12 +29,9 @@ def processor(idea):
     return info
 
 
-
-
-
 # Viewing the previously viewed studies
 class EndPointViewedStudies(Resource):
-    """" Pulls the previewed studies for the database.
+    """" Pulls the previewed studies from the database.
                 Args:
                     user_id (String): The identifier for the user who viewed the studies.
                 Returns:
@@ -46,8 +44,7 @@ class EndPointViewedStudies(Resource):
         user_id = returned_args.get("user_id", None)
         print(returned_args)
         connect = connector()["Users"]
-        # need to fix this get functions
-        user = {"User_id": 1}
+        user = {"User_id": user_id}
         seek = connect.find_one(user)
         search = seek["Viewed Studies"]
         print("previewed studies are:", search[0:4])
@@ -55,10 +52,9 @@ class EndPointViewedStudies(Resource):
         return jsonify(preview)
 
 
-
 # Viewing the owned studies
 class EndPointOwnedStudies(Resource):
-    """" Pulls the owned studies for the database.
+    """" Pulls the owned studies from the database.
                 Args:
                     user_id (String): The identifier for the user who owns the studies.
                 Returns:
@@ -71,35 +67,42 @@ class EndPointOwnedStudies(Resource):
         user_id = returned_args.get("user_id", None)
         # print(returned_args)
         connect = connector()["Users"]
-        # need to fix this get functions
-        user = {"User_id": 1}
+        user = {"User_id": user_id}
         seek = connect.find_one(user)
         search = seek["Owned Studies"]
-        print("search is: ", search)
+        print("owned studies are: ", search)
         preview = {'Owned Studies': search}
+        return jsonify(preview)
+
+
+# Viewing the Wish list
+class EndPointWishList(Resource):
+    """" Pulls the wish list of studies from the database.
+                Args:
+                    user_id (String): The identifier for the user who owns the studies.
+                Returns:
+                    JSON: The wish list of studies.
+                """
+    def get(self):
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument("user_id", type=str)
+        returned_args = parser.parse_args()
+        user_id = returned_args.get("user_id", None)
+        # print(returned_args)
+        connect = connector()["Users"]
+        user = {"User_id": user_id}
+        seek = connect.find_one(user)
+        search = seek["Wish List"]
+        print("the wish list is: ", search)
+        preview = {'Wish List': search}
         return jsonify(preview)
 
 
 api.add_resource(EndPointViewedStudies, '/previewed')
 api.add_resource(EndPointOwnedStudies, '/Owned')
+api.add_resource(EndPointWishList, '/wishList')
 
 if __name__ == '__main__':
-    Auxiliary.addViewed("1", 1)
-    Auxiliary.addViewed("1", 2)
-    Auxiliary.addViewed("1", 3)
-    Auxiliary.addViewed("1", 4)
-    Auxiliary.addViewed("1", 5)
-    Auxiliary.addViewed("1", 6)
-    Auxiliary.addViewed("1", 7)
-    Auxiliary.addViewed("1", 8)
-    Auxiliary.addViewed("1", 9)
-    Auxiliary.addViewed("1", 10)
-    Auxiliary.addOwned("1", 0, 0)
-    Auxiliary.addOwned("1", 1, 0)
-    Auxiliary.addOwned("1", 2, 0)
-    Auxiliary.addOwned("1", 3, 0)
-    Auxiliary.addOwned("1", 4, 0)
-    Auxiliary.addOwned("1", 5, 0)
-    Auxiliary.addOwned("1", 6, 0)
     # runs on local hosts
     app.run(host='0.0.0.0', debug=True)
+>>>>>>> knock-dev
