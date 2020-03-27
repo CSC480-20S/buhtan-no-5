@@ -1,10 +1,11 @@
-import functools,timeit
-from flask import abort
+import functools, time
+from flask import abort, jsonify
 from flask_restful import reqparse
 from crypto.GuiToken import Generator
 from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
+
 
 def getStudy(study_id):
     """Grabs a study given its ID.
@@ -206,8 +207,13 @@ def auth_dec(func):
 
     return wrapper
 
+
 def time_backend(func):
     @functools.wraps(func)
-    def wrapper(*args,**kwargs):
-        return timeit.timeit(func,number=100)
+    def wrapper(*args, **kwargs):
+        start=time.perf_counter()
+        res=func(*args,**kwargs)
+        end=time.perf_counter()
+        return jsonify({"time":end-start})
+
     return wrapper

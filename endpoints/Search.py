@@ -1,14 +1,11 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
-from database import DbConnection
-from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
-from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
 from endpoints import Auxiliary
 
 
 class Search(Resource):
     @Auxiliary.auth_dec
-    #@Auxiliary.time_backend
+    @Auxiliary.time_backend
     def get(self):
         """"Provides a list of studies from the database.
 
