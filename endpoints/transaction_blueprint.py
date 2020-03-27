@@ -8,6 +8,7 @@ from endpoints.Search import Search
 from endpoints.IsOwned import IsOwned
 from endpoints.GetOwned import GetOwned
 from endpoints.GetViewed import GetViewed
+from endpoints.Upload import Upload
 
 trans_bp = Blueprint('transaction', __name__)
 api = Api(trans_bp)
@@ -21,3 +22,4 @@ api.add_resource(Search, '/search')
 api.add_resource(IsOwned, '/isOwned')
 api.add_resource(GetOwned, '/getOwned')
 api.add_resource(GetViewed, '/getViewed')
+api.add_resource(Upload, '/upload')
