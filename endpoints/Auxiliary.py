@@ -192,6 +192,25 @@ def addViewed(user_id, study_id):
     connect.update_one(user, lister)
 
 
+def addWishlist(user_id, study_id):
+    """"Adds a study to a user's wish list of studies.
+
+    Adds the study to the end of the list, even if viewed before.
+
+    Args:
+        user_id (String): The ID of the user viewing the study.
+        study_id (int): The ID of the study being saved to the wish list.
+
+    Returns:
+        Nothing.
+    """
+
+    connect = DbConnection.connector()["Users"]
+    user = {"User_id": user_id}
+    lister = {"$push": {"Wish List": study_id}}
+    connect.update_one(user, lister)
+
+
 def auth_dec(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -211,9 +230,9 @@ def auth_dec(func):
 def time_backend(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        start=time.perf_counter()
-        res=func(*args,**kwargs)
-        end=time.perf_counter()
-        return jsonify({"time":end-start})
+        start = time.perf_counter()
+        res = func(*args, **kwargs)
+        end = time.perf_counter()
+        return jsonify({"time": end - start})
 
     return wrapper
