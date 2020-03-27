@@ -17,7 +17,7 @@ api = Api(app)
 
 
 class TokenCreation(Resource):
-    # maybe should be a post to test the client
+    # maybe should be a post to test thDK Ie client
     def get(self):
         ts = TokenService()
         parser = reqparse.RequestParser(bundle_errors=True)
@@ -38,4 +38,4 @@ api.add_resource(TokenCreation, '/tokenCreation')
 
 if __name__ == '__main__':
     # runs on localhosts
-    app.run(host='192.168.1.248', port=12100, debug=True)
+    app.run(host='129.3.20.26', port=12100, debug=True)
