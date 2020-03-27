@@ -105,4 +105,4 @@ api.add_resource(EndPointWishList, '/wishList')
 if __name__ == '__main__':
     # runs on local hosts
     app.run(host='0.0.0.0', debug=True)
->>>>>>> knock-dev
+
