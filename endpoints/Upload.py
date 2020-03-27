@@ -9,7 +9,6 @@ class Upload(Resource):
 
     @Auxiliary.auth_dec
     def post(self):
-
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("title", type=str, required=True, help="The study's title.")
@@ -39,8 +38,6 @@ class Upload(Resource):
                                                                       "from perspective of the surveyed individual")
         parser.add_argument("rating", type=int, help="The study's title.")  # not required presumably
         # todo check this is in fact required v
-        parser.add_argument("institution", type=str, required=True, help="Issue with Institution.")
-
         parser.add_argument("Institution", type=str, required=True, help="Issue with Institution.")
         # todo template
         parser.add_argument("template", type=str, required=True, help="Missing template")
@@ -86,3 +83,4 @@ class Upload(Resource):
 
         Auxiliary.addOwned(author, study_id, 0)
         # todo : eventually there will be a "Auxilary.addAuthored() method.
+        # return ?
