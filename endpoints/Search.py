@@ -115,16 +115,7 @@ class Search(Resource):
         self.addRange(params, duration_min, duration_max, "Duration")
         if not include_unrated:
             params["Number of Reviews"] = {"$gt": 0}
-        if rating_min == 0 and rating_max == 5:
-            pass
-        elif rating_min >= rating_max or rating_max == 5:
-            params["$expr"] = {"%gte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_min]}]}
-        elif rating_min == 0:
-            params["$expr"] = {"%lte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_max]}]}
-        else:
-            # sub range without a default endpoint
-            params["$expr"] = {"%gte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_min]}],
-                               "%lte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_max]}]}
+        self.addRatingExpression(params, rating_min, rating_max)
         if category is not None:
             # using $in so that we can make Categories an array or string without breaking this code
             params["Categories"] = {"$in": [category]}
@@ -183,3 +174,40 @@ class Search(Resource):
         else:
             # using implicit $and operation
             param_dict[field_name] = {"$gte": min, "$lte": max}
+
+    def addRatingExpression(self, param_dict, rating_min, rating_max):
+        """"Adds a range for ratings to a filter.
+
+            The range is assumed to be inclusive.
+            This method assumes that ratings go from 0 to 5 stars.
+            If rating_max is less than or equal to rating_min, rating_max is ignored.
+            Negative values of rating_min and rating_max are also ignored.
+            Will overwrite any existing value for "$expr" in the filter.
+
+            Args:
+                param_dict (Dict): The filter to which the range is to be added, passed by reference.
+                rating_min (Integer): The minimum stars for the rating. Must be in the range [0, 5].
+                rating_max (Integer): The maximum stars for the rating. Must be in the range [0, 5].
+
+
+            Returns:
+                None.
+            """
+        # defining these as constants here so that they can be tweaked later if they don't agree with the rating code.
+        # would have made them parameters, but that's just unnecessary equivalence classes for testing
+        star_total_field = "Total Stars"
+        review_count_field = "Number of Reviews"
+
+        # equivalent to everything, so don't add anything.
+        if rating_min == 0 and rating_max == 5:
+            pass
+        # check whether we can ignore rating_max but not rating_min
+        elif rating_min >= rating_max or rating_max == 5:
+            param_dict["$expr"] = {"%gte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_min]}]}
+        # check whether we can ignore rating_min, now that we know we can't ignore rating_max
+        elif rating_min == 0:
+            param_dict["$expr"] = {"%lte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_max]}]}
+        # otherwise we know we can't ignore either, and we have a sub range without a default endpoint
+        else:
+            param_dict["$expr"] = {"%gte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_min]}],
+                               "%lte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_max]}]}
