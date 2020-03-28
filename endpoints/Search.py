@@ -111,31 +111,9 @@ class Search(Resource):
             # union/or
             else:
                 params["Keywords"] = {"$in": keywords}
-        if price_min <= 0 and price_max < price_min:
-            pass
-        elif price_min > 0 and price_max < price_min:
-            params["CostinCredits"] = {"$gte": price_min}
-        elif price_min == price_max:
-            params["CostinCredits"] = price_min
-        else:
-            # price_max is greater than price_min
-            # using implicit $and operation
-            params["CostinCredits"] = {"$gte": price_min, "$lte": price_max}
-        if duration_min <= 0 and duration_max < 0:
-            pass
-        elif duration_min > 0 and duration_max < duration_min:
-            params["Duration"] = {"$gte": duration_min}
-        elif duration_min == duration_max:
-            params["Duration"] = duration_min
-        elif duration_min < 0 and duration_max >= 0:
-            params["Duration"] = {"$lte": duration_max}
-        else:
-            # duration_max is greater than duration_min
-            # using implicit $and operation
-            params["Duration"] = {"$gte": duration_min, "$lte": duration_max}
-        if include_unrated:
-            pass
-        else:
+        self.addRange(params, price_min, price_max, "CostinCredits")
+        self.addRange(params, duration_min, duration_max, "Duration")
+        if not include_unrated:
             params["Number of Reviews"] = {"$gt": 0}
         if rating_min == 0 and rating_max == 5:
             pass
