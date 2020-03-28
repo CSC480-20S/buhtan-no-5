@@ -37,6 +37,7 @@ class Search(Resource):
             If none of the three rating parameters are given, the rating data will be ignored.
             If category is given, return only studies with that category.
             If sub_category is given, return only studies with that sub category.
+            If institution is given, return only studies with that institution.
             ...in progress.
 
             Args:
@@ -54,6 +55,7 @@ class Search(Resource):
                 include_unrated (Boolean): If false, unrated studies will not be returned.
                 category (String): The category that a study must have.
                 sub_category (String): The sub category that a study must have.
+                institution (String): The institution that a study must have.
 
 
             Returns:
@@ -75,6 +77,7 @@ class Search(Resource):
         parser.add_argument("include_unrated", type=inputs.boolean, default=True)
         parser.add_argument("category", type=str)
         parser.add_argument("sub_category", type=str)
+        parser.add_argument("institution", type=str)
 
         # the second parameter to each method call is purely for consistency,
         # they don't actually do anything. They should match the defaults above.
@@ -93,6 +96,7 @@ class Search(Resource):
         include_unrated = returned_args.get("include_unrated", True)
         category = returned_args.get("category", None)
         sub_category = returned_args.get("sub_category", None)
+        institution = returned_args.get("institution", None)
 
         # build search parameters
         params = {}
@@ -148,6 +152,8 @@ class Search(Resource):
         if sub_category is not None:
             # using $in so that we can make Sub_Categories an array or string without breaking this code
             params["Sub_Categories"] = {"$in": [sub_category]}
+        if institution is not None:
+            params["Institution"] = institution
         # query database
         studyList = Auxiliary.getStudies(params, limit)
         # convert output
