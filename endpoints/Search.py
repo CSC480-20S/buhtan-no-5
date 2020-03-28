@@ -21,8 +21,9 @@ class Search(Resource):
             If limit is given, no more than limit studies will be returned.
             If price_min is given, return only studies at that price or higher.
             If price_max is given, return only studies at that price or lower.
-            If price_min is greater than price_max, ignore price_max and negative values of price_min.
-            For the purposes of this method, the price of a study may be negative.
+            If price_min is greater than price_max, ignore price_max.
+            For the purposes of this method, the price of a study may not be negative,
+            so all negative values of price_min and price_max will be ignored.
             If duration_min is given, return only studies at that duration or higher.
             If duration_max is given, return only studies at that duration or lower.
             If duration_min is greater than duration_max, ignore duration_max.
@@ -162,3 +163,45 @@ class Search(Resource):
             out[i] = study.build_dict()
         # return converted output
         return jsonify(out)
+
+    def addRange(self, param_dict, min, max, field_name):
+        """"Adds a range for a field to a filter.
+
+            The range is assumed to be inclusive.
+            If max is less than min, max is ignored.
+            Negative values of min and max are also ignored.
+            If max and min are the same but neither has been ignored,
+            the range simplifies to that same number.
+            This function in theory accepts doubles,
+            but was designed for integers.
+
+            Args:
+                param_dict (Dict): The filter to which the range is to be added, passed by reference.
+                min (Integer): The minimum value in the range.
+                max (Integer): The maximum value in the range.
+                field_name (String): The field that is to be limited to the specified range.
+
+
+            Returns:
+                None.
+            """
+        # equivalent to default, so don't add anything
+        if min <= 0 and max < 0:
+            pass
+        # min is given but max is ignored
+        # (max < 0 is subsumed by max < min in this case)
+        elif min > 0 and max < min:
+            param_dict[field_name] = {"$gte": min}
+        # the above two cases handle all values of min combined with a negative value of max,
+        # so max must be greater than or equal to zero past this point.
+
+        # when equal, we can just look for that value
+        elif min == max:
+            param_dict[field_name] = min
+        # we know max >= 0 from the cases above, so we only need to check if min is ignored
+        elif min < 0:
+            param_dict[field_name] = {"$lte": max}
+        # we know both min and max are relevant and min < max
+        else:
+            # using implicit $and operation
+            param_dict[field_name] = {"$gte": min, "$lte": max}
