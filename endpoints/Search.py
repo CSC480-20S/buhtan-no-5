@@ -35,10 +35,11 @@ class Search(Resource):
             If rating_min and/or rating_max are given and include_unrated is false, return only studies with at least one review.
             If include_unrated is true or omitted, all unrated studies will be considered part of whatever rating range was specified.
             If none of the three rating parameters are given, the rating data will be ignored.
+            If category is given, return only studies with that category.
             ...in progress.
 
             Args:
-                title (String): The identifier for the study the user is trying to purchase.
+                title (String): The title that a study must have..
                 keywords (String): Contains all the keywords that a study must have.
                 keyword_separator (String): Separates the keywords in the keywords parameter. Defaults to |.
                 keyword_all (Boolean): If false, any non-empty subset of the keywords is sufficient to match.
@@ -50,6 +51,7 @@ class Search(Resource):
                 rating_min (Integer): The minimum rating that a study may have. Must be in the range [0, 5].
                 rating_max (Integer): The maximum rating that a study may have. Must be in the range [0, 5].
                 include_unrated (Boolean): If false, unrated studies will not be returned.
+                category (String): The category that a study must have.
 
 
             Returns:
@@ -69,6 +71,7 @@ class Search(Resource):
         parser.add_argument("rating_min", type=int, default=0, options=(0, 1, 2, 3, 4, 5))
         parser.add_argument("rating_max", type=int, default=5, options=(0, 1, 2, 3, 4, 5))
         parser.add_argument("include_unrated", type=inputs.boolean, default=True)
+        parser.add_argument("category", type=str)
 
         # the second parameter to each method call is purely for consistency,
         # they don't actually do anything. They should match the defaults above.
@@ -85,6 +88,7 @@ class Search(Resource):
         rating_min = returned_args.get("rating_min", 0)
         rating_max = returned_args.get("rating_max", 5)
         include_unrated = returned_args.get("include_unrated", True)
+        category = returned_args.get("category", None)
 
         # build search parameters
         params = {}
@@ -134,6 +138,9 @@ class Search(Resource):
             # sub range without a default endpoint
             params["$expr"] = {"%gte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_min]}],
                                "%lte": ["$Total Stars", {"$multiply": ["$Number of Reviews", rating_max]}]}
+        if category is not None:
+            # using $in so that we can make Categories an array or string without breaking this code
+            params["Categories"] = {"$in": [category]}
         # query database
         studyList = Auxiliary.getStudies(params, limit)
         # convert output
