@@ -1,7 +1,6 @@
 import redis
 import uuid
 
-
 class SearchCache():
     def __init__(self):
         self.r = redis.Redis(host='localhost', port=6379, db=0)
@@ -9,7 +8,7 @@ class SearchCache():
 
     def check_existence(self, title):
         result = self.r.exists(title)
-        if result is 1:
+        if result == 1:
             return True
         return False
 
@@ -19,6 +18,7 @@ class SearchCache():
         if cache_resp > 0:
             return True
         return False
+
 
     def add_new_word(self, word):
         hash_id = self.get_hash_id(word)
