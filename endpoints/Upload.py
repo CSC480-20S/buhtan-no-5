@@ -7,39 +7,40 @@ from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
 
 class Upload(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def post(self):
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("title", type=str, required=True, help="The study's title.")
+        parser.add_argument("title", type=str, required=True, help="Title should be string.")
 
         parser.add_argument("author", type=str, required=True,
-                            help="Issue with the string reference to the author of the study")
+                            help="Issue author should be String")
         # we currently have no such thing as a username just an ID, so this is necessarily an ID if its to do anything
 
-        parser.add_argument("costInCredits", type=int, required=True, help="error with Author's price for the study.")
-        parser.add_argument("purpose", type=str, required=True, help="missing study's purpose statement.")
+        parser.add_argument("costInCredits", type=int, required=True, help="Issue with cost . should be int")
+        parser.add_argument("purpose", type=str, required=True, help="missing study's purpose statement, string")
         parser.add_argument("references", type=str, action='append', required=True, help="missing references used to"
-                                                                                         " design the study.")
+                                                                                         " design the study, string")
         parser.add_argument("categories", type=str, action='append', required=True, help="Issue with"
-                                                                                         " study's category(ies).")
+                                                                                         " study's category, string")
         parser.add_argument("subcategories", type=str, action='append', required=True, help="Issue with the study's "
-                                                                                            "subcategory(ies).")
+                                                                                            "subcategory, string")
         parser.add_argument("keywords", type=str, action='append', required=True, help="Issue with "
-                                                                                       "the keywords for the study.")
+                                                                                       "the keywords, string")
         parser.add_argument("num_stimuli", type=int, required=True, help="Issue with the number"
-                                                                         " of stimuli included in study.")
+                                                                         " of stimuli included in study, int")
         parser.add_argument("num_responses", type=int, required=True, help="Issue with the "
-                                                                           "number of responses expected from user.")
+                                                                           "number of responses expected from user, int")
         parser.add_argument("num_trials", type=int, required=True,
-                            help="Issue with the number of trials within a study")
-        parser.add_argument("randomize", type=bool, required=True, help="Issue with randomized(question order) param")
+                            help="Issue with the number of trials within a study, int")
+        parser.add_argument("randomize", type=bool, required=True, help="Issue with randomized(question order) "
+                                                                        "param,bool")
         parser.add_argument("duration", type=int, required=True, help="Issue with  expected run time of the study "
-                                                                      "from perspective of the surveyed individual")
-        parser.add_argument("rating", type=int, help="The study's title.")  # not required presumably
+                                                                      "from perspective of the surveyed individual, int")
+        parser.add_argument("rating", type=int, help="Issue with rating, int")  # not required presumably
         # todo check this is in fact required v
-        parser.add_argument("institution", type=str, required=True, help="Issue with Institution.")
+        parser.add_argument("institution", type=str, required=True, help="Issue with institution, string")
         # todo template
-        parser.add_argument("template", type=str, required=True, help="Missing template")
+        parser.add_argument("template", type=str, required=True, help="Issue with / Missing template, string")
 
         returned_args = parser.parse_args()
 
@@ -66,20 +67,22 @@ class Upload(Resource):
 
         rating = returned_args.get("rating", None)
         institution = returned_args.get("institution", None)
-        # todo : tepmplate- not sure how to do this at all
+        # todo : template- not sure how to do this at all
         template = returned_args.get("template", None)
         study = FindingFiveStudyStoreStudy(study_id, title, author, costInCredits, purpose, references, categories,
                                            subcategories, keywords, num_stimuli, num_responses, num_trials, randomize,
                                            duration, rating, institution, template)
-        connect = DbConnection.connector()["Studies"]
+        # connect = DbConnection.connector()["Studies"]
         study_dict = FindingFiveStudyStoreStudy.build_dict(study)
-        connect.post("Studies", study_dict)
+        # connect.insert_one("Studies", study_dict).inserted_id
+
+        DbConnection.connector()["Studies"].insert(study_dict)
 
         # seek = connect.find_one(study, ["Template"])
         # return seek["Template"]
 
-        user = Auxiliary.getUser(author)
+        # user = Auxiliary.getUser(author)
 
-        Auxiliary.addOwned(author, study_id, 0)
-        # todo : eventually there will be a "Auxilary.addAuthored() method.
-        return "yeet"
+        # Auxiliary.addOwned(user, study_id, 1)
+        # todo : eventually there will be a "Auxiliary.addAuthored() method.
+        return "work pls"
