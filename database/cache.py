@@ -1,41 +1,27 @@
 import redis
-import endpoints.Auxiliary as aux
-import time
-r = redis.Redis(db=1)
+from gui_endpoints.preview_study import x
+from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
+
+class SearchCache():
+    def __init__(self):
+        self.r = redis.Redis(db=1)
+
+    def check_existence(self, title):
+        result = self.r.exists("seach:"+title)
+        if result is 1:
+            return True, self.r.hgetall("seach:"+title)
+        return False, None
+
+    def add_serach_query(self, response, query):
+        key = "seach:" + str(query)
+        cache_resp = self.r.hmset(key, response)
+        if cache_resp > 0:
+            return True
+        return False
 
 
-def test_cache():
-    studies =aux.getStudies(dict(),4)
-    with r.pipeline() as pipe:
-        for study in studies:
-            map = study.build_dict()
-            print(type(map))
-            del map['randomize']
-            del map['keywords']
-            del map['rating']
-            r.hmset(map['studyID'],map)
-        pipe.execute()
-def get_cache():
-    start=time.perf_counter()
-    resp = r.hgetall('4')
-    end=time.perf_counter()
-    print(resp)
-    print(end-start)
-    return -1
+s = SearchCache()
+res=s.add_serach_query(x.build_dict(),"hell0 world")
+status,study = s.check_existence("hell0 world")
+print(status,study)
 
-
-def no_cache():
-    tart=time.perf_counter()
-    studies = aux.getStudies(dict(),4)
-    for  study in studies:
-            map = study.build_dict()
-            print(type(map))
-            del map['randomize']
-            del map['keywords']
-            del map['rating']
-    end=time.perf_counter()
-    print(end-tart)
-
-test_cache()
-get_cache()
-no_cache()
