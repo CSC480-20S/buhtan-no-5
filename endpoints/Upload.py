@@ -2,7 +2,7 @@ from flask import jsonify
 from flask_restful import Resource, reqparse
 from endpoints import Auxiliary
 from database import DbConnection
-from studystore import FindingFiveStudyStoreStudy
+from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
 
 class Upload(Resource):
 
@@ -62,16 +62,18 @@ class Upload(Resource):
         num_responses = returned_args.get("num_responses", None)
         num_trials = returned_args.get("num_trials", None)
         randomize = returned_args.get("randomize", None)
+        print(randomize)
 
         duration = returned_args.get("duration", None)
-
+        print(duration)
         rating = returned_args.get("rating", None)
+        print(rating)
         institution = returned_args.get("institution", None)
         # todo : template- not sure how to do this at all
         template = returned_args.get("template", None)
         study = FindingFiveStudyStoreStudy(study_id, title, author, costInCredits, purpose, references, categories,
-                                           subcategories, keywords, num_stimuli, num_responses, num_trials, randomize,
-                                           duration, rating, institution, template)
+                                           subcategories, keywords, num_stimuli, num_responses, randomize,
+                                           duration, num_trials, rating, institution, template)
         # connect = DbConnection.connector()["Studies"]
         study_dict = FindingFiveStudyStoreStudy.build_dict(study)
         # connect.insert_one("Studies", study_dict).inserted_id
