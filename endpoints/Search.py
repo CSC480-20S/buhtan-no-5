@@ -1,5 +1,5 @@
 from flask import jsonify
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, inputs
 from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
@@ -21,18 +21,42 @@ class Search(Resource):
             If limit is given, no more than limit studies will be returned.
             If price_min is given, return only studies at that price or higher.
             If price_max is given, return only studies at that price or lower.
-            If price_min is greater than price_max, ignore price_max and negative values of price_min.
-            For the purposes of this method, the price of a study may be negative.
+            If price_min is greater than price_max, ignore price_max.
+            For the purposes of this method, the price of a study may not be negative,
+            so all negative values of price_min and price_max will be ignored.
+            If duration_min is given, return only studies at that duration or higher.
+            If duration_max is given, return only studies at that duration or lower.
+            If duration_min is greater than duration_max, ignore duration_max.
+            For the purposes of this method, the duration of a study may not be negative,
+            so all negative values of duration_min and duration_max will be ignored.
+            If rating_min is given, return only studies with that rating or higher.
+            If rating_max is given, return only studies with that rating or lower.
+            If rating_min is greater than or equal to rating_max, ignore rating_max.
+            The valid options for rating_min and rating_max are 0, 1, 2, 3, 4, and 5.
+            If rating_min and/or rating_max are given and include_unrated is false, return only studies with at least one review.
+            If include_unrated is true or omitted, all unrated studies will be considered part of whatever rating range was specified.
+            If none of the three rating parameters are given, the rating data will be ignored.
+            If category is given, return only studies with that category.
+            If sub_category is given, return only studies with that sub category.
+            If institution is given, return only studies with that institution.
             ...in progress.
 
             Args:
-                title (String): The identifier for the study the user is trying to purchase.
+                title (String): The title that a study must have..
                 keywords (String): Contains all the keywords that a study must have.
                 keyword_separator (String): Separates the keywords in the keywords parameter. Defaults to |.
                 keyword_all (Boolean): If false, any non-empty subset of the keywords is sufficient to match.
                 limit (Integer): The maximum number of studies to return. Defaults to unlimited when missing or negative.
                 price_min (Integer): The minimum price, in credits, that a study may have.
                 price_max (Integer): The maximum price, in credits, that a study may have.
+                duration_min (Integer): The minimum duration, in minutes, that a study may have.
+                duration_max (Integer): The maximum duration, in minutes, that a study may have.
+                rating_min (Integer): The minimum rating that a study may have. Must be in the range [0, 5].
+                rating_max (Integer): The maximum rating that a study may have. Must be in the range [0, 5].
+                include_unrated (Boolean): If false, unrated studies will not be returned.
+                category (String): The category that a study must have.
+                sub_category (String): The sub category that a study must have.
+                institution (String): The institution that a study must have.
 
 
             Returns:
@@ -43,10 +67,18 @@ class Search(Resource):
         parser.add_argument("title", type=str)
         parser.add_argument("keywords", type=str)
         parser.add_argument("keyword_separator", type=str, default="|")
-        parser.add_argument("keyword_all", type=bool, default=True)
+        parser.add_argument("keyword_all", type=inputs.boolean, default=True)
         parser.add_argument("limit", type=int, default=-1)
         parser.add_argument("price_min", type=int, default=0)
         parser.add_argument("price_max", type=int, default=-1)
+        parser.add_argument("duration_min", type=int, default=0)
+        parser.add_argument("duration_max", type=int, default=-1)
+        parser.add_argument("rating_min", type=int, default=0, options=(0, 1, 2, 3, 4, 5))
+        parser.add_argument("rating_max", type=int, default=5, options=(0, 1, 2, 3, 4, 5))
+        parser.add_argument("include_unrated", type=inputs.boolean, default=True)
+        parser.add_argument("category", type=str)
+        parser.add_argument("sub_category", type=str)
+        parser.add_argument("institution", type=str)
 
         # the second parameter to each method call is purely for consistency,
         # they don't actually do anything. They should match the defaults above.
@@ -58,6 +90,14 @@ class Search(Resource):
         limit = returned_args.get("limit", -1)
         price_min = returned_args.get("price_min", 0)
         price_max = returned_args.get("price_max", -1)
+        duration_min = returned_args.get("duration_min", 0)
+        duration_max = returned_args.get("duration_max", -1)
+        rating_min = returned_args.get("rating_min", 0)
+        rating_max = returned_args.get("rating_max", 5)
+        include_unrated = returned_args.get("include_unrated", True)
+        category = returned_args.get("category", None)
+        sub_category = returned_args.get("sub_category", None)
+        institution = returned_args.get("institution", None)
 
         # build search parameters
         params = {}
@@ -71,16 +111,19 @@ class Search(Resource):
             # union/or
             else:
                 params["Keywords"] = {"$in": keywords}
-        if price_min <= 0 and price_max < price_min:
-            pass
-        elif price_min > 0 and price_max < price_min:
-            params["CostinCredits"] = {"$gte": price_min}
-        elif price_min == price_max:
-            params["CostinCredits"] = price_min
-        else:
-            # price_max is greater than price_min
-            # using implicit $and operation
-            params["CostinCredits"] = {"$gte": price_min, "$lte": price_max}
+        self.addRange(params, price_min, price_max, "CostinCredits")
+        self.addRange(params, duration_min, duration_max, "Duration")
+        if not include_unrated:
+            params["Number of Reviews"] = {"$gt": 0}
+        self.addRatingExpression(params, rating_min, rating_max)
+        if category is not None:
+            # using $in so that we can make Categories an array or string without breaking this code
+            params["Categories"] = {"$in": [category]}
+        if sub_category is not None:
+            # using $in so that we can make Sub_Categories an array or string without breaking this code
+            params["Sub_Categories"] = {"$in": [sub_category]}
+        if institution is not None:
+            params["Institution"] = institution
         # query database
         studyList = Auxiliary.getStudies(params, limit)
         # convert output
@@ -89,3 +132,82 @@ class Search(Resource):
             out[i] = study.build_dict()
         # return converted output
         return jsonify(out)
+
+    def addRange(self, param_dict, min, max, field_name):
+        """"Adds a range for a field to a filter.
+
+            The range is assumed to be inclusive.
+            If max is less than min, max is ignored.
+            Negative values of min and max are also ignored.
+            If max and min are the same but neither has been ignored,
+            the range simplifies to that same number.
+            This function in theory accepts doubles,
+            but was designed for integers.
+
+            Args:
+                param_dict (Dict): The filter to which the range is to be added, passed by reference.
+                min (Integer): The minimum value in the range.
+                max (Integer): The maximum value in the range.
+                field_name (String): The field that is to be limited to the specified range.
+
+
+            Returns:
+                None.
+            """
+        # equivalent to default, so don't add anything
+        if min <= 0 and max < 0:
+            pass
+        # min is given but max is ignored
+        # (max < 0 is subsumed by max < min in this case)
+        elif min > 0 and max < min:
+            param_dict[field_name] = {"$gte": min}
+        # the above two cases handle all values of min combined with a negative value of max,
+        # so max must be greater than or equal to zero past this point.
+
+        # when equal, we can just look for that value
+        elif min == max:
+            param_dict[field_name] = min
+        # we know max >= 0 from the cases above, so we only need to check if min is ignored
+        elif min < 0:
+            param_dict[field_name] = {"$lte": max}
+        # we know both min and max are relevant and min < max
+        else:
+            # using implicit $and operation
+            param_dict[field_name] = {"$gte": min, "$lte": max}
+
+    def addRatingExpression(self, param_dict, rating_min, rating_max):
+        """"Adds a range for ratings to a filter.
+
+            The range is assumed to be inclusive.
+            This method assumes that ratings go from 0 to 5 stars.
+            If rating_max is less than or equal to rating_min, rating_max is ignored.
+            Negative values of rating_min and rating_max are also ignored.
+            Will overwrite any existing value for "$expr" in the filter.
+
+            Args:
+                param_dict (Dict): The filter to which the range is to be added, passed by reference.
+                rating_min (Integer): The minimum stars for the rating. Must be in the range [0, 5].
+                rating_max (Integer): The maximum stars for the rating. Must be in the range [0, 5].
+
+
+            Returns:
+                None.
+            """
+        # defining these as constants here so that they can be tweaked later if they don't agree with the rating code.
+        # would have made them parameters, but that's just unnecessary equivalence classes for testing
+        star_total_field = "Total Stars"
+        review_count_field = "Number of Reviews"
+
+        # equivalent to everything, so don't add anything.
+        if rating_min == 0 and rating_max == 5:
+            pass
+        # check whether we can ignore rating_max but not rating_min
+        elif rating_min >= rating_max or rating_max == 5:
+            param_dict["$expr"] = {"%gte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_min]}]}
+        # check whether we can ignore rating_min, now that we know we can't ignore rating_max
+        elif rating_min == 0:
+            param_dict["$expr"] = {"%lte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_max]}]}
+        # otherwise we know we can't ignore either, and we have a sub range without a default endpoint
+        else:
+            param_dict["$expr"] = {"%gte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_min]}],
+                               "%lte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_max]}]}

@@ -2,10 +2,10 @@ from flask import jsonify
 from flask_restful import Resource, reqparse
 from endpoints import Auxiliary
 from database import DbConnection
-from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
-
+from studystore import FindingFiveStudyStoreStudy
 
 class Upload(Resource):
+
     @Auxiliary.auth_dec
     def post(self):
         # obtain parameters
