@@ -190,6 +190,7 @@ def addViewed(user_id, study_id):
     lister = {"$push": {"Viewed Studies": study_id}}
     connect.update_one(user, lister)
 
+    
 def addWishlist(user_id, study_id):
     """"Adds a study to a user's wish list of studies.
 
@@ -209,7 +210,6 @@ def addWishlist(user_id, study_id):
     connect.update_one(user, lister)
 
 
-
 def auth_dec(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -222,8 +222,8 @@ def auth_dec(func):
             abort(401, description=resp['msg'])
         value = func(*args, **kwargs)
         return value
-
     return wrapper
+
 
 def time_backend(func):
     @functools.wraps(func)
