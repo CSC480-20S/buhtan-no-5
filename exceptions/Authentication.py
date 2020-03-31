@@ -15,7 +15,7 @@ def generic_exception(e):
     '''
     stack_trace = e.orginal_exception
     curr_date = datetime.today().strftime('%Y-%m-%d-%H-%M %Z')
-    with open(path+curr_date,"w+") as f:
+    with open(path+curr_date+".log","w+") as f:
         f.write(str(stack_trace))
         f.write("\n")
     return jsonify(error=str(e)), 500
