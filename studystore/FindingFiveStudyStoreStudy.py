@@ -1,6 +1,6 @@
 class FindingFiveStudyStoreStudy:
     def __init__(self, id, title, author, cost, purpose, references, categories, subcategories, keywords, num_stimuli,
-                 num_responses, randomize, duration, num_trials, rating, institution, template):
+                 num_responses, randomize, duration, num_trials, rating, institution, template, images, abstract, author_id):
         self.studyID = id
         self.title = title
         self.author = author
@@ -18,6 +18,9 @@ class FindingFiveStudyStoreStudy:
         self.rating = rating
         self.institution = institution
         self.template = template
+        self.images = images
+        self.abstract = abstract
+        self.author_id = author_id
 
     def build_dict(self):
         returner = dict()
@@ -38,6 +41,33 @@ class FindingFiveStudyStoreStudy:
         returner['rating'] = self.rating
         returner['institution'] = self.institution
         returner['template'] = self.template
+        returner["images"] = self.images
+        returner["abstract"] = self.abstract
+        returner["authorID"] = self.author_id
+        return returner
+
+    def build_database_doc(self):
+        returner = dict()
+        returner['Study_id'] = self.studyID
+        returner['Title'] = self.title
+        returner['Author'] = self.author
+        returner['CostinCredits'] = self.costInCredits
+        returner['Purpose'] = self.purpose
+        returner['References'] = self.references
+        returner['Categories'] = self.categories
+        returner['Sub_Categories'] = self.subcategories
+        returner['Keywords'] = self.keywords
+        returner['Num_Stimuli'] = self.num_stimuli
+        returner['Num_Responses'] = self.num_responses
+        returner['Num_trials'] = self.num_trials
+        returner['Randomize'] = self.randomize
+        returner['Duration'] = self.duration
+        returner['Rating'] = self.rating
+        returner['Institution'] = self.institution
+        returner['template'] = self.template
+        returner["Images"] = self.images
+        returner["Abstract"] = self.abstract
+        returner["Author_id"] = self.author_id
         return returner
 
     def get_studyId(self):
@@ -91,6 +121,15 @@ class FindingFiveStudyStoreStudy:
     def get_template(self):
         return self.template
 
+    def get_images(self):
+        return self.images
+
+    def get_abstract(self):
+        return self.abstract
+
+    def get_authorID(self):
+        return self.author_id
+
     def set_studyId(self, newStudyID):
         self.studyID = newStudyID
 
@@ -141,3 +180,12 @@ class FindingFiveStudyStoreStudy:
 
     def set_template(self, new_template):
         self.template = new_template
+
+    def set_images(self, new_images):
+        self.images = new_images
+
+    def set_abstract(self, new_abstract):
+        self.abstract = new_abstract
+
+    def set_authorID(self, new_authorID):
+        self.author_id = new_authorID

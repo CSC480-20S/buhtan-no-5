@@ -24,7 +24,7 @@ def getStudy(study_id):
     return f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"], seek["References"],
                    seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
-                   seek["Institution"], seek["Template"])
+                   seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"])
 
 
 def getTemplate(study_id):
@@ -68,7 +68,7 @@ def getStudies(params, maxStudies=-1):
 
     # acquire studies
     connect = DbConnection.connector()["Studies"]
-    seek = connect.find(filter=params, projection={"Template": False}, limit=maxStudies)
+    seek = connect.find(filter=params, projection={"Template": False, "Images": False}, limit=maxStudies)
 
     # get the number of studies returned - params maintains the filter
     numStudies = seek.collection.count_documents(params)
@@ -86,7 +86,7 @@ def getStudies(params, maxStudies=-1):
                     study["References"],
                     study["Categories"], study["Sub_Categories"], study["Keywords"], study["Num_Stimuli"],
                     study["Num_Responses"], study["Randomize"], study["Duration"], study["Num_trials"], study["Rating"],
-                    study["Institution"], "Template redacted"))
+                    study["Institution"], "Template redacted", [], study["Abstract"], study["Author_id"]))
     return studyList
 
 
@@ -210,6 +210,45 @@ def addWishlist(user_id, study_id):
     lister = {"$push": {"Wish List": study_id}}
     connect.update_one(user, lister)
 
+def addNotification(user_id, title, body, type):
+    """"Posts a notification to the database.
+
+    Posts the notification, along with an additional timestamp, to the database.
+
+    Args:
+        user_id (String): The user who should receive the notification.
+        title (String): The header of the notification.
+        body (String): The main portion of the notification for when the user clicks on it.
+        type (String): The type of notifaction, such as approval, denial, or welcome.
+
+    Returns:
+        Nothing.
+    """
+    connect = DbConnection.connector()["Notifications"]
+    notification = {"User_id": user_id, "Title": title, "Body": body, "Type": type}
+    notification["$currentDate"] = {"Timestamp": {"$type": "timestamp"}}
+    connect.insert(notification)
+
+def timestampAndGetAuthor(study_id, field_name):
+    """"Adds a timestamp to a study and returns the author ID of that study.
+
+    Timestamps a study, using  field_name as the name of the timestamp.
+    Returns the author ID of the study.
+    These two actions are combined for optimization of the administrative review endpoint ReviewPending.
+
+    Args:
+        study_id (Integer): The identifier of the study to timestamp.
+        field_name (String): The name to attach to the timestamp.
+
+
+    Returns:
+        String: The author ID of the specified study.
+    """
+    connect = DbConnection.connector()["Studies"]
+    study = connect.find_one_and_update({"Study_id": study_id},
+                                        {"$currentDate": {field_name: {"$type": "timestamp"}}},
+                                        ["Author_id"])
+    return study["Author_id"]
 
 def auth_dec(func):
     @functools.wraps(func)

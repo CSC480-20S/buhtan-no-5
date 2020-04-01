@@ -10,6 +10,10 @@ from endpoints.GetOwned import GetOwned
 from endpoints.GetViewed import GetViewed
 from endpoints.GetWishList import GetWishList
 from endpoints.Upload import Upload
+from endpoints.GetAdminDetails import GetAdminDetails
+from endpoints.GetPending import GetPending
+from endpoints.ReviewPending import ReviewPending
+from endpoints.GetPreview import GetPreview
 
 trans_bp = Blueprint('transaction', __name__)
 api = Api(trans_bp)
@@ -25,3 +29,7 @@ api.add_resource(GetOwned, '/getOwned')
 api.add_resource(GetViewed, '/getViewed')
 api.add_resource(GetWishList, '/getWishlist')
 api.add_resource(Upload, '/upload')
+api.add_resource(GetAdminDetails, '/getAdminDetails')
+api.add_resource(GetPending, '/getPending')
+api.add_resource(ReviewPending, '/reviewPending')
+api.add_resource(GetPreview, '/getPreview')
