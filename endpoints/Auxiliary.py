@@ -229,6 +229,27 @@ def addNotification(user_id, title, body, type):
     notification["$currentDate"] = {"Timestamp": {"$type": "timestamp"}}
     connect.insert(notification)
 
+def timestampAndGetAuthor(study_id, field_name):
+    """"Adds a timestamp to a study and returns the author ID of that study.
+
+    Timestamps a study, using  field_name as the name of the timestamp.
+    Returns the author ID of the study.
+    These two actions are combined for optimization of the administrative review endpoint ReviewPending.
+
+    Args:
+        study_id (Integer): The identifier of the study to timestamp.
+        field_name (String): The name to attach to the timestamp.
+
+
+    Returns:
+        String: The author ID of the specified study.
+    """
+    connect = DbConnection.connector()["Studies"]
+    study = connect.find_one_and_update({"Study_id": study_id},
+                                        {"$currentDate": {field_name: {"$type": "timestamp"}}},
+                                        ["Author_id"])
+    return study["Author_id"]
+
 def auth_dec(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
