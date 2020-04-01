@@ -8,6 +8,41 @@ class Upload(Resource):
 
     @Auxiliary.auth_dec
     def post(self):
+        """Uploads a new study to the database.
+
+        Uploaded studies are not visible in the store's search results until they are approved by an administrator.
+        Adds the new study to the author's author list and owned list.
+        Note the difference between author and author_id:
+        author is intended to be displayed to other users,
+        while author_id is used for internal referencing.
+        They can be the same, but security may be improved by not displaying other user's IDs.
+
+        Args:
+            title (String): The title of the study.
+            author (String): The author of the study, as it should be displayed.
+            costInCredits (Integer): The cost of the study in credits. Negative values are possible, but will not be
+                                     returned when filtering by price.
+            purpose (String): The purpose of the study.
+            references (String): The reference that others should use when referencing this study.
+            categories (List of Strings): The main categories that the study belongs to.
+            subcategories (List of Strings): The subcategories that the study belongs to.
+            keywords (List of Strings): The keywords associated with a study.
+            num_stimuli (Integer): The number of stimuli that the study uses.
+            num_responses (Integer): The number of responses that the study uses.
+            num_trials (Integer): The number of trials that the study uses.
+            randomize (Boolean): Whether the study uses randomization.
+            duration (Integer): The expected duration, in minutes, of the study.
+            institution (String): The institution associated with the author or study.
+            template (String): The JSON study template from FindingFive.
+            images (List of Strings): The images for display when previewing the study.
+                                      May be references to external images, or may be base64 encoded images.
+            abstract (String): The abstract of the study. Acts as a description.
+            author_id (String): The user ID of the author.
+
+
+        Returns:
+            JSON: {"Success": True} if the study successfully uploaded.
+        """
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("title", type=str, required=True, help="Title should be string.")
@@ -15,7 +50,7 @@ class Upload(Resource):
                             help="Issue author should be String")
         parser.add_argument("costInCredits", type=int, required=True, help="Issue with cost . should be int")
         parser.add_argument("purpose", type=str, required=True, help="missing study's purpose statement, string")
-        parser.add_argument("references", type=str, action='append', required=True, help="missing references used to"
+        parser.add_argument("references", type=str, required=True, help="missing references used to"
                                                                                          " design the study, string")
         parser.add_argument("categories", type=str, action='append', required=True, help="Issue with"
                                                                                          " study's category, string")
