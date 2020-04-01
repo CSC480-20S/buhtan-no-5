@@ -44,6 +44,29 @@ class FindingFiveStudyStoreStudy:
         returner["abstract"] = self.abstract
         return returner
 
+    def build_database_doc(self):
+        returner = dict()
+        returner['Study_id'] = self.studyID
+        returner['Title'] = self.title
+        returner['Author'] = self.author
+        returner['CostinCredits'] = self.costInCredits
+        returner['Purpose'] = self.purpose
+        returner['References'] = self.references
+        returner['Categories'] = self.categories
+        returner['Sub_Categories'] = self.subcategories
+        returner['Keywords'] = self.keywords
+        returner['Num_Stimuli'] = self.num_stimuli
+        returner['Num_Responses'] = self.num_responses
+        returner['Num_trials'] = self.num_trials
+        returner['Randomize'] = self.randomize
+        returner['Duration'] = self.duration
+        returner['Rating'] = self.rating
+        returner['Institution'] = self.institution
+        returner['template'] = self.template
+        returner["Images"] = self.images
+        returner["Abstract"] = self.abstract
+        return returner
+
     def get_studyId(self):
         return self.studyID
 
