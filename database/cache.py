@@ -9,6 +9,7 @@ class SearchCache():
     def check_existence(self, title):
         result = self.r.exists(title)
         if result == 1:
+        self.max_set_size=400
             return True
         return False
 
@@ -103,3 +104,8 @@ class SearchCache():
 s = SearchCache()
 for word in s.search_one_word("moles"):
     print(word)
+# res=s.add_serach_query(x.build_dict(),"hell0 world")
+# status,study = s.check_existence("hell0 world")
+# print(status,study)
+#
+>>>>>>> Started to Rank Words Based off search
