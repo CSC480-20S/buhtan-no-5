@@ -1,6 +1,7 @@
 import redis
+import uuid
 from gui_endpoints.preview_study import x
-from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
+
 
 class SearchCache():
     def __init__(self):
@@ -19,9 +20,40 @@ class SearchCache():
             return True
         return False
 
+    def add_new_word(self,word):
+        self.r.client_list()
+        id=uuid.uuid5(uuid.NAMESPACE_OID,word)
+        pipe = self.r.pipeline()
+        pipe.hset(str(id),'title',word)
+        #this can store multiple fields about the given title
+        pipe.hset(str(id),"data","woobie")
+        #now iterate over all of the partial strings and use the partial string to map to a sorted set.
+        #each sorted set will continain the id:score so it can sort the entries.
+
+        try:
+            for partial in self.generate_prefix(word):
+                print(str(id))
+                pipe.zadd("tmp"+str(uuid.uuid5(uuid.NAMESPACE_OID,partial)),{str(id):1.0})
+        except redis.exceptions.ResponseError as e:
+            print(e.args)
+        pipe.execute()
+
+    def generate_prefix(self,word):
+        for index,char in enumerate(word):
+            index = index+1
+            if index == len(word):
+                yield word[0:index]+'*'
+            yield word[0:index]
+#schema a hash entry where its string:"" and id:""
+
+
+
+
+
 
 s = SearchCache()
-res=s.add_serach_query(x.build_dict(),"hell0 world")
-status,study = s.check_existence("hell0 world")
-print(status,study)
-
+s.add_new_word("hellozz")
+# res=s.add_serach_query(x.build_dict(),"hell0 world")
+# status,study = s.check_existence("hell0 world")
+# print(status,study)
+#
