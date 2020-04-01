@@ -210,7 +210,7 @@ def addWishlist(user_id, study_id):
     lister = {"$push": {"Wish List": study_id}}
     connect.update_one(user, lister)
 
-def addNotification(user_id, title, body, date, type):
+def addNotification(user_id, title, body, type):
     """"Posts a notification to the database.
 
     Posts the notification, along with an additional timestamp, to the database.
@@ -219,14 +219,13 @@ def addNotification(user_id, title, body, date, type):
         user_id (String): The user who should receive the notification.
         title (String): The header of the notification.
         body (String): The main portion of the notification for when the user clicks on it.
-        date (String): The date of posting in user-friendly form.
         type (String): The type of notifaction, such as approval, denial, or welcome.
 
     Returns:
         Nothing.
     """
     connect = DbConnection.connector()["Notifications"]
-    notification = {"User_id": user_id, "Title": title, "Body": body, "Date": date, "Type": type}
+    notification = {"User_id": user_id, "Title": title, "Body": body, "Type": type}
     notification["$currentDate"] = {"Timestamp": {"$type": "timestamp"}}
     connect.insert(notification)
 
