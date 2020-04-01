@@ -41,7 +41,7 @@ class Upload(Resource):
 
 
         Returns:
-            JSON: {"Success": True} if the study successfully uploaded.
+            JSON: {"study_id": id}, where id is the generated study ID for this study.
         """
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
@@ -115,4 +115,4 @@ class Upload(Resource):
 
         # Auxiliary.addOwned(user, study_id, 1)
         # todo : eventually there will be a "Auxiliary.addAuthored() method.
-        return "work pls"
+        return jsonify({"study_id": study_id})
