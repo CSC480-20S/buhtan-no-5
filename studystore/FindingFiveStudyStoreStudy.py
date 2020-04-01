@@ -1,6 +1,6 @@
 class FindingFiveStudyStoreStudy:
     def __init__(self, id, title, author, cost, purpose, references, categories, subcategories, keywords, num_stimuli,
-                 num_responses, randomize, duration, num_trials, rating, institution, template, images, abstract):
+                 num_responses, randomize, duration, num_trials, rating, institution, template, images, abstract, author_id):
         self.studyID = id
         self.title = title
         self.author = author
@@ -20,6 +20,7 @@ class FindingFiveStudyStoreStudy:
         self.template = template
         self.images = images
         self.abstract = abstract
+        self.author_id = author_id
 
     def build_dict(self):
         returner = dict()
@@ -42,6 +43,7 @@ class FindingFiveStudyStoreStudy:
         returner['template'] = self.template
         returner["images"] = self.images
         returner["abstract"] = self.abstract
+        returner["authorID"] = self.author_id
         return returner
 
     def build_database_doc(self):
@@ -65,6 +67,7 @@ class FindingFiveStudyStoreStudy:
         returner['template'] = self.template
         returner["Images"] = self.images
         returner["Abstract"] = self.abstract
+        returner["Author_id"] = self.author_id
         return returner
 
     def get_studyId(self):
@@ -124,6 +127,9 @@ class FindingFiveStudyStoreStudy:
     def get_abstract(self):
         return self.abstract
 
+    def get_authorID(self):
+        return self.author_id
+
     def set_studyId(self, newStudyID):
         self.studyID = newStudyID
 
@@ -180,3 +186,6 @@ class FindingFiveStudyStoreStudy:
 
     def set_abstract(self, new_abstract):
         self.abstract = new_abstract
+
+    def set_authorID(self, new_authorID):
+        self.author_id = new_authorID
