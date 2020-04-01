@@ -1,6 +1,6 @@
 class FindingFiveStudyStoreStudy:
     def __init__(self, id, title, author, cost, purpose, references, categories, subcategories, keywords, num_stimuli,
-                 num_responses, randomize, duration, num_trials, rating, institution, template):
+                 num_responses, randomize, duration, num_trials, rating, institution, template, images, abstract):
         self.studyID = id
         self.title = title
         self.author = author
@@ -18,6 +18,8 @@ class FindingFiveStudyStoreStudy:
         self.rating = rating
         self.institution = institution
         self.template = template
+        self.images = images
+        self.abstract = abstract
 
     def build_dict(self):
         returner = dict()
@@ -38,6 +40,8 @@ class FindingFiveStudyStoreStudy:
         returner['rating'] = self.rating
         returner['institution'] = self.institution
         returner['template'] = self.template
+        returner["images"] = self.images
+        returner["abstract"] = self.abstract
         return returner
 
     def get_studyId(self):
@@ -91,6 +95,12 @@ class FindingFiveStudyStoreStudy:
     def get_template(self):
         return self.template
 
+    def get_images(self):
+        return self.images
+
+    def get_abstract(self):
+        return self.abstract
+
     def set_studyId(self, newStudyID):
         self.studyID = newStudyID
 
@@ -141,3 +151,9 @@ class FindingFiveStudyStoreStudy:
 
     def set_template(self, new_template):
         self.template = new_template
+
+    def set_images(self, new_images):
+        self.images = new_images
+
+    def set_abstract(self, new_abstract):
+        self.abstract = new_abstract
