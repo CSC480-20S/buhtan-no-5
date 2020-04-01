@@ -14,6 +14,8 @@ from endpoints.GetAdminDetails import GetAdminDetails
 from endpoints.GetPending import GetPending
 from endpoints.ReviewPending import ReviewPending
 from endpoints.GetPreview import GetPreview
+from endpoints.GetImage import GetImage
+from endpoints.UploadImage import UploadImage
 
 trans_bp = Blueprint('transaction', __name__)
 api = Api(trans_bp)
@@ -33,3 +35,5 @@ api.add_resource(GetAdminDetails, '/getAdminDetails')
 api.add_resource(GetPending, '/getPending')
 api.add_resource(ReviewPending, '/reviewPending')
 api.add_resource(GetPreview, '/getPreview')
+api.add_resource(GetImage, '/getImage')
+api.add_resource(UploadImage, '/uploadImage')
