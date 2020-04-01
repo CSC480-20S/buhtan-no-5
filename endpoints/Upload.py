@@ -94,7 +94,6 @@ class Upload(Resource):
         num_trials = returned_args.get("num_trials", None)
         randomize = returned_args.get("randomize", None)
         duration = returned_args.get("duration", None)
-        rating = returned_args.get("rating", None)
         institution = returned_args.get("institution", None)
         template = returned_args.get("template", None)
         images = returned_args.get("images", None)
@@ -102,7 +101,7 @@ class Upload(Resource):
         author_id = returned_args.get("author_id", None)
         study = FindingFiveStudyStoreStudy(study_id, title, author, costInCredits, purpose, references, categories,
                                            subcategories, keywords, num_stimuli, num_responses, randomize,
-                                           duration, num_trials, rating, institution, template, images, abstract, author_id)
+                                           duration, num_trials, 0, institution, template, images, abstract, author_id)
         # connect = DbConnection.connector()["Studies"]
         study_dict = study.build_database_doc()
         # connect.insert_one("Studies", study_dict).inserted_id
