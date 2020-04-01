@@ -35,7 +35,7 @@ class UploadImage(Resource):
         connection = DbConnection.connector()
         constants = connection["Constants"]
         counter = constants.find_one_and_update({"Next_Image_ID": {"$exists": True}}, {"$inc": {"Next_Image_ID": 1}})
-        image_id = counter["Next_Image_ID"]
+        image_id = str(counter["Next_Image_ID"])
 
         image_dict = {"User_id": user_id, "Image_id": image_id, "$currentDate": {"Upload Date": {"$type": "timestamp"}}, "Base64": base64}
 
