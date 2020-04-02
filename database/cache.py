@@ -1,12 +1,11 @@
 import redis
 import uuid
-from gui_endpoints.preview_study import x
 
 
 class SearchCache():
     def __init__(self):
         self.r = redis.Redis(host='localhost', port=6379, db=0)
-        self.max_set_size=400
+        self.max_set_size = 400
 
     def check_existence(self, title):
         result = self.r.exists(title)
@@ -22,18 +21,17 @@ class SearchCache():
         return False
 
     def add_new_word(self, word):
-        id = uuid.uuid5(uuid.NAMESPACE_OID, word)
+        hash_id = self.get_hash_id(word)
         pipe = self.r.pipeline()
-        pipe.hset(str(id), 'title', word)
+        pipe.hset(hash_id, 'title', word)
         # this can store multiple fields about the given title
-        pipe.hset(str(id), "data", "woobie")
+        pipe.hset(hash_id, "data", "woobie")
         # now iterate over all of the partial strings and use the partial string to map to a sorted set.
         # each sorted set will continain the id:score so it can sort the entries.
-
         try:
             for partial in self.generate_prefix(word):
-                print("tmp:" + str(uuid.uuid5(uuid.NAMESPACE_OID, partial)))
-                pipe.zadd("tmp:" + str(uuid.uuid5(uuid.NAMESPACE_OID, partial)), {str(id): 1.0})
+                print("tmp:" + hash_id)
+                pipe.zadd("tmp:" + hash_id, {hash_id: 1.0})
         except redis.exceptions.ResponseError as e:
             print(e.args)
         pipe.execute()
@@ -42,39 +40,43 @@ class SearchCache():
         for index, char in enumerate(word):
             index = index + 1
             if index == len(word):
+                # this may be old.
                 yield word[0:index] + '*'
             yield word[0:index]
 
     def search_one_word(self, input):
-        sorted_set_id = "tmp:" + str(uuid.uuid5(uuid.NAMESPACE_OID, input))
+        sorted_set_id = self.get_set_id(input)
         print(sorted_set_id)
-        for id in self.r.zrange(sorted_set_id, 0, 5):
-                print(id)
-                yield self.r.hget(id, 'title')
+        for id in self.r.zrevrange(sorted_set_id, 0, 5):
+            yield self.r.hget(id, 'title')
 
-    def update_score(self,selected_word,prefix):
-        sorted_set_id=self.get_search_id(prefix)
-        set_size=self.r.scard(sorted_set_id)
+    def update_score(self, selected_word, prefix):
+        sorted_set_id = self.get_set_id(prefix)
+        hash_id = self.get_hash_id(selected_word)
+        set_size = self.r.zcard(sorted_set_id)
         if not self.check_existence(sorted_set_id):
-            if set_size<self.max_set_size:
-                self.r.zadd(sorted_set_id,{selected_word:1})
+            if set_size < self.max_set_size:
+                self.r.zadd(sorted_set_id, {hash_id: 1})
+                self.r.hset(hash_id, "title", selected_word)
             else:
-                last_ele,score=self.r.zrange(sorted_set_id,-1,-1,withscores=True)
-                self.r.srem(sorted_set_id,last_ele)
-                self.r.zadd(sorted_set_id,{selected_word:score+1})
-        self.r.zincrby(sorted_set_id,1,selected_word)
+                last_ele, score = self.r.zrange(sorted_set_id, -1, -1, withscores=True)
+                self.r.zrem(sorted_set_id, last_ele)
+                self.r.zadd(sorted_set_id, {hash_id: score + 1})
+        self.r.zincrby(sorted_set_id, 1, hash_id)
 
-
-    def get_search_id(self, word):
+    def get_set_id(self, word):
         return "tmp:" + str(uuid.uuid5(uuid.NAMESPACE_OID, word))
+
+    def get_hash_id(self, word):
+        return str(uuid.uuid5(uuid.NAMESPACE_OID, word))
 
     def search_multiple_word(self, input):
         ''' Does not work as of 04012020'''
         words = input.split(" ")
-        print(self.get_search_id(input))
-        print(list(map(self.get_search_id, words)))
-        self.r.zinterstore(self.get_search_id(input), list(map(self.get_search_id, words)))
-        for id in self.r.zrange(self.get_search_id(input), 0, -1):
+        print(self.get_set_id(input))
+        print(list(map(self.get_set_id, words)))
+        self.r.zinterstore(self.get_set_id(input), list(map(self.get_set_id, words)))
+        for id in self.r.zrange(self.get_set_id(input), 0, -1):
             yield self.r.hget(id, 'title')
 
     def read_basic_word_file(self, cap=20):
@@ -99,12 +101,6 @@ class SearchCache():
 
 
 s = SearchCache()
-s.add_new_word("austin")
-print(str(uuid.uuid5(uuid.NAMESPACE_OID, '')))
 # s.create_basic_prefix()
-for word in s.search_one_word("za"):
+for word in s.search_one_word("moles"):
     print(word)
-# res=s.add_serach_query(x.build_dict(),"hell0 world")
-# status,study = s.check_existence("hell0 world")
-# print(status,study)
-#
