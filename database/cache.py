@@ -101,6 +101,5 @@ class SearchCache():
 
 
 s = SearchCache()
-# s.create_basic_prefix()
 for word in s.search_one_word("moles"):
     print(word)
