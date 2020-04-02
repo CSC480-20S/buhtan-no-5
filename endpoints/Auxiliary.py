@@ -24,7 +24,7 @@ def getStudy(study_id):
     return f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"], seek["References"],
                    seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
-                   seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"])
+                   seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"], seek["Upload Date"])
 
 
 def getTemplate(study_id):
@@ -86,7 +86,7 @@ def getStudies(params, maxStudies=-1):
                     study["References"],
                     study["Categories"], study["Sub_Categories"], study["Keywords"], study["Num_Stimuli"],
                     study["Num_Responses"], study["Randomize"], study["Duration"], study["Num_trials"], study["Rating"],
-                    study["Institution"], "Template redacted", [], study["Abstract"], study["Author_id"]))
+                    study["Institution"], "Template redacted", [], study["Abstract"], study["Author_id"], study["Upload Date"]))
     return studyList
 
 
