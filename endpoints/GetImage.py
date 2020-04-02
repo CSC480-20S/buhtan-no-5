@@ -3,7 +3,7 @@ from flask_restful import Resource, reqparse, inputs
 from endpoints import Auxiliary
 from database import DbConnection
 
-class UploadImage(Resource):
+class GetImage(Resource):
 
     @Auxiliary.auth_dec
     def get(self):
