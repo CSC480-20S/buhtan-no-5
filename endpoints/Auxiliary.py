@@ -90,6 +90,23 @@ def getStudies(params, maxStudies=-1):
     return studyList
 
 
+def studyListToDictList(study_list):
+    """Converts the output from GetStudies to jsonify-ready form.
+
+    Args:
+        study_list (List<FindingFiveStudyStoreStudy>): A list of study objects to convert.
+
+
+    Returns:
+        List<Dict>: A list of dictionaries containing the fields from the studies given.
+    """
+    # code adapted from gui_endpoints/preview_study
+    built_json = list()
+    for study in study_list:
+        built_json.append(study.build_dict())
+    return built_json
+
+
 def getUser(user_id):
     """Grabs a user given its ID.
 
