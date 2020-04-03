@@ -31,7 +31,6 @@ class SearchCache():
         try:
             for partial in self.generate_prefix(word):
                 set_id=self.get_set_id(partial)
-                print("tmp:" + hash_id)
                 pipe.zadd(set_id, {hash_id: 1.0})
         except redis.exceptions.ResponseError as e:
             print(e.args)
@@ -81,10 +80,10 @@ class SearchCache():
             yield self.r.hget(id, 'title')
 
     def read_basic_word_file(self, cap=20):
-        with open("/usr/share/dict/words", "r") as f:
+        with open("../deployment/corpus/master.txt", "r") as f:
             for line in f:
                 word = line.strip()
-                if len(word) > cap:
+                if len(word) > cap or  word.isspace():
                     pass
                 yield line.strip()
 
