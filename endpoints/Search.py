@@ -127,9 +127,7 @@ class Search(Resource):
         # query database
         studyList = Auxiliary.getStudies(params, limit)
         # convert output
-        out = {}
-        for i, study in enumerate(studyList):
-            out[i] = study.build_dict()
+        out = Auxiliary.studyListToDictList(studyList)
         # return converted output
         return jsonify(out)
 
