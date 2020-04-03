@@ -2,20 +2,22 @@ import os
 from datetime import datetime
 from flask import jsonify
 
-path = os.getenv('HOME') + '/csc480/deployment/logs/'
+path = os.getenv('HOME') + '/csc480/deployment/logs'
 
 
 def handle_auth(e):
-    return jsonify(error=str(e)), 401
+    write_log(e)
+    return jsonify({'error':str(e),'help':"Please Try again with an additional Token."}), 401
 
 
 def malformed_url_query(e):
     '''Raised when the Redis Cache queries return None.'''
+    write_log(e)
     return jsonify(error=str(e)), 501
 
 def write_log(msg):
     curr_date = datetime.today().strftime('%Y-%m-%d-%H-%M %Z')
-    with open(path + curr_date + ".log", "w+") as f:
+    with open(path + curr_date + ".excep", "w+") as f:
         f.write(str(msg))
         f.write("\n")
 
