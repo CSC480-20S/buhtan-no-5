@@ -5,7 +5,7 @@ from endpoints import Auxiliary
 
 class Status(Resource):
     def __init__(self):
-        self.path= os.getenv('HOME')+'/csc480/deployment/logs/'
+        self.path= os.getenv('HOME')+'/csc480/deployment/logs'
     @Auxiliary.auth_dec
     def get(self):
         process = subprocess.Popen(['git', 'log' ,'-1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -25,5 +25,5 @@ class Status(Resource):
 
     def read_most_recent(self):
         file_path=self.get_most_recent_log()
-        with open(file_path,'w+') as f:
-            return f.read()
+        with open(file_path,'r') as f:
+            return str(f.readlines())
