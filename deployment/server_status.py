@@ -21,7 +21,7 @@ class Status(Resource):
     def get_most_recent_log(self):
         files=os.listdir(self.path)
         full_paths=[os.path.join(self.path,file) for file in files]
-        return max(full_paths,key=os.path.getctime())
+        return max(full_paths,key=os.path.getctime)
 
     def read_most_recent(self):
         file_path=self.get_most_recent_log()
