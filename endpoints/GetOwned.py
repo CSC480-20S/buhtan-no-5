@@ -27,8 +27,6 @@ class GetOwned(Resource):
         params = {"Study_id": {"$in": search}}
         studyList = Auxiliary.getStudies(params)
         # convert output
-        out = {}
-        for i, study in enumerate(studyList):
-            out[i] = study.build_dict()
+        out = Auxiliary.studyListToDictList(studyList)
         # return converted output
         return jsonify(out)

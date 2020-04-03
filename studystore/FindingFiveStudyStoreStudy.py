@@ -1,6 +1,6 @@
 class FindingFiveStudyStoreStudy:
     def __init__(self, id, title, author, cost, purpose, references, categories, subcategories, keywords, num_stimuli,
-                 num_responses, randomize, duration, num_trials, rating, institution, template, images, abstract, author_id):
+                 num_responses, randomize, duration, num_trials, rating, institution, template, images, abstract, author_id, upload_date=None):
         self.studyID = id
         self.title = title
         self.author = author
@@ -21,6 +21,7 @@ class FindingFiveStudyStoreStudy:
         self.images = images
         self.abstract = abstract
         self.author_id = author_id
+        self.upload_date = upload_date
 
     def build_dict(self):
         returner = dict()
@@ -44,6 +45,8 @@ class FindingFiveStudyStoreStudy:
         returner["images"] = self.images
         returner["abstract"] = self.abstract
         returner["authorID"] = self.author_id
+        if self.upload_date is not None:
+            returner["upload_date"] = self.upload_date
         return returner
 
     def build_database_doc(self):
@@ -68,6 +71,7 @@ class FindingFiveStudyStoreStudy:
         returner["Images"] = self.images
         returner["Abstract"] = self.abstract
         returner["Author_id"] = self.author_id
+        returner["$currentDate"] = {"Upload Date": True}
         return returner
 
     def get_studyId(self):
@@ -130,6 +134,9 @@ class FindingFiveStudyStoreStudy:
     def get_authorID(self):
         return self.author_id
 
+    def get_uploadDate(self):
+        return self.upload_date
+
     def set_studyId(self, newStudyID):
         self.studyID = newStudyID
 
@@ -189,3 +196,6 @@ class FindingFiveStudyStoreStudy:
 
     def set_authorID(self, new_authorID):
         self.author_id = new_authorID
+
+    def set_uploadDate(self, new_uploadDate):
+        self.upload_date = new_uploadDate
