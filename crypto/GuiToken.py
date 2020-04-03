@@ -60,8 +60,8 @@ class Generator(Resource):
             payload = jwt.decode(alleged_token, self.key)
             return payload['sub']
         except jwt.InvalidTokenError as e:
-             abort(401,e)
+             abort(401,message=e)
         except jwt.DecodeError as e:
-            return (401,e)
+            return (401,message=e)
         except jwt.exceptions.InvalidSignatureError as e:
-            return (401,e)
+            return (401,message=e)
