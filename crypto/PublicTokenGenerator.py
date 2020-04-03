@@ -29,7 +29,7 @@ class TokenService():
         """
         env_path = os.path.abspath(os.path.dirname(__file__))
         print(env_path)
-        location = os.path.join(env_path, '.env')
+        location = os.path.join(env_path, 'secrets')
         load_dotenv(dotenv_path=location)
         secret_key = os.getenv('SECRET')
         if secret_key is None:

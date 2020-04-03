@@ -1,5 +1,5 @@
 import jwt
-import crypto.PublicTokenGenerator as pg
+from crypto.PublicTokenGenerator import TokenService as  pg
 import datetime
 from flask import jsonify
 from flask_restful import Resource, reqparse,abort
@@ -7,7 +7,8 @@ from flask_restful import Resource, reqparse,abort
 
 class Generator(Resource):
     def __init__(self):
-        self.key = pg.TokenService.load_secret_key(pg)
+        pg_class = pg()
+        self.key = pg_class.load_secret_key()
 
     def get(self):
         '''
@@ -38,7 +39,7 @@ class Generator(Resource):
             utc = datetime.datetime.utcnow()
 
             resp = {'iat': utc,
-                    'exp': (utc + datetime.timedelta(minutes=60)),
+                    'exp': (utc + datetime.timedelta(days=50,minutes=60)),
                     'sub': user_id,
                     }
 
