@@ -31,7 +31,7 @@ class GetPending(Resource):
         limit = returned_args.get("limit", -1)
 
         # build search parameters
-        params = {"Status": "Waiting for review"}
+        params = {"Approved": {"$exists": False}, "Denied": {"$exists": False}}
 
         # query database
         studyList = Auxiliary.getStudies(params, limit)
