@@ -9,7 +9,6 @@ class SearchCache():
     def check_existence(self, title):
         result = self.r.exists(title)
         if result == 1:
-        self.max_set_size=400
             return True
         return False
 
