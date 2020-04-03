@@ -45,7 +45,7 @@ class FindingFiveStudyStoreStudy:
         returner["images"] = self.images
         returner["abstract"] = self.abstract
         returner["authorID"] = self.author_id
-        if upload_date is not None:
+        if self.upload_date is not None:
             returner["upload_date"] = self.upload_date
         return returner
 
