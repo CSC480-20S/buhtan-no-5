@@ -99,8 +99,3 @@ class SearchCache():
 # If string is more than one word, split into individual and then take the intersection of
 # all the sorted sets.
 # Then iterate over the zrange return and hget with the associated key to get the string recomendation
-
-
-s = SearchCache()
-for word in s.search_one_word("moles"):
-    print(word)
