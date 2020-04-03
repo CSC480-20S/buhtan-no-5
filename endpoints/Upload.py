@@ -104,9 +104,9 @@ class Upload(Resource):
                                            duration, num_trials, 0, institution, template, images, abstract, author_id)
         # connect = DbConnection.connector()["Studies"]
         study_dict = study.build_database_doc()
-        # connect.insert_one("Studies", study_dict).inserted_id
 
-        DbConnection.connector()["Studies"].insert(study_dict)
+        # using update_one so that we can use update operations to establish the upload date.
+        DbConnection.connector()["Studies"].update_one({"Study_id": study_id}, study_dict, upsert=True)
 
         # seek = connect.find_one(study, ["Template"])
         # return seek["Template"]
