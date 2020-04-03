@@ -30,8 +30,9 @@ class SearchCache():
         # each sorted set will continain the id:score so it can sort the entries.
         try:
             for partial in self.generate_prefix(word):
+                set_id=self.get_set_id(partial)
                 print("tmp:" + hash_id)
-                pipe.zadd("tmp:" + hash_id, {hash_id: 1.0})
+                pipe.zadd(set_id, {hash_id: 1.0})
         except redis.exceptions.ResponseError as e:
             print(e.args)
         pipe.execute()
@@ -91,7 +92,9 @@ class SearchCache():
         for word in self.read_basic_word_file(20):
             self.add_new_word(word)
 
-
+if __name__=="__main__":
+    s=SearchCache()
+    s.create_basic_prefix()
 # schema a hash entry where its string:"" and id:""
 # First create prefixes before launching redis
 # Accept some string from the user and create an associated score and the id
