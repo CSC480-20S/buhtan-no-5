@@ -67,7 +67,7 @@ class FindingFiveStudyStoreStudy:
         returner['Duration'] = self.duration
         returner['Rating'] = self.rating
         returner['Institution'] = self.institution
-        returner['template'] = self.template
+        returner['Template'] = self.template
         returner["Images"] = self.images
         returner["Abstract"] = self.abstract
         returner["Author_id"] = self.author_id
