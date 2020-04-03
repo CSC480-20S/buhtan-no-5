@@ -60,8 +60,8 @@ class Generator(Resource):
             payload = jwt.decode(alleged_token, self.key)
             return payload['sub']
         except jwt.InvalidTokenError as e:
-            return {'msg': "Invalid token.Please try again.", 'err': e}
+             abort(401,e)
         except jwt.DecodeError as e:
-            return {'msg': "Error decoding the token. Please try again.", 'err': e}
+            return (401,e)
         except jwt.exceptions.InvalidSignatureError as e:
-            return {'msg': "Expired Signature, Please try again", 'err': e}
+            return (401,e)
