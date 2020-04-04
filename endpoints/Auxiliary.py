@@ -107,6 +107,27 @@ def studyListToDictList(study_list):
     return built_json
 
 
+def createUser(user):
+    """Creates a new user in the database.
+
+    If the user already exists, do nothing.
+    A user object can be created with just a user ID.
+
+    Args:
+        user (FindingFiveStudyStoreUser): The user object to store.
+
+    Returns:
+        Boolean: True if the user was created, False if they user was already present."""
+
+    connect = DbConnection.connector()["Users"]
+    filter = {"User_id": user.get_userId}
+    update = {"$setOnInsert": user.build_database_doc()}
+    # this should be returning the "pre-update" doc, which will be None if nothing matches the filter.
+    result = connect.find_one_and_update(filter, update, upsert=True)
+    return result is None
+
+
+
 def getUser(user_id):
     """Grabs a user given its ID.
 
