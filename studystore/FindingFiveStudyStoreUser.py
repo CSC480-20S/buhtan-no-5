@@ -1,5 +1,5 @@
 class FindingFiveStudyStoreUser:
-    def __init__(self, userID, numCredits, ownedStudies, viewedStudies, wishList, authorList):
+    def __init__(self, userID, numCredits=0, ownedStudies=[], viewedStudies=[], wishList=[], authorList=[]):
         self.userID = userID
         self.numCredits = numCredits
         self.ownedStudies = ownedStudies  # list of FFSS studies
