@@ -7,6 +7,16 @@ class FindingFiveStudyStoreUser:
         self.wishList = wishList  # wish list of FFSS studies
         self.authorList = authorList
 
+    def build_database_doc(self):
+        returner = dict()
+        returner['User_id'] = self.userID
+        returner['Num Credits'] = self.numCredits
+        returner['Owned Studies'] = self.ownedStudies
+        returner['Viewed Studies'] = self.viewedStudies
+        returner['Wish List'] = self.wishList
+        returner['Author List'] = self.authorList
+        return returner
+
     def get_userId(self):
         return self.userID
 
