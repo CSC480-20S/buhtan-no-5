@@ -285,8 +285,11 @@ def addNotification(user_id, title, body, type):
     """
     connect = DbConnection.connector()["Notifications"]
     notification = {"User_id": user_id, "Title": title, "Body": body, "Type": type}
-    notification["$currentDate"] = {"Timestamp": {"$type": "timestamp"}}
     connect.insert(notification)
+    timeUpdate = {"$currentDate": {"Timestamp": {"$type": "timestamp"}}}
+    notificationFinder = notification
+    notificationFinder["Timestamp"] = {"$exists": False}
+    connect.update_one(notificationFinder, timeUpdate, upsert=True)
 
 
 def timestampAndGetAuthor(study_id, field_name):
