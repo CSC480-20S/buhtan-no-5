@@ -253,10 +253,10 @@ def addViewed(user_id, study_id):
 def addWishlist(user_id, study_id):
     """"Adds a study to a user's wish list of studies.
 
-    Adds the study to the end of the list, even if viewed before.
+    Adds the study to the end of the list, unless already in the wish list.
 
     Args:
-        user_id (String): The ID of the user viewing the study.
+        user_id (String): The ID of the user wish listing the study.
         study_id (int): The ID of the study being saved to the wish list.
 
     Returns:
@@ -265,7 +265,26 @@ def addWishlist(user_id, study_id):
 
     connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id}
-    lister = {"$push": {"Wish List": study_id}}
+    lister = {"$addToSet": {"Wish List": study_id}}
+    connect.update_one(user, lister)
+
+
+def removeWishlist(user_id, study_id):
+    """Removes a study from a user's wish list of studies.
+
+    Removes all occurences in the list.
+
+    Args:
+        user_id (String): The ID of the user removing the study from the wish list.
+        study_id (int): The ID of the study being removed from the wish list.
+
+    Returns:
+        Nothing.
+    """
+
+    connect = DbConnection.connector()["Users"]
+    user = {"User_id": user_id}
+    lister = {"$pull": {"Wish List": study_id}}
     connect.update_one(user, lister)
 
 
