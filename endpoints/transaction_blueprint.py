@@ -17,6 +17,8 @@ from endpoints.GetPreview import GetPreview
 from endpoints.GetImage import GetImage
 from endpoints.UploadImage import UploadImage
 from endpoints.suggestions import TextSuggestion
+from endpoints.AddWishlist import AddWishlist
+from endpoints.RemoveWishlist import RemoveWishlist
 
 trans_bp = Blueprint('transaction', __name__)
 api = Api(trans_bp)
@@ -39,3 +41,5 @@ api.add_resource(GetPreview, '/getPreview')
 api.add_resource(GetImage, '/getImage')
 api.add_resource(UploadImage, '/uploadImage')
 api.add_resource(TextSuggestion,'/suggestion')
+api.add_resource(AddWishlist, '/addWishlist')
+api.add_resource(RemoveWishlist, '/removeWishlist')
