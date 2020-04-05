@@ -28,5 +28,5 @@ class AddWishlist(Resource):
 
         # update the user data
         Auxiliary.addWishlist(user_id, study_id)
-        # return the cost
+        # return success
         return jsonify({"Success": True})
