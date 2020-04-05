@@ -71,8 +71,10 @@ class FindingFiveStudyStoreStudy:
         returner["Images"] = self.images
         returner["Abstract"] = self.abstract
         returner["Author_id"] = self.author_id
-        returner["$currentDate"] = {"Upload Date": True}
-        return returner
+        out = dict()
+        out["$set"] = returner
+        out["$currentDate"] = {"Upload Date": True}
+        return out
 
     def get_studyId(self):
         return self.studyID
