@@ -6,7 +6,7 @@ from database import DbConnection
 class UploadImage(Resource):
 
     @Auxiliary.auth_dec
-    def post(self):
+    def post(self,**kwargs):
         """Uploads a new image to the database.
 
         Uploaded images are assigned a String ID, which is returned.

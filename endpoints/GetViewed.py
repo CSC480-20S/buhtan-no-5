@@ -5,7 +5,7 @@ from endpoints import Auxiliary
 
 class GetViewed(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Returns the list of .studies viewed by a user.
 
         Returns all studies viewed by a user.

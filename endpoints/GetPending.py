@@ -8,7 +8,7 @@ from endpoints import Auxiliary
 
 class GetPending(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Provides a list of pending studies from the database.
 
             Provides a list of studies, in JSON format, that have been neither approved nor denied.
