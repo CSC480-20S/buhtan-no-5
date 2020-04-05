@@ -8,7 +8,7 @@ from endpoints import Auxiliary
 
 class ReviewPending(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Reviews a pending study.
 
             Approves or denies a given study.

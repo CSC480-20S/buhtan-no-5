@@ -324,6 +324,7 @@ def auth_dec(func):
         resp = gen.authenticate_token(returned_args['token'])
         if type(resp) is dict:
             abort(401, description=resp['msg'])
+        kwargs["user_id"]=resp
         value = func(*args, **kwargs)
         return value
     return wrapper

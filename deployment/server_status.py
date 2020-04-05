@@ -5,9 +5,9 @@ from endpoints import Auxiliary
 
 class Status(Resource):
     def __init__(self):
-        self.path= os.getenv('HOME')+'/csc480/deployment/logs'
+        self.path= os.getenv('HOME')+'/csc480/deployment/excep'
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         process = subprocess.Popen(['git', 'log' ,'-1'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         try:
             stdout, stderr = process.communicate(timeout=20)  # believe this is blocking

@@ -7,7 +7,7 @@ from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
 class Upload(Resource):
 
     @Auxiliary.auth_dec
-    def post(self):
+    def post(self,**kwargs):
         """Uploads a new study to the database.
 
         Uploaded studies are not visible in the store's search results until they are approved by an administrator.

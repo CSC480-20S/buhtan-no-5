@@ -5,7 +5,7 @@ from endpoints import Auxiliary
 
 class Deliver(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Returns the study template.
 
             Returns the template of the indicated study only if the indicated user owns that study.

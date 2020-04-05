@@ -9,7 +9,7 @@ class TextSuggestion(Resource):
         self.s = SearchCache()
 
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         parser = self.create_parser()
         ret = parser.parse_args()
         user_entry = ret.get("query", "med")
@@ -19,7 +19,7 @@ class TextSuggestion(Resource):
         return jsonify({"suggestions": result})
 
     @Auxiliary.auth_dec
-    def post(self):
+    def post(self,**kwargs):
         parser = self.create_parser()
 
         ret = parser.parse_args()
