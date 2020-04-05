@@ -32,7 +32,7 @@ class SearchCache():
             for partial in self.generate_prefix(word):
                 set_id=self.get_set_id(partial)
                 pipe.zadd(set_id, {hash_id: 1.0})
-        except redis.exceptions.ResponseError as e:
+        except suggestions.exceptions.ResponseError as e:
             print(e.args)
         pipe.execute()
 

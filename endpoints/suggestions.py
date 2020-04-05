@@ -1,7 +1,7 @@
 from endpoints import Auxiliary
-from database.cache import SearchCache
+from suggestions.prefix_cache import SearchCache
 from flask import jsonify, abort
-from flask_restful import Resource, reqparse, inputs
+from flask_restful import Resource, reqparse
 
 
 class TextSuggestion(Resource):
