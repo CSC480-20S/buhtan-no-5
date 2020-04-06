@@ -19,22 +19,25 @@ class SearchCache():
             return True
         return False
 
+    def add_new_study_store(self,study):
+        #this will store the study store
+        return -1
 
     def add_new_word(self, word):
         hash_id = self.get_hash_id(word)
         pipe = self.r.pipeline()
-        pipe.hset(hash_id, 'title', word)
-        # this can store multiple fields about the given title
-        pipe.hset(hash_id, "data", "woobie")
-        # now iterate over all of the partial strings and use the partial string to map to a sorted set.
-        # each sorted set will continain the id:score so it can sort the entries.
-        try:
-            for partial in self.generate_prefix(word):
-                set_id=self.get_set_id(partial)
-                pipe.zadd(set_id, {hash_id: 1.0})
-        except redis.exceptions.ResponseError as e:
-            print(e.args)
-        pipe.execute()
+        if not self.check_existence(word):
+            pipe.hset(hash_id, 'title', word)
+            # this can store multiple fields about the given title
+            # now iterate over all of the partial strings and use the partial string to map to a sorted set.
+            # each sorted set will continain the id:score so it can sort the entries.
+            try:
+                for partial in self.generate_prefix(word):
+                    set_id=self.get_set_id(partial)
+                    pipe.zadd(set_id, {hash_id: 1.0})
+            except redis.exceptions.ResponseError as e:
+                print(e.args)
+            pipe.execute()
 
     def generate_prefix(self, word):
         for index, char in enumerate(word):

@@ -72,6 +72,10 @@ class ClientServer(Resource):
             return response.json()
         return response.content
 
+def test_queue(self):
+    i=0
+    for i in range(200):
+        i = i*2
 
 api.add_resource(ClientServer, '/simulate')
 
