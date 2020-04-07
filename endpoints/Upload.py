@@ -7,7 +7,7 @@ from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
 class Upload(Resource):
 
     @Auxiliary.auth_dec
-    def post(self):
+    def post(self,**kwargs):
         """Uploads a new study to the database.
 
         Uploaded studies are not visible in the store's search results until they are approved by an administrator.
@@ -108,11 +108,7 @@ class Upload(Resource):
         # using update_one so that we can use update operations to establish the upload date.
         DbConnection.connector()["Studies"].update_one({"Study_id": study_id}, study_dict, upsert=True)
 
-        # seek = connect.find_one(study, ["Template"])
-        # return seek["Template"]
+        # update the author and ownenship information of the uploading user
+        Auxiliary.addAuthored(author_id, study_id)
 
-        # user = Auxiliary.getUser(author)
-
-        # Auxiliary.addOwned(user, study_id, 1)
-        # todo : eventually there will be a "Auxiliary.addAuthored() method.
         return jsonify({"study_id": study_id})

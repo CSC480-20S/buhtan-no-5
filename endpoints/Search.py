@@ -8,7 +8,7 @@ from endpoints import Auxiliary
 
 class Search(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Provides a list of studies from the database.
 
             Provides a list of studies, in JSON format, that meet some specified requirements.

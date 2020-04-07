@@ -6,7 +6,7 @@ from database import DbConnection
 class GetImage(Resource):
 
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """Returns an image from the database.
 
         Returns the image specified by image_id in base64 format.

@@ -107,6 +107,27 @@ def studyListToDictList(study_list):
     return built_json
 
 
+def createUser(user):
+    """Creates a new user in the database.
+
+    If the user already exists, do nothing.
+    A user object can be created with just a user ID.
+
+    Args:
+        user (FindingFiveStudyStoreUser): The user object to store.
+
+    Returns:
+        Boolean: True if the user was created, False if they user was already present."""
+
+    connect = DbConnection.connector()["Users"]
+    filter = {"User_id": user.get_userId}
+    update = {"$setOnInsert": user.build_database_doc()}
+    # this should be returning the "pre-update" doc, which will be None if nothing matches the filter.
+    result = connect.find_one_and_update(filter, update, upsert=True)
+    return result is None
+
+
+
 def getUser(user_id):
     """Grabs a user given its ID.
 
@@ -169,6 +190,26 @@ def addOwned(user_id, study_id, cost):
     connect.update_one(user, changes)
 
 
+def addAuthored(user_id, study_id):
+    """Marks a user as being the author of a study.
+
+    Also marks the user as being an owner of that study.
+    Does not change the study itself.
+    Intended for use with /upload.
+
+    Args:
+        user_id (String): The ID of the user authoring the study.
+        study_id (Integer): The ID of the study being uploaded.
+
+    Returns:
+        Nothing."""
+
+    connect = DbConnection.connector()["Users"]
+    user = {"User_id": user_id}
+    changes = {"$addToSet": {"Owned Studies": study_id, "Author List": study_id}}
+    connect.update_one(user, changes)
+
+
 def isOwned(user_id, study_id):
     """"Returns the ownership status of the study.
 
@@ -212,10 +253,10 @@ def addViewed(user_id, study_id):
 def addWishlist(user_id, study_id):
     """"Adds a study to a user's wish list of studies.
 
-    Adds the study to the end of the list, even if viewed before.
+    Adds the study to the end of the list, unless already in the wish list.
 
     Args:
-        user_id (String): The ID of the user viewing the study.
+        user_id (String): The ID of the user wish listing the study.
         study_id (int): The ID of the study being saved to the wish list.
 
     Returns:
@@ -224,8 +265,28 @@ def addWishlist(user_id, study_id):
 
     connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id}
-    lister = {"$push": {"Wish List": study_id}}
+    lister = {"$addToSet": {"Wish List": study_id}}
     connect.update_one(user, lister)
+
+
+def removeWishlist(user_id, study_id):
+    """Removes a study from a user's wish list of studies.
+
+    Removes all occurences in the list.
+
+    Args:
+        user_id (String): The ID of the user removing the study from the wish list.
+        study_id (int): The ID of the study being removed from the wish list.
+
+    Returns:
+        Nothing.
+    """
+
+    connect = DbConnection.connector()["Users"]
+    user = {"User_id": user_id}
+    lister = {"$pull": {"Wish List": study_id}}
+    connect.update_one(user, lister)
+
 
 def addNotification(user_id, title, body, type):
     """"Posts a notification to the database.
@@ -243,8 +304,12 @@ def addNotification(user_id, title, body, type):
     """
     connect = DbConnection.connector()["Notifications"]
     notification = {"User_id": user_id, "Title": title, "Body": body, "Type": type}
-    notification["$currentDate"] = {"Timestamp": {"$type": "timestamp"}}
     connect.insert(notification)
+    timeUpdate = {"$currentDate": {"Timestamp": {"$type": "timestamp"}}}
+    notificationFinder = notification
+    notificationFinder["Timestamp"] = {"$exists": False}
+    connect.update_one(notificationFinder, timeUpdate, upsert=True)
+
 
 def timestampAndGetAuthor(study_id, field_name):
     """"Adds a timestamp to a study and returns the author ID of that study.
@@ -267,6 +332,7 @@ def timestampAndGetAuthor(study_id, field_name):
                                         ["Author_id"])
     return study["Author_id"]
 
+
 def auth_dec(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -277,6 +343,7 @@ def auth_dec(func):
         resp = gen.authenticate_token(returned_args['token'])
         if type(resp) is dict:
             abort(401, description=resp['msg'])
+        kwargs["user_id"]=resp
         value = func(*args, **kwargs)
         return value
     return wrapper

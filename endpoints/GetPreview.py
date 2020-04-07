@@ -8,7 +8,7 @@ from endpoints import Auxiliary
 
 class GetPreview(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Provides the full details for a study from the database to a user.
 
             Provides a study, in JSON format, with all fields of data except the template, given the ID of the study.

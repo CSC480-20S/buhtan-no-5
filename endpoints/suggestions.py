@@ -1,25 +1,27 @@
 from endpoints import Auxiliary
-from database.cache import SearchCache
+from suggestions.prefix_cache import SearchCache
+from suggestions.task_queue import TaskQueue
 from flask import jsonify, abort
-from flask_restful import Resource, reqparse, inputs
+from flask_restful import Resource, reqparse
 
 
 class TextSuggestion(Resource):
     def __init__(self):
         self.s = SearchCache()
-
+        self.tq = TaskQueue()
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         parser = self.create_parser()
         ret = parser.parse_args()
         user_entry = ret.get("query", "med")
         result = list()
+        self.tq.add_function(self.s.add_new_word,user_entry)
         for suggest in self.s.search_one_word(user_entry):
             result.append(str(suggest))
         return jsonify({"suggestions": result})
 
     @Auxiliary.auth_dec
-    def post(self):
+    def post(self,**kwargs):
         parser = self.create_parser()
 
         ret = parser.parse_args()

@@ -8,7 +8,7 @@ from endpoints import Auxiliary
 
 class GetAdminDetails(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Provides the full details for a study from the database.
 
             Provides a study, in JSON format, with all fields of data, given the ID of the study.

@@ -19,23 +19,25 @@ class SearchCache():
             return True
         return False
 
+    def add_new_study_store(self,study):
+        #this will store the study store
+        return -1
 
     def add_new_word(self, word):
         hash_id = self.get_hash_id(word)
         pipe = self.r.pipeline()
-        pipe.hset(hash_id, 'title', word)
-        # this can store multiple fields about the given title
-        pipe.hset(hash_id, "data", "woobie")
-        # now iterate over all of the partial strings and use the partial string to map to a sorted set.
-        # each sorted set will continain the id:score so it can sort the entries.
-        try:
-            for partial in self.generate_prefix(word):
-                set_id=self.get_set_id(partial)
-                print("tmp:" + hash_id)
-                pipe.zadd(set_id, {hash_id: 1.0})
-        except redis.exceptions.ResponseError as e:
-            print(e.args)
-        pipe.execute()
+        if not self.check_existence(word):
+            pipe.hset(hash_id, 'title', word)
+            # this can store multiple fields about the given title
+            # now iterate over all of the partial strings and use the partial string to map to a sorted set.
+            # each sorted set will continain the id:score so it can sort the entries.
+            try:
+                for partial in self.generate_prefix(word):
+                    set_id=self.get_set_id(partial)
+                    pipe.zadd(set_id, {hash_id: 1.0})
+            except redis.exceptions.ResponseError as e:
+                print(e.args)
+            pipe.execute()
 
     def generate_prefix(self, word):
         for index, char in enumerate(word):
@@ -81,10 +83,10 @@ class SearchCache():
             yield self.r.hget(id, 'title')
 
     def read_basic_word_file(self, cap=20):
-        with open("/usr/share/dict/words", "r") as f:
+        with open("../deployment/corpus/master.txt", "r") as f:
             for line in f:
                 word = line.strip()
-                if len(word) > cap:
+                if len(word) > cap or  word.isspace():
                     pass
                 yield line.strip()
 

@@ -5,7 +5,7 @@ from endpoints import Auxiliary
 
 class IsOwned(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Returns the ownership status of the study.
 
             Returns true only if the indicated user owns the indicated study,

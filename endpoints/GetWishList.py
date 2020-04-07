@@ -5,7 +5,7 @@ from endpoints import Auxiliary
 
 class GetWishList(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Returns the list of .wishList studies by a user.
 
         Returns the wish list of studies saved by a user.

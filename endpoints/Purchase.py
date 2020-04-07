@@ -5,7 +5,7 @@ from endpoints import Auxiliary
 
 class Purchase(Resource):
     @Auxiliary.auth_dec
-    def get(self):
+    def get(self,**kwargs):
         """"Establishes an owns relationship between a study and a user.
 
             Establishes the owns relationship only if the user has sufficient credits and doesn't already own the study.
