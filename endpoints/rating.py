@@ -1,7 +1,8 @@
+from database import DbConnection
 def ratingsys(id, user, rate, comment):
     # id is the Study_id of the study to be rated along with rate being the rate being processed
     ratelist = []
-    connect = connector()
+    connect = DbConnection.connector()
     review = connect["Reviews"]
     rater = connect["Studies"]
     query = review.find({"Study_id": id})
