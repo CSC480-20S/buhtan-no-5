@@ -43,7 +43,5 @@ api.add_resource(GetImage, '/getImage')
 api.add_resource(UploadImage, '/uploadImage')
 api.add_resource(TextSuggestion, '/suggestion')
 api.add_resource(Recommendation, '/recommendation')
-
-api.add_resource(TextSuggestion,'/suggestion')
 api.add_resource(AddWishlist, '/addWishlist')
 api.add_resource(RemoveWishlist, '/removeWishlist')

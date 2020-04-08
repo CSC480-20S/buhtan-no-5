@@ -5,7 +5,10 @@ from crypto.GuiToken import Generator
 from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
+from typing import Union
 
+
+# depricated ?
 def getStudy(study_id):
     """Grabs a study given its ID.
 
@@ -21,17 +24,42 @@ def getStudy(study_id):
     connect = DbConnection.connector()["Studies"]
     study = {"Study_id": study_id}
     seek = connect.find_one(study)
+
+    return f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"],
+                   seek["References"],
+                   seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
+                   seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
+                   seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"],
+                   seek["Upload Date"])
+
+
+def getOptionalStudy(study_id: int) -> Union[f5study, None]:
+    """Grabs a study given its ID.
+
+    Pulls from the database and returns a FindingFiveStudyStoreStudy object.
+
+    Args:
+        study_id (int): The ID assigned to a study at upload.
+
+    Returns:
+        Optional FindingFiveStudyStoreStudy: The associated study in the database.
+    """
+    connect = DbConnection.connector()["Studies"]
+    study = {"Study_id": study_id}
+    seek = connect.find_one(study)
+
     try:
-        retobj = f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"],
-                         seek["References"],
-                         seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
-                         seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
-                         seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"],
-                         seek["Upload Date"])
-        return retobj
-    except AttributeError as e:
-        print(str(e))
+        return f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"],
+                   seek["References"],
+                   seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
+                   seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
+                   seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"],
+                   seek["Upload Date"])
+    except (AttributeError, TypeError):
         return None
+
+
+
 
 
 def getTemplate(study_id):
@@ -93,7 +121,8 @@ def getStudies(params, maxStudies=-1):
                     study["References"],
                     study["Categories"], study["Sub_Categories"], study["Keywords"], study["Num_Stimuli"],
                     study["Num_Responses"], study["Randomize"], study["Duration"], study["Num_trials"], study["Rating"],
-                    study["Institution"], "Template redacted", [], study["Abstract"], study["Author_id"], study["Upload Date"]))
+                    study["Institution"], "Template redacted", [], study["Abstract"], study["Author_id"],
+                    study["Upload Date"]))
     return studyList
 
 
@@ -132,7 +161,6 @@ def createUser(user):
     # this should be returning the "pre-update" doc, which will be None if nothing matches the filter.
     result = connect.find_one_and_update(filter, update, upsert=True)
     return result is None
-
 
 
 def getUser(user_id):
@@ -256,7 +284,7 @@ def addViewed(user_id, study_id):
     lister = {"$push": {"Viewed Studies": study_id}}
     connect.update_one(user, lister)
 
-    
+
 def addWishlist(user_id, study_id):
     """"Adds a study to a user's wish list of studies.
 
@@ -350,9 +378,10 @@ def auth_dec(func):
         resp = gen.authenticate_token(returned_args['token'])
         if type(resp) is dict:
             abort(401, description=resp['msg'])
-        kwargs["user_id"]=resp
+        kwargs["user_id"] = resp
         value = func(*args, **kwargs)
         return value
+
     return wrapper
 
 
@@ -363,5 +392,3 @@ def time_backend(func):
         res = func(*args, **kwargs)
         end = time.perf_counter()
         return jsonify({"time": end - start})
-
-
