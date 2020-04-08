@@ -1,8 +1,10 @@
 import os
 from datetime import datetime
 from flask import jsonify
+from pathlib import Path
 
-path = os.getenv('HOME') + '/csc480/deployment/excep/'
+home = str(Path.home())
+path = home + '/csc480/deployment/excep/'
 
 
 def handle_auth(e):

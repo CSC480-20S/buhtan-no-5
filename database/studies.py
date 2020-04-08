@@ -70,9 +70,11 @@ class EndPointOwnedStudies(Resource):
         user = {"User_id": user_id}
         seek = connect.find_one(user)
         search = seek["Owned Studies"]
+
         print("owned studies are: ", search)
         preview = {'Owned Studies': search}
         return jsonify(preview)
+        # return search
 
 
 # Viewing the Wish list
