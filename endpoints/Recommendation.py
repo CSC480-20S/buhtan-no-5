@@ -30,16 +30,29 @@ class Recommendation(Resource):
         user = Auxiliary.getUser(user_id)
         pref_study_ids = set(
             user.get_ownedStudies() + user.get_viewedStudies() + user.get_wishList() + user.get_authorList())
-        studies = [study for id in pref_study_ids if (study := Auxiliary.getOptionalStudy(id))]
+
+
+        studies = []
+        for id in pref_study_ids:
+            study = Auxiliary.getOptionalStudy(id)
+            if study:
+                studies.append(study)
+
         if not studies:
-            return {"error": "you don't have any study interactions, use our site to GET recommendations!"}
+            return {"error": "you don't have any study interactions, usez our site to GET recommendations!"}
         params = {}
 
         def valid_study(study):
             return study.get_authorID() != user_id
 
         def add_param(function, param_name):
-            values = flatten(x for study in studies if (x := remove_nones(function(study))))
+            values = []
+            for study in studies:
+                list_no_nones = remove_nones(function(study))
+                if (list_no_nones):
+                    values.append(list_no_nones)
+            values = flatten(values)
+
             duplicates = [e for e, count in Counter(values).items() if count > 1]
 
             if duplicates:
@@ -58,7 +71,6 @@ class Recommendation(Resource):
         study_list.sort(key=lambda study: study.get_rating(), reverse=True)
 
         return jsonify(Auxiliary.studyListToDictList(study_list))
-
 
 
 def flatten(list):
