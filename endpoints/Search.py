@@ -33,9 +33,6 @@ class Search(Resource):
             If rating_max is given, return only studies with that rating or lower.
             If rating_min is greater than or equal to rating_max, ignore rating_max.
             The valid options for rating_min and rating_max are 0, 1, 2, 3, 4, and 5.
-            If rating_min and/or rating_max are given and include_unrated is false, return only studies with at least one review.
-            If include_unrated is true or omitted, all unrated studies will be considered part of whatever rating range was specified.
-            If none of the three rating parameters are given, the rating data will be ignored.
             If category is given, return only studies with that category.
             If sub_category is given, return only studies with that sub category.
             If institution is given, return only studies with that institution.
@@ -43,8 +40,7 @@ class Search(Resource):
 
             Args:
                 title (String): The title that a study must have..
-                keywords (String): Contains all the keywords that a study must have.
-                keyword_separator (String): Separates the keywords in the keywords parameter. Defaults to |.
+                keywords (List<String>): Contains all the keywords that a study must have.
                 keyword_all (Boolean): If false, any non-empty subset of the keywords is sufficient to match.
                 limit (Integer): The maximum number of studies to return. Defaults to unlimited when missing or negative.
                 price_min (Integer): The minimum price, in credits, that a study may have.
@@ -53,7 +49,6 @@ class Search(Resource):
                 duration_max (Integer): The maximum duration, in minutes, that a study may have.
                 rating_min (Integer): The minimum rating that a study may have. Must be in the range [0, 5].
                 rating_max (Integer): The maximum rating that a study may have. Must be in the range [0, 5].
-                include_unrated (Boolean): If false, unrated studies will not be returned.
                 category (String): The category that a study must have.
                 sub_category (String): The sub category that a study must have.
                 institution (String): The institution that a study must have.
@@ -65,8 +60,7 @@ class Search(Resource):
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("title", type=str)
-        parser.add_argument("keywords", type=str)
-        parser.add_argument("keyword_separator", type=str, default="|")
+        parser.add_argument("keywords", type=str, action="append")
         parser.add_argument("keyword_all", type=inputs.boolean, default=True)
         parser.add_argument("limit", type=int, default=-1)
         parser.add_argument("price_min", type=int, default=0)
@@ -75,7 +69,6 @@ class Search(Resource):
         parser.add_argument("duration_max", type=int, default=-1)
         parser.add_argument("rating_min", type=int, default=0, choices=(0, 1, 2, 3, 4, 5))
         parser.add_argument("rating_max", type=int, default=5, choices=(0, 1, 2, 3, 4, 5))
-        parser.add_argument("include_unrated", type=inputs.boolean, default=True)
         parser.add_argument("category", type=str)
         parser.add_argument("sub_category", type=str)
         parser.add_argument("institution", type=str)
@@ -84,8 +77,7 @@ class Search(Resource):
         # they don't actually do anything. They should match the defaults above.
         returned_args = parser.parse_args()
         title = returned_args.get("title", None)
-        keywords_unsplit = returned_args.get("keywords", None)
-        keyword_separator = returned_args.get("keyword_separator", "|")
+        keywords = returned_args.get("keywords", None)
         keyword_all = returned_args.get("keyword_all", True)
         limit = returned_args.get("limit", -1)
         price_min = returned_args.get("price_min", 0)
@@ -103,8 +95,7 @@ class Search(Resource):
         params = {}
         if title is not None:
             params["Title"] = title
-        if keywords_unsplit is not None:
-            keywords = keywords_unsplit.split(keyword_separator)
+        if keywords is not None:
             # intersection/and
             if keyword_all is True:
                 params["Keywords"] = {"$all": keywords}
@@ -113,9 +104,7 @@ class Search(Resource):
                 params["Keywords"] = {"$in": keywords}
         self.addRange(params, price_min, price_max, "CostinCredits")
         self.addRange(params, duration_min, duration_max, "Duration")
-        if not include_unrated:
-            params["Number of Reviews"] = {"$gt": 0}
-        self.addRatingExpression(params, rating_min, rating_max)
+        self.addRange(params, rating_min, rating_max, "Rating")
         if category is not None:
             # using $in so that we can make Categories an array or string without breaking this code
             params["Categories"] = {"$in": [category]}
@@ -173,39 +162,3 @@ class Search(Resource):
             # using implicit $and operation
             param_dict[field_name] = {"$gte": min, "$lte": max}
 
-    def addRatingExpression(self, param_dict, rating_min, rating_max):
-        """"Adds a range for ratings to a filter.
-
-            The range is assumed to be inclusive.
-            This method assumes that ratings go from 0 to 5 stars.
-            If rating_max is less than or equal to rating_min, rating_max is ignored.
-            Negative values of rating_min and rating_max are also ignored.
-            Will overwrite any existing value for "$expr" in the filter.
-
-            Args:
-                param_dict (Dict): The filter to which the range is to be added, passed by reference.
-                rating_min (Integer): The minimum stars for the rating. Must be in the range [0, 5].
-                rating_max (Integer): The maximum stars for the rating. Must be in the range [0, 5].
-
-
-            Returns:
-                None.
-            """
-        # defining these as constants here so that they can be tweaked later if they don't agree with the rating code.
-        # would have made them parameters, but that's just unnecessary equivalence classes for testing
-        star_total_field = "Total Stars"
-        review_count_field = "Number of Reviews"
-
-        # equivalent to everything, so don't add anything.
-        if rating_min == 0 and rating_max == 5:
-            pass
-        # check whether we can ignore rating_max but not rating_min
-        elif rating_min >= rating_max or rating_max == 5:
-            param_dict["$expr"] = {"%gte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_min]}]}
-        # check whether we can ignore rating_min, now that we know we can't ignore rating_max
-        elif rating_min == 0:
-            param_dict["$expr"] = {"%lte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_max]}]}
-        # otherwise we know we can't ignore either, and we have a sub range without a default endpoint
-        else:
-            param_dict["$expr"] = {"%gte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_min]}],
-                               "%lte": ["$" + star_total_field, {"$multiply": ["$" + review_count_field, rating_max]}]}
