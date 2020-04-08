@@ -11,6 +11,17 @@ class Recommendation(Resource):
 
     @Auxiliary.auth_dec
     def get(self, **kwargs):
+        """Suggest studies for user.
+
+            Pull historic user interaction data from DB, given user_id, and generate reccomended list of studies
+            based on key phrases. Prioritized by rating
+
+            Args:
+                user_id (int): The ID assigned to a user.
+
+            Returns:
+                FindingFiveStudyStoreStudy list: ordered list of studies recommended to user, highest rated to lowest
+            """
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("user_id", type=str, required=True,
                             help="The user_id is string representation of user's ID.")
