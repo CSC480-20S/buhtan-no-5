@@ -21,10 +21,17 @@ def getStudy(study_id):
     connect = DbConnection.connector()["Studies"]
     study = {"Study_id": study_id}
     seek = connect.find_one(study)
-    return f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"], seek["References"],
-                   seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
-                   seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
-                   seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"], seek["Upload Date"])
+    try:
+        retobj = f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"],
+                         seek["References"],
+                         seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
+                         seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
+                         seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"],
+                         seek["Upload Date"])
+        return retobj
+    except AttributeError as e:
+        print(str(e))
+        return None
 
 
 def getTemplate(study_id):
