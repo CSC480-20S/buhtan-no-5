@@ -20,6 +20,7 @@ from endpoints.suggestions import TextSuggestion
 from endpoints.AddWishlist import AddWishlist
 from endpoints.RemoveWishlist import RemoveWishlist
 from endpoints.IsWishlisted import IsWishlisted
+from endpoints.RateStudy import RateStudy
 
 trans_bp = Blueprint('transaction', __name__)
 api = Api(trans_bp)
@@ -45,3 +46,4 @@ api.add_resource(TextSuggestion,'/suggestion')
 api.add_resource(AddWishlist, '/addWishlist')
 api.add_resource(RemoveWishlist, '/removeWishlist')
 api.add_resource(IsWishlisted, '/isWishlisted')
+api.add_resource(RateStudy, '/rateStudy')
