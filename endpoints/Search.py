@@ -36,7 +36,7 @@ class Search(Resource):
             If category is given, return only studies with that category.
             If sub_category is given, return only studies with that sub category.
             If institution is given, return only studies with that institution.
-            ...in progress.
+            If max_days_since_upload is given, return only studies that have been uploaded within that number of days.
 
             Args:
                 title (String): The title that a study must have..
@@ -52,6 +52,7 @@ class Search(Resource):
                 category (String): The category that a study must have.
                 sub_category (String): The sub category that a study must have.
                 institution (String): The institution that a study must have.
+                max_days_since_upload (Integer): The maximum days after upload that a study may be.
 
 
             Returns:
@@ -72,6 +73,7 @@ class Search(Resource):
         parser.add_argument("category", type=str)
         parser.add_argument("sub_category", type=str)
         parser.add_argument("institution", type=str)
+        parser.add_argument("max_days_since_upload", type=int)
 
         # the second parameter to each method call is purely for consistency,
         # they don't actually do anything. They should match the defaults above.
@@ -86,10 +88,10 @@ class Search(Resource):
         duration_max = returned_args.get("duration_max", -1)
         rating_min = returned_args.get("rating_min", 0)
         rating_max = returned_args.get("rating_max", 5)
-        include_unrated = returned_args.get("include_unrated", True)
         category = returned_args.get("category", None)
         sub_category = returned_args.get("sub_category", None)
         institution = returned_args.get("institution", None)
+        max_days_since_upload = returned_args.get("max_days_since_upload", None)
 
         # build search parameters
         params = {}
@@ -113,6 +115,9 @@ class Search(Resource):
             params["Sub_Categories"] = {"$in": [sub_category]}
         if institution is not None:
             params["Institution"] = institution
+        if max_days_since_upload is not None:
+            max_millis = max_days_since_upload * 86400000  #24 * 60 * 60 * 1000
+            params["$expr"] = {"$lt": [{"$subtract": ["$$NOW", "$Timestamp"]}, max_millis]}
         # query database
         studyList = Auxiliary.getStudies(params, limit)
         # convert output
