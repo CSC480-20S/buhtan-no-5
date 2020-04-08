@@ -18,9 +18,9 @@ class GetViewed(Resource):
         """
 
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("user_id", type=str, required=True, help="The user ID of the viewer is a String.")
+        #parser.add_argument("user_id", type=str, required=True, help="The user ID of the viewer is a String.")
         returned_args = parser.parse_args()
-        user_id = returned_args.get("user_id", None)
+        user_id = kwargs["user_id"]  #returned_args.get("user_id", None)
         # print(returned_args)
         user = Auxiliary.getUser(user_id)
         search = user.get_viewedStudies()

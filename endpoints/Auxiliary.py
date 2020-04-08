@@ -266,6 +266,27 @@ def isOwned(user_id, study_id):
     return connect.find_one(user) != None
 
 
+def isWishlisted(user_id, study_id):
+    """"Returns the wish list status of the study.
+
+    Returns true only if the indicated user wishes for the indicated study,
+    otherwise returns false.
+
+    Args:
+        user_id (String): The identifier for the user who may wish for the study.
+        study_id (int): The identifier for the study the user may wish for.
+
+    Returns:
+        boolean: True if the user wishes for the study, else false.
+    """
+
+    connect = DbConnection.connector()["Users"]
+    user = {"User_id": user_id,
+            "Wish List": {"$in": [study_id]}}
+    # if such a user exists, we get the user, else we get None
+    return connect.find_one(user) != None
+
+
 def addViewed(user_id, study_id):
     """"Adds a study to a user's list of viewed studies.
 

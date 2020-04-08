@@ -20,13 +20,13 @@ class Purchase(Resource):
             """
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("user_id", type=str, required=True, help="The user ID of the customer is a String.")
+        #parser.add_argument("user_id", type=str, required=True, help="The user ID of the customer is a String.")
         parser.add_argument("study_id", type=int, required=True,
                             help="The study ID of the study being purchased is an integer.")
         parser.add_argument("credits_available", type=int, required=True,
                             help="The credit balance available to the customer is an integer.")
         returned_args = parser.parse_args()
-        user_id = returned_args.get("user_id", None)
+        user_id = kwargs["user_id"]  #returned_args.get("user_id", None)
         study_id = returned_args.get("study_id", None)
         credits_available = returned_args.get("credits_available", None)
         # verify the parameters exist - now handled by add_argument
