@@ -27,13 +27,13 @@ class GetPreview(Resource):
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("study_id", type=int, required=True, help="Specify a study for details.")
-        parser.add_argument("user_id", type=str, required=True, help="Specify which user is previewing the study.")
+        #parser.add_argument("user_id", type=str, required=True, help="Specify which user is previewing the study.")
 
         # the second parameter to each method call is purely for consistency,
         # they don't actually do anything. They should match the defaults above.
         returned_args = parser.parse_args()
         study_id = returned_args.get("study_id", None)
-        user_id = returned_args.get("user_id", None)
+        user_id = kwargs["user_id"]  #returned_args.get("user_id", None)
 
         # query database
         study = Auxiliary.getStudy(study_id)

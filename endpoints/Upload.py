@@ -72,7 +72,7 @@ class Upload(Resource):
         parser.add_argument("template", type=str, required=True, help="Issue with / Missing template, string")
         parser.add_argument("images", type=str, action="append", required=True, help="Images are stored/referenced with Strings.")
         parser.add_argument("abstract", type=str, required=True, help="Abstract is a description String.")
-        parser.add_argument("author_id", type=str, required=True, help="The author_id is the user_id of the uploading user.")
+        #parser.add_argument("author_id", type=str, required=True, help="The author_id is the user_id of the uploading user.")
 
         returned_args = parser.parse_args()
 
@@ -98,7 +98,7 @@ class Upload(Resource):
         template = returned_args.get("template", None)
         images = returned_args.get("images", None)
         abstract = returned_args.get("abstract", None)
-        author_id = returned_args.get("author_id", None)
+        author_id = kwargs["user_id"]  #returned_args.get("author_id", None)
         study = FindingFiveStudyStoreStudy(study_id, title, author, costInCredits, purpose, references, categories,
                                            subcategories, keywords, num_stimuli, num_responses, randomize,
                                            duration, num_trials, 0, institution, template, images, abstract, author_id)

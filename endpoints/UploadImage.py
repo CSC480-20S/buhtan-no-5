@@ -24,12 +24,12 @@ class UploadImage(Resource):
         """
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("user_id", type=str, required=True, help="User ID is a string.")
+        #parser.add_argument("user_id", type=str, required=True, help="User ID is a string.")
         parser.add_argument("base64", type=str, required=True,
                             help="An image String in base64 encoding.")
 
         returned_args = parser.parse_args()
-        user_id = returned_args.get("user_id", None)
+        user_id = kwargs["user_id"]  #returned_args.get("user_id", None)
         base64 = returned_args.get("base64", None)
 
         connection = DbConnection.connector()

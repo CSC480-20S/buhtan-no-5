@@ -19,11 +19,11 @@ class AddWishlist(Resource):
         """
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("user_id", type=str, required=True, help="The user ID of the wish lister is a String.")
+        #parser.add_argument("user_id", type=str, required=True, help="The user ID of the wish lister is a String.")
         parser.add_argument("study_id", type=int, required=True,
                             help="The study ID of the study being wish listed is an integer.")
         returned_args = parser.parse_args()
-        user_id = returned_args.get("user_id", None)
+        user_id = kwargs["user_id"]  #returned_args.get("user_id", None)
         study_id = returned_args.get("study_id", None)
 
         # update the user data
