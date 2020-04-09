@@ -45,14 +45,14 @@ def getReviews(study_id):
     """
     # query the database
     connect = DbConnection.connector()["Reviews"]
-    queryresults = connect.find({"Study_id": id,
+    queryresults = connect.find({"Study_id": study_id,
                                  "Name": {"$exists": True},
                                  "Occupation": {"$exists": True},
                                  "Rating": {"$exists": True},
                                  "Comment": {"$exists": True}})
     # convert tot he output format
     reviewlist = []
-    for review in queryresults:
+    for review in queryresults[:]:
         outdoc = dict()
         outdoc["name"] = review["Name"]
         outdoc["occupation"] = review["Occupation"]

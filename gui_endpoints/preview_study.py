@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_restful import Resource, Api, reqparse
 from studystore import FindingFiveStudyStoreStudy
 from endpoints import Auxiliary
+from endpoints.rating import getReviews
 
 
 app = Flask(__name__)
@@ -20,11 +21,13 @@ class EndPoint_PreviewStudies(Resource):
 
     def get(self):
         built_json = list()
-        studies = Auxiliary.getStudies(dict(),4) #list()
+        studies = Auxiliary.getStudies(dict(),4)
 
         for study in studies:
             study.set_template("na")
-            built_json.append(study.build_dict())
+            study_dict = study.build_dict()
+            study_dict['reviews'] = getReviews(study_dict['studyID'])
+            built_json.append(study_dict)
         return jsonify(built_json)
 
 
