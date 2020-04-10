@@ -13,26 +13,28 @@ class SearchCache():
             return True
         return False
 
-    def add_new_word(self, word, full):
+    def add_new_word(self, full):
+        given_words = full.lower().split(" ")
         sent_hash = self.get_hash_id(full)
         self.r.hset(sent_hash, "title", full)
         pipe = self.r.pipeline()
-        if not self.check_existence(word):
-            # now iterate over all of the partial strings and use the partial string to map to a sorted set.
-            # each sorted set will continain the id:score so it can sort the entries.
-            try:
-                for partial in self.generate_prefix(word):
+        for word in given_words:
+            if not self.check_existence(word):
+                # now iterate over all of the partial strings and use the partial string to map to a sorted set.
+                # each sorted set will continain the id:score so it can sort the entries.
+                try:
+                    for partial in self.generate_prefix(word):
 
-                    set_id = self.get_set_id(partial)
-                    status, set_size = self.check_set_size(set_id)
-                    if status:
+                        set_id = self.get_set_id(partial)
+                        status, set_size = self.check_set_size(set_id)
+                        if status:
 
-                        pipe.zadd(set_id, {sent_hash: 1.0})
-                    else:
-                        self.remove_prefix(set_id, sent_hash)
-            except redis.exceptions.ResponseError as e:
-                print(e.args)
-            pipe.execute()
+                            pipe.zadd(set_id, {sent_hash: 1.0})
+                        else:
+                            self.remove_prefix(set_id, sent_hash)
+                except redis.exceptions.ResponseError as e:
+                    print(e.args)
+        pipe.execute()
 
     def generate_prefix(self, word):
         for index, char in enumerate(word):
@@ -43,6 +45,7 @@ class SearchCache():
             yield word[0:index]
 
     def search_one_word(self, input):
+        print(input)
         sorted_set_id = self.get_set_id(input)
         print(sorted_set_id)
         for id in self.r.zrevrange(sorted_set_id, 0, 5):
@@ -84,7 +87,7 @@ class SearchCache():
         words = input.split(" ")
         if words == []:
             return self.search_one_word("sci")
-        if len(words) < 1:
+        if len(words) < 2:
             return self.search_one_word(input)
 
         sab = self.r.zinterstore(self.get_set_id(input), list(map(self.get_set_id, words)))
@@ -111,7 +114,8 @@ class SearchCache():
 
 if __name__ == "__main__":
     s = SearchCache()
-    print(s.search_multiple_word("ap ape"))
+    for s in s.search_multiple_word("appl ap"):
+        print(s)
     # s.create_basic_prefix()
 # schema a hash entry where its string:"" and id:""
 # First create prefixes before launching redis
