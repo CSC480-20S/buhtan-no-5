@@ -3,7 +3,7 @@ from flask_restful import Resource, reqparse, inputs
 from endpoints import Auxiliary
 from database import DbConnection
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
-
+from suggestions import task_queue,prefix_cache
 class Upload(Resource):
 
     @Auxiliary.auth_dec
@@ -110,5 +110,7 @@ class Upload(Resource):
 
         # update the author and ownenship information of the uploading user
         Auxiliary.addAuthored(author_id, study_id)
+        tq=task_queue.TaskQueue()
+        tq.add_function(prefix_cache.SearchCache.add_new_word,full=title)
 
         return jsonify({"study_id": study_id})
