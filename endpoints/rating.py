@@ -1,7 +1,7 @@
 from database import DbConnection
 
 
-def ratingsys(id, user, name, occupation, rate, comment):
+def ratingsys(id, user, name, rate, comment):
     """Creates a review for a study and updates that study's rating.
 
     Args:
@@ -29,7 +29,7 @@ def ratingsys(id, user, name, occupation, rate, comment):
     rater.update_one({ "Study_id": id}, {"$set": {"Rating": average}})
     # The new rate of the study along with new list of ratings is then updated to mongodb database
     review.insert_one({"Study_id": id, "User_id": user, "Name": name,
-                       "Occupation": occupation, "Rating": rate, "Comment": comment})
+                       "Rating": rate, "Comment": comment})
     # this review is now stored
 
 def getReviews(study_id):
@@ -47,7 +47,6 @@ def getReviews(study_id):
     connect = DbConnection.connector()["Reviews"]
     queryresults = connect.find({"Study_id": study_id,
                                  "Name": {"$exists": True},
-                                 "Occupation": {"$exists": True},
                                  "Rating": {"$exists": True},
                                  "Comment": {"$exists": True}})
     # convert tot he output format
@@ -55,7 +54,6 @@ def getReviews(study_id):
     for review in queryresults[:]:
         outdoc = dict()
         outdoc["name"] = review["Name"]
-        outdoc["occupation"] = review["Occupation"]
         outdoc["rating"] = review["Rating"]
         outdoc["comment"] = review["Comment"]
         reviewlist += [outdoc]
