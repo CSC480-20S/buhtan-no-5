@@ -94,7 +94,7 @@ class Search(Resource):
         max_days_since_upload = returned_args.get("max_days_since_upload", None)
 
         # build search parameters
-        params = {}
+        params = {"Approved": {"$exists": True}, "Denied": {"$exists": False}}
         if title is not None:
             params["Title"] = title
         if keywords is not None:
