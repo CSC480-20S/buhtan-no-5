@@ -45,33 +45,40 @@ class Upload(Resource):
         """
         # obtain parameters
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("title", type=str, required=True, help="Title should be string.")
+        parser.add_argument("title", type=str, required=True,
+                            help="Title should be a String.", nullable=False)
         parser.add_argument("author", type=str, required=True,
-                            help="Issue author should be String")
-        parser.add_argument("costInCredits", type=int, required=True, help="Issue with cost . should be int")
-        parser.add_argument("purpose", type=str, required=True, help="missing study's purpose statement, string")
-        parser.add_argument("references", type=str, required=True, help="missing references used to"
-                                                                                         " design the study, string")
-        parser.add_argument("categories", type=str, action='append', required=True, help="Issue with"
-                                                                                         " study's category, string")
-        parser.add_argument("subcategories", type=str, action='append', required=True, help="Issue with the study's "
-                                                                                            "subcategory, string")
-        parser.add_argument("keywords", type=str, action='append', required=True, help="Issue with "
-                                                                                       "the keywords, string")
-        parser.add_argument("num_stimuli", type=int, required=True, help="Issue with the number"
-                                                                         " of stimuli included in study, int")
-        parser.add_argument("num_responses", type=int, required=True, help="Issue with the "
-                                                                           "number of responses expected from user, int")
+                            help="Author should be a String.", nullable=False)
+        parser.add_argument("costInCredits", type=int, required=True,
+                            help="Cost should be an integer.", nullable=False)
+        parser.add_argument("purpose", type=str, required=True,
+                            help="Purpose should be a String.", nullable=False)
+        parser.add_argument("references", type=str, required=True,
+                            help="References should be a String.", nullable=False)
+        parser.add_argument("categories", type=str, action='append', required=True,
+                            help="Category should be a list of Strings.", nullable=False)
+        parser.add_argument("subcategories", type=str, action='append', required=True,
+                            help="Subcategories should be a list of Strings.", nullable=False)
+        parser.add_argument("keywords", type=str, action='append', required=True,
+                            help="Keywords should be a list of Strings.", nullable=False)
+        parser.add_argument("num_stimuli", type=int, required=True,
+                            help="The number of stimuli should be an integer.", nullable=False)
+        parser.add_argument("num_responses", type=int, required=True,
+                            help="The number of responses should be an integer.", nullable=False)
         parser.add_argument("num_trials", type=int, required=True,
-                            help="Issue with the number of trials within a study, int")
-        parser.add_argument("randomize", type=inputs.boolean, required=True, help="Issue with randomized(question order) "
-                                                                        "param,bool")
-        parser.add_argument("duration", type=int, required=True, help="Issue with  expected run time of the study "
-                                                                      "from perspective of the surveyed individual, int")
-        parser.add_argument("institution", type=str, required=True, help="Issue with institution, string")
-        parser.add_argument("template", type=str, required=True, help="Issue with / Missing template, string")
-        parser.add_argument("images", type=str, action="append", required=True, help="Images are stored/referenced with Strings.")
-        parser.add_argument("abstract", type=str, required=True, help="Abstract is a description String.")
+                            help="The number of trials should be an integer.", nullable=False)
+        parser.add_argument("randomize", type=inputs.boolean, required=True,
+                            help="Randomization of trials should be a boolean.", nullable=False)
+        parser.add_argument("duration", type=int, required=True,
+                            help="Duration should be an integer.", nullable=False)
+        parser.add_argument("institution", type=str, required=True,
+                            help="Institution should be a String.", nullable=False)
+        parser.add_argument("template", type=str, required=True,
+                            help="Template should be a JSON in String form.", nullable=False)
+        parser.add_argument("images", type=str, action="append",
+                            required=True, help="Images should be a list of base64-encoded Strings.", nullable=False)
+        parser.add_argument("abstract", type=str, required=True,
+                            help="Abstract should be a String.", nullable=False)
         #parser.add_argument("author_id", type=str, required=True, help="The author_id is the user_id of the uploading user.")
 
         returned_args = parser.parse_args()
@@ -99,6 +106,7 @@ class Upload(Resource):
         images = returned_args.get("images", None)
         abstract = returned_args.get("abstract", None)
         author_id = kwargs["user_id"]  #returned_args.get("author_id", None)
+        # the miscelaneous-looking 0 is the initial rating.
         study = FindingFiveStudyStoreStudy(study_id, title, author, costInCredits, purpose, references, categories,
                                            subcategories, keywords, num_stimuli, num_responses, randomize,
                                            duration, num_trials, 0, institution, template, images, abstract, author_id)
