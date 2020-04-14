@@ -4,7 +4,7 @@ certifi==2019.11.28
 cffi==1.14.0
 chardet==3.0.4
 Click==7.0
-cryptography==2.1.4
+cryptography==2.3
 devscripts===2.17.12ubuntu1.1
 distro-info===0.18ubuntu0.18.04.1
 dnspython==1.16.0
