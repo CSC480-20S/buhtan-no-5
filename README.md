@@ -32,19 +32,41 @@ Then change the "Mongo URL" placeholder with the connection string located in th
 
 
 ## Deployment
-Engine has decided to utilize gunicorn to create workers in order to handle requests. Engine is currently researching if nginx will be utilized due to system permission issues.
-For Unix systems with venv installed.To run the local flask instance execute the below commands.
+### Flask And Gunicorn
+Engine has decided to utilize gunicorn to create workers in order to handle requests. 
+For Unix systems with venv installed.In order to run the local flask instance execute the below commands.
+1.)You must change the address in the main() to your localhost
+```
+app.run(host='129.3.20.26', port=12100,debug=true)
+app.run(host='0.0.0.0', port=12100,debug=true)
+```
+2.) Then you will be able to the launch the flask instance.
 ```
 source venv/bin/activate
 python3 main.py
 ```
-In order to deploy the instance utilizing gunicorn, run the below command.The system which the flask server is running did not allow for gunicorn to be installed in accordance with permission isuses.This will run the instance until the session is terminated.
+In order to deploy the instance utilizing gunicorn, run the below command.The system which the flask server is running did not allow for gunicorn to be installed in accordance with permission isuses.The following command is what is utilized in order to ensure the server's persistence across sessions.
+The first block represents running the flask instance locally.Ensure the port given to the Flask app and the gunicorn instance match.
 ```
- python3 launcher.py --bind 0.0.0.0:8000 gun:app
+ python3 launcher.py --bind 0.0.0.0:12100 launcher:app
 ```
-IOT run the server as a background process, run the following:
+In order to run the server as a background process,  the following is the generic format:
 ```
-nohup python3 launcher py --bind ip_address:port class:app_name & >/dev/null & 
+nohup python3 launcher py --bind ip_address:port class:app_name & >/dev/null 2>&1 &
+```
+The second block is the current command utilized to run the Flask instance on Pi.We redirect the output to /dev/null.
+```
+nohup python3 launcher.py --bind 129.3.20.26:12100 launcher:app  >/dev/null 2>&1 &
+```
+### Redis
+Engine is utilizing Redis for three purposes. The first is to store recently accessed F5 studies in order to reduce latency.Second is to perform word recommendations based off of partial word searches from a user utilizing Redis' sorted sets and hash sets.The third is as a task queue to reduce the latency of the main application and to improve word recommendations.
+The default Redis config was used as a baseline and modified for the needs of the LRU cache.
+
+The port flag isnt required if the port is specified in the config file. Located in suggestions/ is the redis.conf which is utilized for the project. The database file or the corpus file  utilized for the recommendation instance is not store within the repo due to its size. 
+```
+./redis-server --port 6378  \path\to\config
+./redis-server --port 6379  \path\to\config
+./redis-server --port 6380  \path\to\config
 ```
 
 ## Documentation
