@@ -160,7 +160,7 @@ def createUser(user):
         Boolean: True if the user was created, False if they user was already present."""
 
     connect = DbConnection.connector()["Users"]
-    filter = {"User_id": user.get_userId}
+    filter = {"User_id": user.get_userId()}
     update = {"$setOnInsert": user.build_database_doc()}
     # this should be returning the "pre-update" doc, which will be None if nothing matches the filter.
     result = connect.find_one_and_update(filter, update, upsert=True)
