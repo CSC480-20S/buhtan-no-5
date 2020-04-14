@@ -59,7 +59,15 @@ The second block is the current command utilized to run the Flask instance on Pi
 nohup python3 launcher.py --bind 129.3.20.26:12100 launcher:app  >/dev/null 2>&1 &
 ```
 ### Redis
+Engine is utilizing Redis for three purposes. The first is to store recently accessed F5 studies in order to reduce latency.Second is to perform word recommendations based off of partial word searches from a user utilizing Redis' sorted sets and hash sets.The third is as a task queue to reduce the latency of the main application and to improve word recommendations.
+The default Redis config was used as a baseline and modified for the needs of the LRU cache.
 
+The port flag isnt required if the port is specified in the config file. Located in suggestions/ is the redis.conf which is utilized for the project. The database file or the corpus file  utilized for the recommendation instance is not store within the repo due to its size. 
+```
+./redis-server --port 6378  \path\to\config
+./redis-server --port 6379  \path\to\config
+./redis-server --port 6380  \path\to\config
+```
 
 ## Documentation
 This project will use Sphinx to create local documentation to aide others.There will be a readthedocs in the future.
