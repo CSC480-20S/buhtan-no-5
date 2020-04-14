@@ -22,6 +22,9 @@ from endpoints.AddWishlist import AddWishlist
 from endpoints.RemoveWishlist import RemoveWishlist
 from endpoints.IsWishlisted import IsWishlisted
 from endpoints.RateStudy import RateStudy
+from endpoints.GetNotifications import GetNotifications
+from endpoints.Unpublish import Unpublish
+from endpoints.CheckToken import CheckToken
 
 trans_bp = Blueprint('transaction', __name__)
 api = Api(trans_bp)
@@ -49,3 +52,6 @@ api.add_resource(AddWishlist, '/addWishlist')
 api.add_resource(RemoveWishlist, '/removeWishlist')
 api.add_resource(IsWishlisted, '/isWishlisted')
 api.add_resource(RateStudy, '/rateStudy')
+api.add_resource(GetNotifications, "/getNotifications")
+api.add_resource(Unpublish, "/unpublish")
+api.add_resource(CheckToken, "/checkToken")
