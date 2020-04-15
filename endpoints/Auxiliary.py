@@ -9,7 +9,6 @@ from suggestions.study_cache import StudyCache
 from typing import Union
 
 
-# depricated ?
 def getStudy(study_id):
     """Grabs a study given its ID.
 
@@ -35,35 +34,6 @@ def getStudy(study_id):
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
                    seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"],
                    seek["Upload Date"])
-
-
-def getOptionalStudy(study_id: int) -> Union[f5study, None]:
-    """Grabs a study given its ID.
-
-    Pulls from the database and returns a FindingFiveStudyStoreStudy object.
-
-    Args:
-        study_id (int): The ID assigned to a study at upload.
-
-    Returns:
-        Optional FindingFiveStudyStoreStudy: The associated study in the database.
-    """
-    connect = DbConnection.connector()["Studies"]
-    study = {"Study_id": study_id}
-    seek = connect.find_one(study)
-
-    try:
-        return f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"],
-                   seek["References"],
-                   seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
-                   seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
-                   seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"],
-                   seek["Upload Date"])
-    except (AttributeError, TypeError):
-        return None
-
-
-
 
 
 def getTemplate(study_id):
@@ -182,28 +152,7 @@ def getUser(user_id):
     connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id}
     seek = connect.find_one(user)
-    return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"], seek["Wish List"])
-
-
-def updateUser(user):
-    """"Updates a user in the database.
-
-    Pushes a new version of the user data into the database. Assumes the current ID already exists.
-
-    Args:
-        user (FindingFiveStudyStoreUser): The new data to write to the database.
-
-    Returns:
-        Nothing.
-    """
-
-    connect = DbConnection.connector()["Users"]
-    userJ = {"User_id": user.get_userId()}
-    changes = {"$set": {"Num Credits": user.get_numCredits(),
-                        "Owned Studies": user.get_ownedStudies(),
-                        "Viewed Studies": user.get_viewedStudies(),
-                        "Wish List": user.get_wishList()}}
-    connect.update_one(userJ, changes)
+    return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"], seek["Wish List"], seek["Author List"])
 
 
 def addOwned(user_id, study_id, cost):

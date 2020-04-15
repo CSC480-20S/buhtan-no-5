@@ -3,6 +3,8 @@ from flask_restful import Resource, reqparse
 from endpoints import Auxiliary
 from database import DbConnection
 
+
+# unused -- supports requirement G32
 class Unpublish(Resource):
     @Auxiliary.auth_dec
     def get(self,**kwargs):
