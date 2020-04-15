@@ -3,8 +3,16 @@
 git checkout master
 git fetch
 git pull --rebase origin master
-kill -9 $(pgrep -u $USER python |grep -v $1)
+allpid=$(pgrep -u $USER python)
+primary=$(echo "$allpid" |grep -m 1 '[0-9]*')
+kill=$(echo "$allpid" |grep -v $primary )
+kill -9 $kill
 cd ../ && nohup python3 launcher.py --bind 129.3.20.26:12100 launcher:app  >/dev/null 2>&1 &
 cd ~/csc480/deployment
-kill -9 $(pgrep -u $USER updater.sh|grep -v $$)
+
+#this may not be required.
+updaterpid=$(pgrep -u $USER updater.sh)
+currpid=$(echo "$updaterpid" |grep -m 1 '[0-9]*')
+kill=$(echo "$updaterpid" |grep -v $currpid )
+kill -9 $kill
 #this solution will not update at the same time, will be n seconds from time of execution.
