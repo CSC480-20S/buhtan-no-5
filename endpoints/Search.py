@@ -4,6 +4,7 @@ from database import DbConnection
 from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
 from endpoints import Auxiliary
+import re
 
 
 class Search(Resource):
@@ -18,6 +19,9 @@ class Search(Resource):
             If title is given, return only studies with that title.
             If keywords are given, return only studies with all of those keywords.
             If keyword_all is false, each study need only have one or more keywords, not necessarily all of them.
+            If searchInput is given, return studies with that title OR any keyword in searchInput,
+            splitting by a comma with an optional space after it.
+            Specifying title or keywords with searchInput will require each individual parameter to be satisfied.
             If limit is given, no more than limit studies will be returned.
             If price_min is given, return only studies at that price or higher.
             If price_max is given, return only studies at that price or lower.
@@ -42,6 +46,7 @@ class Search(Resource):
                 title (String): The title that a study must have..
                 keywords (List<String>): Contains all the keywords that a study must have.
                 keyword_all (Boolean): If false, any non-empty subset of the keywords is sufficient to match.
+                searchInput (String): The title or comma-seperated keyword set that a study must have at least one of.
                 limit (Integer): The maximum number of studies to return. Defaults to unlimited when missing or negative.
                 price_min (Integer): The minimum price, in credits, that a study may have.
                 price_max (Integer): The maximum price, in credits, that a study may have.
@@ -63,6 +68,7 @@ class Search(Resource):
         parser.add_argument("title", type=str)
         parser.add_argument("keywords", type=str, action="append")
         parser.add_argument("keyword_all", type=inputs.boolean, default=True)
+        parser.add_argument("searchInput", type=str)
         parser.add_argument("limit", type=int, default=-1)
         parser.add_argument("price_min", type=int, default=0)
         parser.add_argument("price_max", type=int, default=-1)
@@ -81,6 +87,7 @@ class Search(Resource):
         title = returned_args.get("title", None)
         keywords = returned_args.get("keywords", None)
         keyword_all = returned_args.get("keyword_all", True)
+        searchInput = returned_args.get("searchInput", None)
         limit = returned_args.get("limit", -1)
         price_min = returned_args.get("price_min", 0)
         price_max = returned_args.get("price_max", -1)
@@ -104,6 +111,9 @@ class Search(Resource):
             # union/or
             else:
                 params["Keywords"] = {"$in": keywords}
+        if searchInput is not None:
+            splitSearch = re.split(r', ?', searchInput)
+            params["$or"] = [{"Title": searchInput}, {"Keywords": {"$in": splitSearch}}]
         self.addRange(params, price_min, price_max, "CostinCredits")
         self.addRange(params, duration_min, duration_max, "Duration")
         self.addRange(params, rating_min, rating_max, "Rating")
