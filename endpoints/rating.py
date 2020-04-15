@@ -3,34 +3,36 @@ from database import DbConnection
 
 def ratingsys(id, user, name, rate, comment):
     """Creates a review for a study and updates that study's rating.
+    If the user is submitting a duplicate review (same study), the previous review will be overwritten.
 
     Args:
          id (Integer): The identifier for the study being reviewed.
          user (String): The identifier for the user making the review.
          name (String): The name of the user, as it should be displayed on the review.
-         occupation (String): The occupation of the user, as it should be displayed on the review.
          rate (Integer): The rating the user is applying to the study.
          comment (String): The comment the user has about the study.
 
     Returns:
         Nothing.
     """
-    # id is the Study_id of the study to be rated along with rate being the rate being processed
-    ratelist = []
     connect = DbConnection.connector()
     review = connect["Reviews"]
-    rater = connect["Studies"]
+    # post the review, overwriting any existing review
+    review.update_one({"Study_id": id, "User_id": user},
+                      {"Study_id": id, "User_id": user, "Name": name, "Rating": rate, "Comment": comment},
+                      upsert=True)
+
+    # find the new overall rating
     query = review.find({"Study_id": id})
+    ratelist = []
     for rates in query:
         ratelist.append(rates["Rating"])
-    ratelist.append(rate) # adds the new rating to the list of ratings of this study
     average = sum(ratelist) / len(ratelist)  # Gets the average rating of this study
     average = round(average)  # this average is then converted to a whole number
+
+    # update the rating for the study itself
+    rater = connect["Studies"]
     rater.update_one({ "Study_id": id}, {"$set": {"Rating": average}})
-    # The new rate of the study along with new list of ratings is then updated to mongodb database
-    review.insert_one({"Study_id": id, "User_id": user, "Name": name,
-                       "Rating": rate, "Comment": comment})
-    # this review is now stored
 
 def getReviews(study_id):
     """Returns all the reviews for a given study.

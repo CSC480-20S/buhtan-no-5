@@ -10,7 +10,7 @@ class RateStudy(Resource):
     def post(self,**kwargs):
         """Rates a study.
 
-        If the user is submitting a duplicate review (all fields the same), this endpoint will fail.
+        If the user is submitting a duplicate review (same study), the previous review will be overwritten.
         Fails, modifying nothing, if the user is the author of the study.
 
         Args:
