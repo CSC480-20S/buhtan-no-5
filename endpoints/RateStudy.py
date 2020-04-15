@@ -11,6 +11,7 @@ class RateStudy(Resource):
         """Rates a study.
 
         If the user is submitting a duplicate review (all fields the same), this endpoint will fail.
+        Fails, modifying nothing, if the user is the author of the study.
 
         Args:
             study_id (Integer): The identifier of the study being rated.
@@ -37,6 +38,11 @@ class RateStudy(Resource):
         rating = returned_args.get("rating", None)
         comment = returned_args.get("comment", None)
         user_id = kwargs["user_id"]
+
+        # check for author
+        user = Auxiliary.getUser(user_id)
+        if study_id in user.get_authorList():
+            return jsonify({"Success": False, "Reason": "User is Author."})
 
         ratingsys(study_id, user_id, name, rating, comment)
 

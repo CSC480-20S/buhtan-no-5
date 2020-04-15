@@ -14,8 +14,10 @@ class ReviewPending(Resource):
             Approves or denies a given study.
             Creates a notification to alert the user, based on the parameters.
             If an optional parameter is not given, that field is assumed to be acceptable.
+            Fails, modifying nothing, if the user is the author of the study.
 
             Args:
+                user_id (String): The identifier of the user approving or denying the study, required.
                 study_id (Integer): The identifier of the study being reviewed, required.
                 approved (Boolean): Whether to approve or deny this study. When true, ignore all following paramaters.
                 title (String): The comment on what was wrong with the title.
@@ -59,7 +61,13 @@ class ReviewPending(Resource):
         # obtain first parameters
         returned_args = parser.parse_args()
         study_id = returned_args.get("study_id", -1)
+        user_id = kwargs["user_id"]
         approved = returned_args.get("approved", None)
+
+        # check for author
+        user = Auxiliary.getUser(user_id)
+        if study_id in user.get_authorList():
+            return jsonify({"Success": False, "Reason": "User is Author."})
 
         # check for approval
         if approved is True:
