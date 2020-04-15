@@ -155,27 +155,6 @@ def getUser(user_id):
     return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"], seek["Wish List"])
 
 
-def updateUser(user):
-    """"Updates a user in the database.
-
-    Pushes a new version of the user data into the database. Assumes the current ID already exists.
-
-    Args:
-        user (FindingFiveStudyStoreUser): The new data to write to the database.
-
-    Returns:
-        Nothing.
-    """
-
-    connect = DbConnection.connector()["Users"]
-    userJ = {"User_id": user.get_userId()}
-    changes = {"$set": {"Num Credits": user.get_numCredits(),
-                        "Owned Studies": user.get_ownedStudies(),
-                        "Viewed Studies": user.get_viewedStudies(),
-                        "Wish List": user.get_wishList()}}
-    connect.update_one(userJ, changes)
-
-
 def addOwned(user_id, study_id, cost):
     """Decreases a user's credits to purchase a study.
 
