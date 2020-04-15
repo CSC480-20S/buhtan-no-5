@@ -9,7 +9,6 @@ from suggestions.study_cache import StudyCache
 from typing import Union
 
 
-# depricated ?
 def getStudy(study_id):
     """Grabs a study given its ID.
 
@@ -35,35 +34,6 @@ def getStudy(study_id):
                    seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
                    seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"],
                    seek["Upload Date"])
-
-
-def getOptionalStudy(study_id: int) -> Union[f5study, None]:
-    """Grabs a study given its ID.
-
-    Pulls from the database and returns a FindingFiveStudyStoreStudy object.
-
-    Args:
-        study_id (int): The ID assigned to a study at upload.
-
-    Returns:
-        Optional FindingFiveStudyStoreStudy: The associated study in the database.
-    """
-    connect = DbConnection.connector()["Studies"]
-    study = {"Study_id": study_id}
-    seek = connect.find_one(study)
-
-    try:
-        return f5study(study_id, seek["Title"], seek["Author"], seek["CostinCredits"], seek["Purpose"],
-                   seek["References"],
-                   seek["Categories"], seek["Sub_Categories"], seek["Keywords"], seek["Num_Stimuli"],
-                   seek["Num_Responses"], seek["Randomize"], seek["Duration"], seek["Num_trials"], seek["Rating"],
-                   seek["Institution"], seek["Template"], seek["Images"], seek["Abstract"], seek["Author_id"],
-                   seek["Upload Date"])
-    except (AttributeError, TypeError):
-        return None
-
-
-
 
 
 def getTemplate(study_id):
