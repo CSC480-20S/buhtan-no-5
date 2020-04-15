@@ -13,6 +13,6 @@ cd ~/csc480/deployment
 #this may not be required.
 updaterpid=$(pgrep -u $USER updater.sh)
 currpid=$(echo "$updaterpid" |grep -m 1 '[0-9]*')
-kill=$(echo "$updaterpid" |grep -v $currpid )
-kill -9 $kill
+killscript=$(echo "$updaterpid" |grep -v $currpid )
+kill -9 $killscript
 #this solution will not update at the same time, will be n seconds from time of execution.
