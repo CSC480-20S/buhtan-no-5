@@ -152,7 +152,7 @@ def getUser(user_id):
     connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id}
     seek = connect.find_one(user)
-    return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"], seek["Wish List"])
+    return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"], seek["Wish List"], seek["Author List"])
 
 
 def addOwned(user_id, study_id, cost):
