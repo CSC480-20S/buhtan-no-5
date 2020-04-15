@@ -132,6 +132,8 @@ class Search(Resource):
         studyList = Auxiliary.getStudies(params, limit)
         # convert output
         out = Auxiliary.studyListToDictList(studyList)
+        for d in out:
+            d["reviews"] = []
         # return converted output
         return jsonify(out)
 
