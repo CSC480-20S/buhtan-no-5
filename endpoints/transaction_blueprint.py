@@ -2,7 +2,6 @@ from flask import Blueprint
 from flask_restful import Api
 from endpoints.Deliver import Deliver
 from endpoints.Purchase import Purchase
-from database import studies
 from endpoints.Search import Search
 from endpoints.IsOwned import IsOwned
 from endpoints.GetOwned import GetOwned
@@ -27,8 +26,6 @@ api = Api(trans_bp)
 
 api.add_resource(Deliver, '/deliver')
 api.add_resource(Purchase, '/purchase')
-api.add_resource(studies.EndPointOwnedStudies, '/owned')
-api.add_resource(studies.EndPointViewedStudies, '/previewed')
 api.add_resource(Search, '/search')
 api.add_resource(IsOwned, '/isOwned')
 api.add_resource(GetOwned, '/getOwned')
