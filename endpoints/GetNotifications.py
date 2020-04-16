@@ -2,7 +2,6 @@ from flask import jsonify
 from flask_restful import Resource, reqparse
 from endpoints import Auxiliary
 from database import DbConnection
-from pymongo import DESCENDING
 
 class GetNotifications(Resource):
     @Auxiliary.auth_dec
@@ -35,7 +34,7 @@ def getMessages(user_id):
     """
     # acquire notifications
     connect = DbConnection.connector()["Notifications"]
-    seek = connect.find(filter={"User_id": user_id}, sort={"Timestamp": DESCENDING})
+    seek = connect.find(filter={"User_id": user_id}, sort=[('Timestamp', -1)])
     # build list
     out = []
     for notif in seek:
