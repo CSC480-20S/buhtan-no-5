@@ -314,7 +314,7 @@ def addNotification(user_id, title, body, type):
     connect = DbConnection.connector()["Notifications"]
     notification = {"User_id": user_id, "Title": title, "Body": body, "Type": type}
     connect.insert(notification)
-    timeUpdate = {"$currentDate": {"Timestamp": {"$type": "timestamp"}}}
+    timeUpdate = {"$currentDate": {"Timestamp": True}}
     notificationFinder = notification
     notificationFinder["Timestamp"] = {"$exists": False}
     connect.update_one(notificationFinder, timeUpdate, upsert=True)
