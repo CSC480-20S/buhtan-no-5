@@ -45,7 +45,7 @@ def getTemplate(study_id):
         study_id (int): The ID assigned to a study at upload.
 
     Returns:
-        String: The associated study's tempkate field from the database.
+        String: The associated study's template field from the database.
     """
 
     connect = DbConnection.connector()["Studies"]
