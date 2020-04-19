@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
-from endpoints import Auxiliary
-from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
+from application.endpoints import Auxiliary
+from application.studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
 
 
 class CheckToken(Resource):
@@ -12,7 +12,7 @@ class CheckToken(Resource):
         Also creates a new user in the database if not already present.
         This function is intended to complement /token/generate,
         given that that endpoint will not be accessible to the GUI.
-        It must be called prior to any other user-related endpoints
+        It must be called prior to any other user-related application.endpoints
         to ensure the user is properly initialized.
         The output is in JSON form, rather than a simple String,
         so that other information can be returned if it is added to the token.

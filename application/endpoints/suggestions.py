@@ -1,6 +1,6 @@
-from endpoints import Auxiliary
-from suggestions.prefix_cache import SearchCache
-from suggestions.task_queue import TaskQueue
+from application.endpoints import Auxiliary
+from application.suggestions.prefix_cache import SearchCache
+from application.suggestions.task_queue import TaskQueue
 from flask import jsonify, abort
 from flask_restful import Resource, reqparse
 

@@ -1,10 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
-from endpoints import transaction_blueprint as tbp
-from crypto import crypto_blueprint as cbp
-from deployment import deployment_blueprint as dbp
-from exceptions import Authentication as auth
+from application.endpoints import transaction_blueprint as tbp
+from application.crypto import crypto_blueprint as cbp
+from application.deployment import deployment_blueprint as dbp
+from application.exceptions import Authentication as auth
 import redis
 
 

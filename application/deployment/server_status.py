@@ -1,7 +1,7 @@
 import subprocess,os
 from flask_restful import Resource
 from flask import jsonify
-from endpoints import Auxiliary
+from application.endpoints import Auxiliary
 
 class Status(Resource):
     def __init__(self):

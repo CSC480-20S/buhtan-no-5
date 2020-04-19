@@ -1,11 +1,11 @@
 import functools, time
 from flask import abort, jsonify
 from flask_restful import reqparse
-from crypto.GuiToken import Generator
-from database import DbConnection
-from studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
-from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
-from suggestions.study_cache import StudyCache
+from application.crypto.GuiToken import Generator
+from application.database import DbConnection
+from application.studystore.FindingFiveStudyStoreUser import FindingFiveStudyStoreUser as f5user
+from application.studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy as f5study
+from application.suggestions.study_cache import StudyCache
 from typing import Union
 
 
@@ -110,7 +110,7 @@ def studyListToDictList(study_list):
     Returns:
         List<Dict>: A list of dictionaries containing the fields from the studies given.
     """
-    # code adapted from gui_endpoints/preview_study
+    # code adapted from gui_application.endpoints/preview_study
     built_json = list()
     for study in study_list:
         built_json.append(study.build_dict())

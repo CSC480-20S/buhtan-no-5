@@ -1,6 +1,6 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
-from endpoints import Auxiliary
+from application.endpoints import Auxiliary
 
 
 class GetWishList(Resource):

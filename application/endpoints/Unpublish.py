@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse
-from endpoints import Auxiliary
-from database import DbConnection
+from application.endpoints import Auxiliary
+from application.database import DbConnection
 
 
 # unused -- supports requirement G32
