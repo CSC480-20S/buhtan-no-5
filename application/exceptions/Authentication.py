@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from flask import jsonify
 from pathlib import Path

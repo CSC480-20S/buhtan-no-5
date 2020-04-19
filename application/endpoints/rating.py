@@ -1,4 +1,4 @@
-from database import DbConnection
+from application.database import DbConnection
 
 
 def ratingsys(id, user, name, rate, comment):

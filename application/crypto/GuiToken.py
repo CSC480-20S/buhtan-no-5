@@ -1,5 +1,5 @@
 import jwt
-from crypto.PublicTokenGenerator import TokenService as  pg
+from application.crypto.PublicTokenGenerator import TokenService as  pg
 import datetime
 from flask import jsonify
 from flask_restful import Resource, reqparse, abort
@@ -24,7 +24,7 @@ class Generator(Resource):
 
     def generate_token(self, user_id):
         '''
-        Generates the jwt token for access to endpoints.
+        Generates the jwt token for access to application.endpoints.
         This is to simulate F5 providing us with a user token.
 
         Args:

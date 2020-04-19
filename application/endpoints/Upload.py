@@ -1,9 +1,9 @@
 from flask import jsonify
 from flask_restful import Resource, reqparse, inputs
-from endpoints import Auxiliary
-from database import DbConnection
-from studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
-from suggestions import task_queue,prefix_cache
+from application.endpoints import Auxiliary
+from application.database import DbConnection
+from application.studystore.FindingFiveStudyStoreStudy import FindingFiveStudyStoreStudy
+from application.suggestions import task_queue,prefix_cache
 class Upload(Resource):
 
     @Auxiliary.auth_dec
