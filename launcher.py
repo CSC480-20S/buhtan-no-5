@@ -1,6 +1,9 @@
 import gunicorn.app.wsgiapp as wsgi
-from main import app
+from application import create_app
+
+app = create_app()
 
 if __name__ == '__main__':
     # runs on localhosts
-    wsgi.run()
+    app.run(host='0.0.0.0',port=12100, debug=True)
+    #wsgi.run()
