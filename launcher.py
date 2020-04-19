@@ -1,6 +1,5 @@
 import gunicorn.app.wsgiapp as wsgi
 from application import create_app
-from main import app
 
 app = create_app()
 
