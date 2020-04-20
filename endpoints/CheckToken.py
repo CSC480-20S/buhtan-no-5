@@ -26,6 +26,8 @@ class CheckToken(Resource):
         # obtain parameters
         user_id = kwargs["user_id"]
         # auxiliary function does all the work
-        Auxiliary.createUser(f5user(user_id))
+        user_is_new = Auxiliary.createUser(f5user(user_id))
+        if user_is_new:
+            Auxiliary.addNotification(user_id, "Welcome!", "Thank you for visiting the FindingFive Study Store.", "Welcome")
         # return converted output
         return jsonify(user_id)
