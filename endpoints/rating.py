@@ -58,8 +58,11 @@ def update_study_rating(id):
     ratelist = []
     for rates in query:
         ratelist.append(rates["Rating"])
-    average = sum(ratelist) / len(ratelist)  # Gets the average rating of this study
-    average = round(average)  # this average is then converted to a whole number
+    if (len(ratelist) == 0):
+        average = 0
+    else:
+        average = sum(ratelist) / len(ratelist)  # Gets the average rating of this study
+        average = round(average)  # this average is then converted to a whole number
 
     # update the rating for the study itself
     rater = connect["Studies"]
