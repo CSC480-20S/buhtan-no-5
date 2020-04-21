@@ -52,6 +52,8 @@ def update_study_rating(id):
         Integer: The new value of teh rating.
     """
     # find the new overall rating
+    connect = DbConnection.connector()
+    review = connect["Reviews"]
     query = review.find({"Study_id": id})
     ratelist = []
     for rates in query:
