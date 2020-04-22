@@ -19,7 +19,7 @@ def ratingsys(id, user, name, rate, comment):
     review = connect["Reviews"]
     # post the review, overwriting any existing review
     review.update_one({"Study_id": id, "User_id": user},
-                      {"$set":{"Study_id": id, "User_id": user, "Name": name, "Rating": rate, "Comment": comment}},
+                      {"$set": {"Study_id": id, "User_id": user, "Name": name, "Rating": rate, "Comment": comment}},
                       upsert=True)
     update_study_rating(id)
 
