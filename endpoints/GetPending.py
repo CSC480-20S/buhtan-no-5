@@ -12,9 +12,11 @@ class GetPending(Resource):
         """"Provides a list of pending studies from the database.
 
             Provides a list of studies, in JSON format, that have been neither approved nor denied.
+            Excludes studies authored by the accessing user.
             If limit is given, no more than limit studies will be returned.
 
             Args:
+                user_id (String): The identifier of the admin accessing the list.
                 limit (Integer): The maximum number of studies to return. Defaults to unlimited when missing or negative.
 
 
@@ -29,9 +31,10 @@ class GetPending(Resource):
         # they don't actually do anything. They should match the defaults above.
         returned_args = parser.parse_args()
         limit = returned_args.get("limit", -1)
+        user_id = kwargs["user_id"]
 
         # build search parameters
-        params = {"Approved": {"$exists": False}, "Denied": {"$exists": False}}
+        params = {"Author_id": {"$ne": user_id}, "Approved": {"$exists": False}, "Denied": {"$exists": False}}
 
         # query database
         studyList = Auxiliary.getStudies(params, limit)
