@@ -376,7 +376,7 @@ def auth_dec(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("token", type=str, required=True, help="The JWT token")
+        parser.add_argument("token", type=str, required=True, location='headers', help="The JWT token")
         returned_args = parser.parse_args()
         gen = Generator()
         resp = gen.authenticate_token(returned_args['token'])

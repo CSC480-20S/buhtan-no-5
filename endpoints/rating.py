@@ -21,18 +21,54 @@ def ratingsys(id, user, name, rate, comment):
     review.update_one({"Study_id": id, "User_id": user},
                       {"$set": {"Study_id": id, "User_id": user, "Name": name, "Rating": rate, "Comment": comment}},
                       upsert=True)
+    update_study_rating(id)
 
+def remove_rating(study_id, user_id):
+    """Removes a review for a study and updates that study's rating.
+
+    Args:
+        study_id (Integer): The study that was reviewed.
+        user_id (String): The user whose review should be removed.
+
+    Returns:
+        Boolean: True if a study was deleted."""
+    connect = DbConnection.connector()
+    review = connect["Reviews"]
+    # delete the review
+    result = review.delete_one({"Study_id": study_id, "User_id": user_id})
+    update_study_rating(study_id)
+    return result.deleted_count > 0
+
+
+def update_study_rating(id):
+    """Updates a study's rating based on the reviews in the database.
+
+    Intended for use after a review has been made or removed.
+
+    Args:
+        id (Integer): The identifier of the study to update.
+
+    Returns:
+        Integer: The new value of teh rating.
+    """
     # find the new overall rating
+    connect = DbConnection.connector()
+    review = connect["Reviews"]
     query = review.find({"Study_id": id})
     ratelist = []
     for rates in query:
         ratelist.append(rates["Rating"])
-    average = sum(ratelist) / len(ratelist)  # Gets the average rating of this study
-    average = round(average)  # this average is then converted to a whole number
+    if (len(ratelist) == 0):
+        average = 0
+    else:
+        average = sum(ratelist) / len(ratelist)  # Gets the average rating of this study
+        average = round(average)  # this average is then converted to a whole number
 
     # update the rating for the study itself
     rater = connect["Studies"]
-    rater.update_one({ "Study_id": id}, {"$set": {"Rating": average}})
+    rater.update_one({"Study_id": id}, {"$set": {"Rating": average}})
+    return average
+
 
 def getReviews(study_id):
     """Returns all the reviews for a given study.
