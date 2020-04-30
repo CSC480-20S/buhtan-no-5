@@ -58,6 +58,11 @@ The second block is the current command utilized to run the Flask instance on Pi
 ```
 nohup python3 launcher.py --bind 129.3.20.26:12100 launcher:app  >/dev/null 2>&1 &
 ```
+The third block is to run the production server using a self-signed cert. Ensure that you type https://pi.cs.oswego.edu.
+```
+python3 launcher.py --certfile cert.pem --keyfile key.pem --bind 129.3.20.26:12101 launcher:app
+
+```
 ### Redis
 Engine is utilizing Redis for three purposes. The first is to store recently accessed F5 studies in order to reduce latency.Second is to perform word recommendations based off of partial word searches from a user utilizing Redis' sorted sets and hash sets.The third is as a task queue to reduce the latency of the main application and to improve word recommendations.
 The default Redis config was used as a baseline and modified for the needs of the LRU cache.
