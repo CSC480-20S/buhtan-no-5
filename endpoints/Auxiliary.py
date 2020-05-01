@@ -20,10 +20,6 @@ def getStudy(study_id):
     Returns:
         FindingFiveStudyStoreStudy: The associated study in the database.
     """
-    sc=StudyCache()
-    existence,study=sc.get_study_from_cache(study_id)
-    if existence:
-        return study
     connect = DbConnection.connector()["Studies"]
     study = {"Study_id": study_id}
     seek = connect.find_one(study)
