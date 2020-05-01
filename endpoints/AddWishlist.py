@@ -11,7 +11,10 @@ class AddWishlist(Resource):
         Establishes a wish lists relationship between a study and a user.
 
         Args:
-            user_id (String): The identifier for the user wish listing the study.
+            token (String): A tokenized identifier for the user wish listing the study, tokenization is done with
+                            a flask GET HTTP request using the crypto blueprint and formatted like this.
+                            ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
+                            
             study_id (int): The identifier for the study the user is trying to wish list.
 
         Returns:
