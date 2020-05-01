@@ -20,10 +20,6 @@ def getStudy(study_id):
     Returns:
         FindingFiveStudyStoreStudy: The associated study in the database.
     """
-    sc=StudyCache()
-    existence,study=sc.get_study_from_cache(study_id)
-    if existence:
-        return study
     connect = DbConnection.connector()["Studies"]
     study = {"Study_id": study_id}
     seek = connect.find_one(study)
@@ -77,10 +73,10 @@ def getStudies(params, maxStudies=-1):
 
     # acquire studies
     connect = DbConnection.connector()["Studies"]
-    seek = connect.find(filter=params, projection={"Template": False, "Images": False}, limit=maxStudies)
+    seek = connect.find(filter=params, projection={"Template": False, "Images": False}, limit=maxStudies, collation={'locale':'en_US', 'strength':1})
 
     # get the number of studies returned - params maintains the filter
-    numStudies = seek.collection.count_documents(params)
+    numStudies = seek.collection.count_documents(params, collation={'locale':'en_US', 'strength':1})
 
     # make sure we don't return more studies than expected
     numWanted = min(numStudies, maxStudies)
@@ -152,7 +148,10 @@ def getUser(user_id):
     connect = DbConnection.connector()["Users"]
     user = {"User_id": user_id}
     seek = connect.find_one(user)
-    return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"], seek["Wish List"], seek["Author List"])
+    if seek is not None:
+        return f5user(user_id, seek["Num Credits"], seek["Owned Studies"], seek["Viewed Studies"], seek["Wish List"], seek["Author List"])
+    else:
+        return f5user(user_id)
 
 
 def updateUser(user):

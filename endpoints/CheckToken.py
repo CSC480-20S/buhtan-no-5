@@ -21,7 +21,7 @@ class CheckToken(Resource):
             user_id (String): The identifier for the user to return.
 
         Returns:
-            JSON: {"user_id": user_id}
+            JSON: {"user_id": user_id, "new": N} where N is true if a new user was created in the database. (If not, N is false.)
         """
         # obtain parameters
         user_id = kwargs["user_id"]
@@ -30,4 +30,4 @@ class CheckToken(Resource):
         if user_is_new:
             Auxiliary.addNotification(user_id, "Welcome!", "Thank you for visiting the FindingFive Study Store.", "Welcome")
         # return converted output
-        return jsonify(user_id)
+        return jsonify({"user_id": user_id, "new": user_is_new})
