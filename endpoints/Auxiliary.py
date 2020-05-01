@@ -77,10 +77,10 @@ def getStudies(params, maxStudies=-1):
 
     # acquire studies
     connect = DbConnection.connector()["Studies"]
-    seek = connect.find(filter=params, projection={"Template": False, "Images": False}, limit=maxStudies)
+    seek = connect.find(filter=params, projection={"Template": False, "Images": False}, limit=maxStudies, collation={'locale':'en_US', 'strength':1})
 
     # get the number of studies returned - params maintains the filter
-    numStudies = seek.collection.count_documents(params)
+    numStudies = seek.collection.count_documents(params, collation={'locale':'en_US', 'strength':1})
 
     # make sure we don't return more studies than expected
     numWanted = min(numStudies, maxStudies)
