@@ -98,7 +98,7 @@ class ReviewPending(Resource):
         template = returned_args.get("template", None)
 
         # build response body
-        body_string = "Your study has been denied."
+        body_string = "Your study, " + study_title + ", has been denied."
         body_string += "Problems with the title: " + str(title) +"\n"
         body_string += "Problems with the reference: " + str(reference) + "\n"
         body_string += "Problems with the purpose: " + str(purpose) + "\n"
