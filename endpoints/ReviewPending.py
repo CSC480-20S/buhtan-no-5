@@ -69,6 +69,10 @@ class ReviewPending(Resource):
         if study_id in user.get_authorList():
             return jsonify({"Success": False, "Reason": "User is Author."})
 
+        # check for non-existent study
+        if Auxiliary.getTitle(study_id) is None:
+            return jsonify({"Success": False, "Reason": "No such study."})
+
         # check for approval
         if approved is True:
             user_id = Auxiliary.timestampAndGetAuthor(study_id, "Approved")
