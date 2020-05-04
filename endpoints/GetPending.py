@@ -16,7 +16,10 @@ class GetPending(Resource):
             If limit is given, no more than limit studies will be returned.
 
             Args:
-                user_id (String): The identifier of the admin accessing the list.
+                token (String): A tokenized identifier of a user, tokenization is done with
+                                a flask GET HTTP request using the crypto blueprint and formatted like this.
+                                ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
+                                
                 limit (Integer): The maximum number of studies to return. Defaults to unlimited when missing or negative.
 
 
