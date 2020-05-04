@@ -18,7 +18,9 @@ class CheckToken(Resource):
         so that other information can be returned if it is added to the token.
 
         Args:
-            user_id (String): The identifier for the user to return.
+            token (String): A tokenized identifier of a user, tokenization is done with
+                            a flask GET HTTP request using the crypto blueprint and formatted like this.
+                            ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
 
         Returns:
             JSON: {"user_id": user_id}
