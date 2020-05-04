@@ -16,9 +16,11 @@ class CheckToken(Resource):
         to ensure the user is properly initialized.
         The output is in JSON form, rather than a simple String,
         so that other information can be returned if it is added to the token.
-
+        
         Args:
-            user_id (String): The identifier for the user to return.
+            token (String): A tokenized identifier of a user, tokenization is done with
+                            a flask GET HTTP request using the crypto blueprint and formatted like this.
+                            ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
 
         Returns:
             JSON: {"user_id": user_id, "new": N} where N is true if a new user was created in the database. (If not, N is false.)

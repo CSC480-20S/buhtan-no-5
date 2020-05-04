@@ -11,7 +11,9 @@ class GetNotifications(Resource):
         Returns all notifications sent to a user, starting with the newest.
 
         Args:
-            user_id (String): The identifier for the user for whom the notifications are to be returned.
+            token (String): A tokenized identifier of a user, tokenization is done with
+                            a flask GET HTTP request using the crypto blueprint and formatted like this.
+                            ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
 
         Returns:
             JSON: The list of notifications.

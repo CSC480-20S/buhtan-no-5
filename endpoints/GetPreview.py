@@ -19,7 +19,10 @@ class GetPreview(Resource):
 
             Args:
                 study_id (Integer): The identifier of the study to be reviewed.
-                user_id (String): The indentifier of the user previewing the study.
+                
+                token (String): A tokenized identifier of a user, tokenization is done with
+                                a flask GET HTTP request using the crypto blueprint and formatted like this.
+                                ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
 
 
             Returns:

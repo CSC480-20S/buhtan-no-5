@@ -11,7 +11,9 @@ class GetOwned(Resource):
         Returns all studies owned by a user.
 
         Args:
-            user_id (String): The identifier for the user who owns the studies.
+            token (String): A tokenized identifier of a user, tokenization is done with
+                            a flask GET HTTP request using the crypto blueprint and formatted like this.
+                            ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
 
         Returns:
             JSON: The list of owned studies.

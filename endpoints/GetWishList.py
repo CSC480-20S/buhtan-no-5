@@ -11,7 +11,9 @@ class GetWishList(Resource):
         Returns the wish list of studies saved by a user.
 
         Args:
-            user_id (String): The identifier for the user who has saved studies in a wish list.
+            token (String): A tokenized identifier of a user, tokenization is done with
+                                a flask GET HTTP request using the crypto blueprint and formatted like this.
+                                ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
 
         Returns:
             JSON: The wish list of studies.
