@@ -32,6 +32,26 @@ def getStudy(study_id):
                    seek["Upload Date"])
 
 
+def getTitle(study_id):
+    """Grabs a study's title given the study's ID.
+
+    Returns None if the study does not exist, allowing this method to be used to check existence.
+
+    Args:
+        study_id (int): The ID assigned to a study at upload.
+
+    Returns:
+        String: The associated study's title field from the database, or None when no such study exists.
+    """
+    connect = DbConnection.connector()["Studies"]
+    study = {"Study_id": study_id}
+    seek = connect.find_one(study, ["Title"])
+    if seek is None:
+        return None
+    else:
+        return seek["Title"]
+
+
 def getTemplate(study_id):
     """Grabs a study's template given the study's ID.
 
