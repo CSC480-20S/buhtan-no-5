@@ -35,20 +35,4 @@ class FindingFiveStudyStoreUser:
     def get_authorList(self):
         return self.authorList
 
-    def set_userId(self, newUserID):
-        self.userID = newUserID
 
-    def set_numCredits(self, newNumCredits):
-        self.numCredits = newNumCredits
-
-    def set_ownedStudies(self, newOwnedStudies):
-        self.ownedStudies = newOwnedStudies
-
-    def set_wishList(self, newWishList):
-        self.wishList = newWishList
-
-    def set_viewedStudies(self, newViewedStudies):
-        self.viewedStudies = newViewedStudies
-
-    def set_authorList(self, newAuthorList):
-        self.authorList = newAuthorList
