@@ -69,15 +69,16 @@ class ReviewPending(Resource):
         if study_id in user.get_authorList():
             return jsonify({"Success": False, "Reason": "User is Author."})
 
-        # check for non-existent study
-        if Auxiliary.getTitle(study_id) is None:
+        # check for non-existent study, storing the title for later
+        study_title = Auxiliary.getTitle(study_id)
+        if study_title is None:
             return jsonify({"Success": False, "Reason": "No such study."})
 
         # check for approval
         if approved is True:
             user_id = Auxiliary.timestampAndGetAuthor(study_id, "Approved")
-            Auxiliary.addNotification(user_id, "Study approved.",
-                                      "Your study was approved and is now visible in the Study Store.", "Approval")
+            body = "Your study, " + study_title + ", was approved and is now visible in the Study Store."
+            Auxiliary.addNotification(user_id, "Study approved.", body, "Approval")
             return jsonify({"Success": True})
 
         # otherwise we need all the other parameters
