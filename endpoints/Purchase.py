@@ -11,8 +11,12 @@ class Purchase(Resource):
             Establishes the owns relationship only if the user has sufficient credits and doesn't already own the study.
 
             Args:
-                user_id (String): The identifier for the user trying to purchase the study.
+                token (String): A tokenized identifier of a user, tokenization is done with
+                                a flask GET HTTP request using the crypto blueprint and formatted like this.
+                                ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
+                                
                 study_id (int): The identifier for the study the user is trying to purchase.
+                
                 credits_available (int): The current credit balance for the user. Overrides any stored balance.
 
             Returns:
