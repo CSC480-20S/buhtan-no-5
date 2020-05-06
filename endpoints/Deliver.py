@@ -11,7 +11,10 @@ class Deliver(Resource):
             Returns the template of the indicated study only if the indicated user owns that study.
 
             Args:
-                user_id (String): The identifier for the user trying to download the template.
+                token (String): A tokenized identifier of a user, tokenization is done with
+                                a flask GET HTTP request using the crypto blueprint and formatted like this.
+                                ('/token/generate', data={'user_id': 'VALID_USER_IN_DATABASE'})
+                                
                 study_id (int): The identifier for the study the user is trying to download.
 
             Returns:

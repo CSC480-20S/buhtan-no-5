@@ -118,7 +118,7 @@ class Upload(Resource):
 
         # update the author and ownenship information of the uploading user
         Auxiliary.addAuthored(author_id, study_id)
-        tq=task_queue.TaskQueue()
-        tq.add_function(prefix_cache.SearchCache.add_new_word,full=title)
+        # tq=task_queue.TaskQueue()
+        # tq.add_function(prefix_cache.SearchCache.add_new_word,full=title)
 
         return jsonify({"study_id": study_id})
